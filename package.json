@@ -1,0 +1,59 @@
+{
+  "name": "jskos-vue",
+  "version": "0.0.0",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "main": "./dist/jskos-vue.umd.js",
+  "module": "./dist/jskos-vue.es.js",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "require": "./dist/jskos-vue.umd.js"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "test": "mocha --recursive",
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint --ignore-path .gitignore --ext .js,.vue .",
+    "fix": "npm run lint -- --fix",
+    "lint-staged": "lint-staged",
+    "yesno": "node -e \"const yesno = require('yesno'); yesno({ question: 'Are you sure you want to continue?' }).then(ok => process.exit(ok ? 0 : 1));\"",
+    "release": "test $(git rev-parse --abbrev-ref HEAD) = dev && git pull && npm test && npm run build && npm version $SEMVER && npm run --silent yesno && (git push && git checkout main && git merge dev && git push --follow-tags && git checkout dev) || (git tag -d $(git describe --tags) && git reset --hard HEAD~1)",
+    "release:patch": "SEMVER=patch npm run release",
+    "release:minor": "SEMVER=minor npm run release",
+    "release:major": "SEMVER=major npm run release"
+  },
+  "lint-staged": {
+    "**/*.{js,vue}": [
+      "eslint --fix"
+    ]
+  },
+  "pre-commit": [
+    "lint-staged",
+    "test"
+  ],
+  "dependencies": {
+    "jskos-tools": "^1.0.17",
+    "vue": "^3.0.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.2.1",
+    "@vue/compiler-sfc": "^3.0.5",
+    "eslint": "^7.24.0",
+    "eslint-config-gbv": "^1.0.1",
+    "eslint-plugin-vue": "^7.9.0",
+    "lint-staged": "^10.5.4",
+    "mocha": "^8.3.2",
+    "mocha-eslint": "^7.0.0",
+    "pre-commit": "^1.2.2",
+    "vite": "^2.1.5",
+    "yesno": "^0.3.1"
+  },
+  "author": "Stefan Peters <stefan.peters@gbv.de>",
+  "license": "MIT",
+  "description": "A suite of components and plugins for Vue 3 related to JSKOS."
+}
