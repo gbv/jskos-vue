@@ -74,10 +74,8 @@ export default defineComponent({
 .notation {
   font-weight: bold;
 }
-.item-name.clickable {
-  cursor: pointer;
-}
 .item-name.clickable:hover {
+  cursor: pointer;
   text-decoration: underline;
 }
 </style>
