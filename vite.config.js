@@ -11,12 +11,13 @@ export default defineConfig({
       name: "JskosVue",
     },
     rollupOptions: {
-      external: ["vue", "jskos-tools"],
+      external: ["vue", "jskos-tools", "jskos-vue-tabs"],
       output: {
         exports: "named",
         globals: {
           vue: "Vue",
           "jskos-tools": "jskos",
+          "jskos-vue-tabs": "JskosVueTabs",
         },
       },
     },

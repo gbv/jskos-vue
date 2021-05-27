@@ -1,4 +1,5 @@
 import ItemName from "./item-name"
 import ItemList from "./item-list"
+import ItemDetails from "./item-details"
 
-export { ItemName, ItemList }
+export { ItemName, ItemList, ItemDetails }

@@ -92,7 +92,7 @@ Fully working HTML example:
     </div>
     <!-- Vue 3 production build -->
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-    <!-- TODO: Additional libraries, i.e. jskos-tools, cocoda-sdk, etc. -->
+    <!-- TODO: Additional libraries, i.e. jskos-tools, jskos-vue-tabs, cocoda-sdk, etc. -->
     <!-- Our library (adjust version if necessary) -->
     <script src="https://cdn.jsdelivr.net/npm/jskos-vue@0.1/dist/jskos-vue.umd.min.js"></script>
     <script>
