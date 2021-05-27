@@ -1,4 +1,5 @@
 <template>
+  <h1>jskos-vue</h1>
   <p>
     Item (notation+label):
     <item-name
@@ -73,18 +74,25 @@
       </template>
     </item-list>
   </p>
+  <p>
+    Item Details:
+    <item-details
+      :item="{ uri: 'https://example.com/1', identifier: ['uri:additional-uri', 'test'], created: '2021-05-27', notation: ['IN'], prefLabel: { en: 'ItemName' }, definition: { en: ['a defintion'], de: ['eine Definition'] } }" />
+  </p>
 </template>
 
 <script>
 import { defineComponent } from "vue"
 import ItemName from "./components/item-name"
 import ItemList from "./components/item-list"
+import ItemDetails from "./components/item-details"
 
 export default defineComponent({
   name: "App",
   components: {
     ItemName,
     ItemList,
+    ItemDetails,
   },
   methods: {
     handleClick({ item, row }) {
@@ -99,9 +107,9 @@ export default defineComponent({
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 30px auto 0 auto;
+  max-width: 450px;
 }
 .item-list-styled {
   background: lightcoral;
