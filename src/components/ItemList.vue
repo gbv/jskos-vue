@@ -3,7 +3,7 @@
     <li
       v-for="item in items"
       :key="item && item.uri"
-      @click.stop="$emit('click', { item, row: true })">
+      @click.stop="$emit('select', { item, row: true })">
       <template v-if="item">
         <slot
           name="beforeItem"
@@ -13,7 +13,7 @@
           :show-notation="showNotation"
           :show-label="showLabel"
           :clickable="clickable"
-          @click.stop="$emit('click', { item, row: false })" />
+          @click.stop="$emit('select', { item, row: false })" />
         <slot
           name="afterItem"
           :item="item" />
@@ -53,7 +53,7 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ["click"],
+  emits: ["select"],
 })
 </script>
 
