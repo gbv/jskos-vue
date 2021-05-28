@@ -86,10 +86,18 @@
       </template>
     </item-list>
   </p>
+  <h2>Item Details</h2>
   <p>
-    Item Details:
+    Settings:
+    <button
+      @click="examples.detailed.clickable = !examples.detailed.clickable">
+      clickable: {{ examples.detailed.clickable }}
+    </button>
+  </p>
+  <p>
     <item-details
-      :item="{ uri: 'https://example.com/1', identifier: ['uri:additional-uri', 'test'], created: '2021-05-27', notation: ['IN'], prefLabel: { en: 'ItemName' }, definition: { en: ['a defintion'], de: ['eine Definition'] } }" />
+      v-bind="examples.detailed"
+      @select="handleClick" />
   </p>
 </template>
 
@@ -102,6 +110,56 @@ Array.prototype.move = function(from, to) {
   return this
 }
 
+const examples = reactive({
+  detailed: {
+    clickable: true,
+    item: {
+      uri: "https://example.com/DT",
+      notation: ["DT"],
+      prefLabel: {
+        en: "Detailed Item",
+        de: "Detalliertes Item",
+      },
+      identifier: ["uri:detailed", "test"],
+      created: "2021-05-27",
+      issued: "2021-05-27",
+      modified: "2021-05-28",
+      definition: {
+        en: ["a defintion"],
+        de: ["eine Definition"],
+      },
+      narrower: [
+        {
+          uri: "https://example.com/DT1",
+          notation: ["DT1"],
+          prefLabel: {
+            en: "a Child",
+            de: "ein Unterkonzept",
+          },
+        },
+        {
+          uri: "https://example.com/DT2",
+          notation: ["DT2"],
+          prefLabel: {
+            en: "another Child",
+            de: "ein weiteres Unterkonzept",
+          },
+        },
+      ],
+      ancestors: [
+        {
+          uri: "https://example.com/D",
+          notation: ["D"],
+          prefLabel: {
+            en: "an Ancestor",
+            de: "ein Elternkonzept",
+          },
+        },
+      ],
+    },
+  },
+})
+
 export default defineComponent({
   name: "App",
   setup() {
@@ -112,6 +170,7 @@ export default defineComponent({
     jskos.languagePreference.path = "languages"
     return {
       state,
+      examples,
     }
   },
   methods: {
