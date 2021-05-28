@@ -1,5 +1,14 @@
 <template>
   <div class="item-details">
+    <!-- Ancestors -->
+    <ul class="item-details-list item-details-ancestors">
+      <li
+        v-for="(ancestor, index) in item.ancestors || []"
+        :key="index">
+        <item-name
+          :item="ancestor" />
+      </li>
+    </ul>
     <item-name
       :item="item" />
     <tabs
@@ -53,6 +62,15 @@
         TODO
       </tab>
     </tabs>
+    <!-- Narrower -->
+    <ul class="item-details-list item-details-narrower">
+      <li
+        v-for="(narrower, index) in item.narrower || []"
+        :key="index">
+        <item-name
+          :item="narrower" />
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -134,5 +152,21 @@ export default defineComponent({
   list-style: none;
   margin: 0 0 10px 0;
   padding: 0;
+}
+.item-details-narrower, .item-details-ancestors {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 0.85em;
+}
+.item-details-narrower > li:before, .item-details-ancestors > li:before {
+  font-family: monospace;
+  font-size: 1.3em;
+  padding-right: 2px;
+}
+.item-details-narrower > li:before {
+  content: "↳";
+}
+.item-details-ancestors > li:before {
+  content: "↱";
 }
 </style>
