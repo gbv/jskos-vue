@@ -106,7 +106,7 @@ export default defineComponent({
   name: "App",
   setup() {
     const state = reactive({
-      languages: ["de", "en"],
+      languages: ["en", "de", "fr"],
     })
     jskos.languagePreference.store = state
     jskos.languagePreference.path = "languages"
