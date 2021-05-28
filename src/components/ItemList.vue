@@ -3,6 +3,7 @@
     <li
       v-for="item in items"
       :key="item && item.uri"
+      :style="styleForItem(item)"
       @click.stop="$emit('select', { item, row: true })">
       <template v-if="item">
         <slot
@@ -52,8 +53,29 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    indicatorByUri: {
+      type: Object,
+      default: () => ({}),
+    },
+    indicatorColor: {
+      type: String,
+      default: "green",
+    },
   },
   emits: ["select"],
+  methods: {
+    styleForItem(item) {
+      let style = {}
+      let color = this.indicatorByUri[item && item.uri]
+      if (color === true) {
+        color = this.indicatorColor
+      }
+      if (color) {
+        style.borderRight = `5px solid ${color}`
+      }
+      return style
+    },
+  },
 })
 </script>
 
