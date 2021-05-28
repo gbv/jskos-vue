@@ -1,4 +1,6 @@
 import { createApp } from "vue"
 import App from "./App.vue"
 
-createApp(App).mount("#app")
+import * as JskosVue from "."
+
+createApp(App).use(JskosVue).mount("#app")

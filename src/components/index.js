@@ -1,5 +1,5 @@
-import ItemName from "./item-name"
-import ItemList from "./item-list"
-import ItemDetails from "./item-details"
+import ItemName from "./ItemName.vue"
+import ItemList from "./ItemList.vue"
+import ItemDetails from "./ItemDetails.vue"
 
 export { ItemName, ItemList, ItemDetails }

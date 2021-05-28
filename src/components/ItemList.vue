@@ -28,7 +28,7 @@
 
 <script>
 import { defineComponent } from "vue"
-import ItemName from "../item-name"
+import ItemName from "./ItemName.vue"
 
 export default defineComponent({
   name: "ItemList",

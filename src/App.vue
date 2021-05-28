@@ -83,17 +83,9 @@
 
 <script>
 import { defineComponent } from "vue"
-import ItemName from "./components/item-name"
-import ItemList from "./components/item-list"
-import ItemDetails from "./components/item-details"
 
 export default defineComponent({
   name: "App",
-  components: {
-    ItemName,
-    ItemList,
-    ItemDetails,
-  },
   methods: {
     handleClick({ item, row }) {
       alert(`Clicked on item with URI ${item.uri}. (row: ${row})`)

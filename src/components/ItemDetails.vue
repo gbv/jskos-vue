@@ -41,12 +41,12 @@
 </template>
 
 <script>
-import { defineComponent } from "vue"
 import * as jskos from "jskos-tools"
 import { Tabs, Tab } from "jskos-vue-tabs"
-import ItemName from "../item-name"
-import AutoLink from "../AutoLink.vue"
-import utils from "../../utils.js"
+import ItemName from "./ItemName.vue"
+import AutoLink from "./AutoLink.vue"
+import utils from "../utils.js"
+import { defineComponent } from "vue"
 
 /**
  * TODO!
@@ -56,7 +56,6 @@ import utils from "../../utils.js"
  * Plugin system for additional tabs of information (e.g. coli-ana, GND links)
  * Internationalization via i18n
  */
-
 export default defineComponent({
   name: "ItemDetails",
   components: {
