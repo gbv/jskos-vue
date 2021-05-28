@@ -11,8 +11,12 @@
           @click="clickable && $emit('select', { item: ancestor })" />
       </li>
     </ul>
-    <item-name
-      :item="item" />
+    <div class="item-details-name">
+      <slot name="beforeName" />
+      <item-name
+        :item="item" />
+      <slot name="afterName" />
+    </div>
     <tabs
       borders="bottom"
       size="sm">
@@ -155,6 +159,13 @@ export default defineComponent({
 </script>
 
 <style>
+.item-details {
+  position: relative;
+}
+.item-details-name {
+  position: relative;
+  margin-bottom: 5px;
+}
 .item-details-list {
   list-style: none;
   margin: 0 0 10px 0;
