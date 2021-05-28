@@ -61,11 +61,14 @@
     Item List:
     <item-list
       :items="[
-        { notation: ['1'], prefLabel: { en: 'Concept 1' } },
-        { notation: ['2'], prefLabel: { en: 'Concept 2' } },
-        { notation: ['3'], prefLabel: { en: 'Concept 3' } },
+        { uri: 'test:1', notation: ['1'], prefLabel: { en: 'Concept 1' } },
+        { uri: 'test:2', notation: ['2'], prefLabel: { en: 'Concept 2' } },
+        { uri: 'test:3', notation: ['3'], prefLabel: { en: 'Concept 3' } },
       ]"
       :clickable="true"
+      :indicator-by-uri="{
+        'test:1': true,
+      }"
       @select="!$event.row && handleClick($event)" />
   </p>
   <p>
@@ -78,6 +81,11 @@
         { uri: 'test:2', notation: ['2'], prefLabel: { en: 'Concept 2' } },
         { uri: 'test:3', notation: ['3'], prefLabel: { en: 'Concept 3' } },
       ]"
+      :indicator-by-uri="{
+        'test:1': true,
+        'test:2': 'red',
+        'test:3': 'blue',
+      }"
       @select="handleClick">
       <template #beforeItem>
         🚀
