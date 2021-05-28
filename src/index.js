@@ -17,3 +17,6 @@ export const install = (vue) => {
 }
 
 export * from "./components"
+
+// Shared CSS
+import "./shared.css"

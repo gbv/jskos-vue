@@ -12,6 +12,9 @@
             v-for="(identifier, index) in [item.uri].concat(item.identifier).filter(identifier => identifier != null)"
             :key="index">
             <auto-link :link="identifier" />
+            <template v-if="identifier === item.uri">
+              <span class="jskos-vue-text-lightGrey"> (URI)</span>
+            </template>
           </li>
         </ul>
         <ul class="item-details-list">
@@ -25,10 +28,13 @@
         </ul>
         <template v-if="item.definition">
           <ul class="item-details-list">
+            <li>
+              <b>Definitions:</b>
+            </li>
             <li
               v-for="language in [jskos.languagePreference.selectLanguage(item.definition)].concat(Object.keys(item.definition).filter(language => language != jskos.languagePreference.selectLanguage(item.definition) && language != '-'))"
               :key="language">
-              <b>Definition ({{ language }}):</b> {{ jskos.definition(item, { language }).join(", ") }}
+              {{ jskos.definition(item, { language }).join(", ") }} <span class="jskos-vue-text-lightGrey">({{ language }})</span>
             </li>
           </ul>
         </template>
