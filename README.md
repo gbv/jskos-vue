@@ -39,7 +39,7 @@ import App from './App.vue'
 
 const app = createApp(App)
 
-import JskosVue from "jskos-vue"
+import * as JskosVue from "jskos-vue"
 app.use(JskosVue)
 
 app.mount('#app')

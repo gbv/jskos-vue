@@ -20,7 +20,3 @@ export function dateToString(dateString) {
     return "?"
   }
 }
-
-export default {
-  dateToString,
-}

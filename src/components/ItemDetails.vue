@@ -45,7 +45,7 @@ import * as jskos from "jskos-tools"
 import { Tabs, Tab } from "jskos-vue-tabs"
 import ItemName from "./ItemName.vue"
 import AutoLink from "./AutoLink.vue"
-import utils from "../utils.js"
+import * as utils from "../utils.js"
 import { defineComponent } from "vue"
 
 /**
