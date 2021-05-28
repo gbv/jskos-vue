@@ -6,7 +6,9 @@
         v-for="(ancestor, index) in item.ancestors || []"
         :key="index">
         <item-name
-          :item="ancestor" />
+          :item="ancestor"
+          :clickable="clickable"
+          @click="clickable && $emit('select', { item: ancestor })" />
       </li>
     </ul>
     <item-name
@@ -68,7 +70,9 @@
         v-for="(narrower, index) in item.narrower || []"
         :key="index">
         <item-name
-          :item="narrower" />
+          :item="narrower"
+          :clickable="clickable"
+          @click="clickable && $emit('select', { item: narrower })" />
       </li>
     </ul>
   </div>
@@ -135,7 +139,12 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    clickable: {
+      type: Boolean,
+      default: false,
+    },
   },
+  emits: ["select"],
   setup() {
     return {
       utils,
