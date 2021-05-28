@@ -65,7 +65,8 @@
         { notation: ['2'], prefLabel: { en: 'Concept 2' } },
         { notation: ['3'], prefLabel: { en: 'Concept 3' } },
       ]"
-      :clickable="true" />
+      :clickable="true"
+      @select="!$event.row && handleClick($event)" />
   </p>
   <p>
     Item List (styled with slots):
@@ -77,7 +78,7 @@
         { uri: 'test:2', notation: ['2'], prefLabel: { en: 'Concept 2' } },
         { uri: 'test:3', notation: ['3'], prefLabel: { en: 'Concept 3' } },
       ]"
-      @click="handleClick">
+      @select="handleClick">
       <template #beforeItem>
         🚀
       </template>
