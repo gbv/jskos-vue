@@ -63,6 +63,7 @@
         :title="t('editorial')">
         TODO
       </tab>
+      <slot name="tabs" />
     </tabs>
     <!-- Narrower -->
     <ul class="item-details-list item-details-narrower">
@@ -120,11 +121,8 @@ const t = (prop) => locale[language.value][prop]
 
 /**
  * TODO!
- * Definition
  * Labels
  * Notes
- * Plugin system for additional tabs of information (e.g. coli-ana, GND links)
- * Internationalization via i18n
  */
 export default defineComponent({
   name: "ItemDetails",

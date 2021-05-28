@@ -97,13 +97,20 @@
   <p>
     <item-details
       v-bind="examples.detailed"
-      @select="handleClick" />
+      @select="handleClick">
+      <template #tabs>
+        <tab title="Test">
+          This tab was added via the "tabs" slot.
+        </tab>
+      </template>
+    </item-details>
   </p>
 </template>
 
 <script>
 import { defineComponent, reactive } from "vue"
 import * as jskos from "jskos-tools"
+import { Tab } from "jskos-vue-tabs"
 
 Array.prototype.move = function(from, to) {
   this.splice(to, 0, this.splice(from, 1)[0])
@@ -162,6 +169,9 @@ const examples = reactive({
 
 export default defineComponent({
   name: "App",
+  components: {
+    Tab,
+  },
   setup() {
     const state = reactive({
       languages: ["en", "de", "fr"],
