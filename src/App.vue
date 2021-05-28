@@ -1,6 +1,18 @@
 <template>
   <h1>jskos-vue</h1>
   <p>
+    Change language:
+    <span
+      v-for="(language, index) in state.languages"
+      :key="index">
+      <a
+        href=""
+        @click.prevent="state.languages.move(index, 0)">
+        {{ language }}
+      </a> -
+    </span>
+  </p>
+  <p>
     Item (notation+label):
     <item-name
       :item="{ notation: ['IN'], prefLabel: { en: 'ItemName' } }" />
@@ -82,10 +94,26 @@
 </template>
 
 <script>
-import { defineComponent } from "vue"
+import { defineComponent, reactive } from "vue"
+import * as jskos from "jskos-tools"
+
+Array.prototype.move = function(from, to) {
+  this.splice(to, 0, this.splice(from, 1)[0])
+  return this
+}
 
 export default defineComponent({
   name: "App",
+  setup() {
+    const state = reactive({
+      languages: ["de", "en"],
+    })
+    jskos.languagePreference.store = state
+    jskos.languagePreference.path = "languages"
+    return {
+      state,
+    }
+  },
   methods: {
     handleClick({ item, row }) {
       alert(`Clicked on item with URI ${item.uri}. (row: ${row})`)
