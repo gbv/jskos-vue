@@ -5,7 +5,7 @@
     <tabs
       borders="bottom"
       size="sm">
-      <tab title="Info">
+      <tab :title="t('info')">
         <!-- Identifier -->
         <ul class="item-details-list">
           <li
@@ -22,14 +22,14 @@
             <li
               v-if="item[prop]"
               :key="prop">
-              <b>{{ prop }}:</b> {{ utils.dateToString(item[prop]) }}
+              <b>{{ t(prop) }}:</b> {{ utils.dateToString(item[prop]) }}
             </li>
           </template>
         </ul>
         <template v-if="item.definition">
           <ul class="item-details-list">
             <li>
-              <b>Definitions:</b>
+              <b>{{ t("definition") }}:</b>
             </li>
             <li
               v-for="language in [jskos.languagePreference.selectLanguage(item.definition)].concat(Object.keys(item.definition).filter(language => language != jskos.languagePreference.selectLanguage(item.definition) && language != '-'))"
@@ -39,7 +39,17 @@
           </ul>
         </template>
       </tab>
-      <tab title="Labels">
+      <tab :title="t('labels')">
+        TODO
+      </tab>
+      <tab
+        v-if="item.scopeNote"
+        :title="t('scope')">
+        TODO
+      </tab>
+      <tab
+        v-if="item.editorialNote"
+        :title="t('editorial')">
         TODO
       </tab>
     </tabs>
@@ -52,7 +62,39 @@ import { Tabs, Tab } from "jskos-vue-tabs"
 import ItemName from "./ItemName.vue"
 import AutoLink from "./AutoLink.vue"
 import * as utils from "../utils.js"
-import { defineComponent } from "vue"
+import { computed, defineComponent } from "vue"
+
+const locale = {
+  en: {
+    showAllAncestors: "show all ancestors",
+    showLessAncestors: "show less ancesters",
+    created: "Created",
+    modified: "Modified",
+    issued: "Issued",
+    altLabels: "Alternative Labels",
+    definition: "Definition",
+    info: "Info",
+    labels: "Labels",
+    editorial: "Editorial",
+    scope: "Scope",
+  },
+  de: {
+    showAllAncestors: "zeige alle übergeordneten Konzepte",
+    showLessAncestors: "zeige weniger übergeordnete Konzepte",
+    created: "Erstellung",
+    modified: "Änderung",
+    issued: "Veröffentlicht",
+    altLabels: "Alternative Bezeichnungen",
+    definition: "Definition",
+    info: "Info",
+    labels: "Bezeichnungen",
+    editorial: "Editorial",
+    scope: "Scope",
+  },
+}
+// Determines current language from jskos.languagePreference and locale
+const language = computed(() => jskos.languagePreference.getLanguages().find(lang => locale[lang]) || "en")
+const t = (prop) => locale[language.value][prop]
 
 /**
  * TODO!
@@ -77,10 +119,11 @@ export default defineComponent({
     },
   },
   setup() {
-    // ...
     return {
       utils,
       jskos,
+      language,
+      t,
     }
   },
 })
