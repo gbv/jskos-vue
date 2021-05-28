@@ -41,7 +41,7 @@ export default defineComponent({
     },
     language: {
       type: String,
-      default: "en",
+      default: "",
     },
     clickable: {
       type: Boolean,
@@ -58,7 +58,7 @@ export default defineComponent({
       props.showLabel
         ? jskos.prefLabel(props.item, {
           fallbackToUri: !notation.value,
-          language: props.language,
+          language: props.language || jskos.languagePreference.selectLanguage(props.item.prefLabel),
         })
         : "",
     )
