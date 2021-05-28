@@ -38,7 +38,7 @@
   ],
   "dependencies": {
     "jskos-tools": "^1.0.17",
-    "jskos-vue-tabs": "^0.1.0",
+    "jskos-vue-tabs": "^0.1.1",
     "vue": "^3.0.11"
   },
   "devDependencies": {

@@ -103,6 +103,15 @@
           This tab was added via the "tabs" slot.
         </tab>
       </template>
+      <template #beforeName>
+        🆇
+      </template>
+      <template #afterName>
+        ⭐️
+        <div style="position: absolute; top: 0; right: 0;">
+          ➕
+        </div>
+      </template>
     </item-details>
   </p>
 </template>
