@@ -1,16 +1,11 @@
 <template>
   <div class="item-details">
     <!-- Ancestors -->
-    <ul class="item-details-list item-details-ancestors">
-      <li
-        v-for="(ancestor, index) in item.ancestors || []"
-        :key="index">
-        <item-name
-          :item="ancestor"
-          :clickable="clickable"
-          @click="clickable && $emit('select', { item: ancestor })" />
-      </li>
-    </ul>
+    <item-list
+      :items="item.ancestors || []"
+      :clickable="clickable"
+      class="item-details-ancestors"
+      @select="clickable && !$event.row && $emit('select', { item: $event.item })" />
     <div class="item-details-name">
       <slot name="beforeName" />
       <item-name
@@ -70,16 +65,11 @@
       <slot name="tabs" />
     </tabs>
     <!-- Narrower -->
-    <ul class="item-details-list item-details-narrower">
-      <li
-        v-for="(narrower, index) in item.narrower || []"
-        :key="index">
-        <item-name
-          :item="narrower"
-          :clickable="clickable"
-          @click="clickable && $emit('select', { item: narrower })" />
-      </li>
-    </ul>
+    <item-list
+      :items="item.narrower || []"
+      :clickable="clickable"
+      class="item-details-narrower"
+      @select="clickable && !$event.row && $emit('select', { item: $event.item })" />
   </div>
 </template>
 
@@ -87,6 +77,7 @@
 import * as jskos from "jskos-tools"
 import { Tabs, Tab } from "jskos-vue-tabs"
 import ItemName from "./ItemName.vue"
+import ItemList from "./ItemList.vue"
 import AutoLink from "./AutoLink.vue"
 import * as utils from "../utils.js"
 import { computed, defineComponent } from "vue"
@@ -132,6 +123,7 @@ export default defineComponent({
   name: "ItemDetails",
   components: {
     ItemName,
+    ItemList,
     Tabs,
     Tab,
     AutoLink,
@@ -161,9 +153,11 @@ export default defineComponent({
 <style>
 .item-details {
   position: relative;
+  font-size: 0.85rem;
 }
 .item-details-name {
   position: relative;
+  font-size: 1rem;
   margin-bottom: 5px;
 }
 .item-details-list {
@@ -174,7 +168,6 @@ export default defineComponent({
 .item-details-narrower, .item-details-ancestors {
   margin-top: 5px;
   margin-bottom: 5px;
-  font-size: 0.85em;
 }
 .item-details-narrower > li:before, .item-details-ancestors > li:before {
   font-family: monospace;
