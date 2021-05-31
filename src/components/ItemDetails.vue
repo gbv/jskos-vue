@@ -12,9 +12,27 @@
         :item="item" />
       <slot name="afterName" />
     </div>
+    <!-- License -->
+    <div
+      v-if="item.license && item.license.length">
+      {{ t("license") }}:<a
+        v-for="(license, index) in item.license"
+        :key="index"
+        :href="license.uri"
+        target="_blank"
+        class="item-details-licenseBadge">
+        <img
+          v-if="licenseBadges[license.uri]"
+          :src="licenseBadges[license.uri]">
+        <span v-else>
+          {{ license.uri }}
+        </span>
+      </a>
+    </div>
     <tabs
       borders="bottom"
-      size="sm">
+      size="sm"
+      class="item-details-tabs">
       <tab :title="t('info')">
         <!-- Identifier -->
         <ul class="item-details-list">
@@ -130,6 +148,7 @@ const locale = {
     labels: "Labels",
     editorial: "Editorial",
     scope: "Scope",
+    license: "License",
   },
   de: {
     showAllAncestors: "zeige alle übergeordneten Konzepte",
@@ -143,6 +162,7 @@ const locale = {
     labels: "Bezeichnungen",
     editorial: "Editorial",
     scope: "Scope",
+    license: "Lizenz",
   },
 }
 // Determines current language from jskos.languagePreference and locale
@@ -153,7 +173,10 @@ const t = (prop) => locale[language.value][prop]
  * TODO!
  * Icons
  * broader
- * Scheme props
+ * Scheme props:
+ *  - url/publisher?
+ *  - languages
+ *  - type
  */
 export default defineComponent({
   name: "ItemDetails",
@@ -175,7 +198,7 @@ export default defineComponent({
     },
   },
   emits: ["select"],
-  setup() {
+  setup(props) {
     const iterateLanguageMapContent = (item, prop) => {
       /** Explanation:
           1. Get all language keys for altLabels (Object.keys)
@@ -201,12 +224,32 @@ export default defineComponent({
           return 0
         })
     }
+    const licenseBadges = {
+      "http://creativecommons.org/publicdomain/zero/1.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/cc-zero.svg",
+      "http://creativecommons.org/licenses/by/3.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by.svg",
+      "http://creativecommons.org/licenses/by-nc-nd/3.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-nd.svg",
+      "http://creativecommons.org/licenses/by-nc-nd/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-nd.svg",
+      "http://creativecommons.org/licenses/by-nc-sa/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg",
+      "http://creativecommons.org/licenses/by-sa/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-sa.svg",
+      "http://opendatacommons.org/licenses/odbl/1.0/": "https://img.shields.io/badge/License-ODbL-lightgrey.svg",
+      "http://www.wtfpl.net/": "https://img.shields.io/badge/License-WTFPL-lightgrey.svg",
+    }
+    const licenseAttribution = computed(() => {
+      const organisation = (props.item.publisher || []).find(o => o.url)
+      const url = organisation.url || props.item.url
+      return {
+        url,
+        label: jskos.prefLabel(organisation) || "?",
+      }
+    })
     return {
       utils,
       jskos,
       language,
       t,
       iterateLanguageMapContent,
+      licenseBadges,
+      licenseAttribution,
     }
   },
 })
@@ -220,7 +263,9 @@ export default defineComponent({
 .item-details-name {
   position: relative;
   font-size: 1rem;
-  margin-bottom: 5px;
+}
+.item-details-tabs {
+  margin-top: 5px;
 }
 .item-details-list {
   list-style: none;
@@ -241,5 +286,14 @@ export default defineComponent({
 }
 .item-details-ancestors > li:before {
   content: "↱";
+}
+.item-details-licenseBadge {
+  padding-left: 5px;
+}
+.item-details-licenseBadge > img {
+  height: 1em;
+  vertical-align: middle;
+  padding-bottom: 4px;
+  display: inline-block;
 }
 </style>
