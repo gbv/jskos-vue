@@ -52,6 +52,9 @@
           </li>
         </ul>
         <ul class="item-details-list">
+          <li v-if="types.length">
+            <b>{{ t("type") }}:</b> {{ types.map(t => jskos.prefLabel(t)).join(", ") }}
+          </li>
           <template v-for="prop in ['created', 'issued', 'modified']">
             <li
               v-if="item[prop]"
@@ -62,7 +65,6 @@
           <li v-if="item.languages">
             <b>{{ t("languages") }}:</b> {{ item.languages.join(", ") }}
           </li>
-          <!-- TODO: KOS Types -->
           <!-- TODO: Publisher -->
         </ul>
         <ul
@@ -161,6 +163,7 @@ const locale = {
     scope: "Scope",
     license: "License",
     languages: "Languages",
+    type: "Type",
   },
   de: {
     showAllAncestors: "zeige alle übergeordneten Konzepte",
@@ -176,6 +179,7 @@ const locale = {
     scope: "Scope",
     license: "Lizenz",
     languages: "Sprachen",
+    type: "Art",
   },
 }
 // Determines current language from jskos.languagePreference and locale
@@ -250,6 +254,25 @@ export default defineComponent({
         label: jskos.prefLabel(organisation) || "?",
       }
     })
+    const types = computed(() => {
+      if (!props.item) {
+        return []
+      }
+      let types = []
+      let schemeTypes = (props.item && props.item.inScheme && props.item.inScheme[0] && props.item.inScheme[0].types) || []
+      for (let type of props.item.type || []) {
+        if (typeof type !== "object") {
+          type = { uri: type }
+        }
+        if (!type || ["http://www.w3.org/2004/02/skos/core#Concept", "http://www.w3.org/2004/02/skos/core#ConceptScheme"].includes(type.uri)) {
+          continue
+        }
+        // Try to find type in scheme types
+        type = schemeTypes.find(t => jskos.compare(t, type)) || type
+        types.push(type)
+      }
+      return types
+    })
     return {
       utils,
       jskos,
@@ -258,6 +281,7 @@ export default defineComponent({
       iterateLanguageMapContent,
       licenseBadges,
       licenseAttribution,
+      types,
     }
   },
 })
