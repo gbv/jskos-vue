@@ -2,10 +2,10 @@
   <div class="item-details">
     <!-- Ancestors -->
     <item-list
+      v-bind="itemListOptions"
       :items="item.ancestors || []"
-      :clickable="clickable"
       class="item-details-ancestors"
-      @select="clickable && !$event.row && $emit('select', { item: $event.item })" />
+      @select="itemListOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
     <div class="item-details-name">
       <slot name="beforeName" />
       <item-name
@@ -66,10 +66,10 @@
     </tabs>
     <!-- Narrower -->
     <item-list
+      v-bind="itemListOptions"
       :items="item.narrower || []"
-      :clickable="clickable"
       class="item-details-narrower"
-      @select="clickable && !$event.row && $emit('select', { item: $event.item })" />
+      @select="itemListOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
   </div>
 </template>
 
@@ -118,6 +118,8 @@ const t = (prop) => locale[language.value][prop]
  * TODO!
  * Labels
  * Notes
+ * Icons
+ * broader
  */
 export default defineComponent({
   name: "ItemDetails",
@@ -133,9 +135,9 @@ export default defineComponent({
       type: Object,
       required: true,
     },
-    clickable: {
-      type: Boolean,
-      default: false,
+    itemListOptions: {
+      type: Object,
+      default: () => ({}),
     },
   },
   emits: ["select"],
