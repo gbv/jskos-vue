@@ -53,6 +53,11 @@
               <b>{{ t(prop) }}:</b> {{ utils.dateToString(item[prop]) }}
             </li>
           </template>
+          <li v-if="item.languages">
+            <b>{{ t("languages") }}:</b> {{ item.languages.join(", ") }}
+          </li>
+          <!-- TODO: KOS Types -->
+          <!-- TODO: Publisher -->
         </ul>
         <ul
           v-if="jskos.languageMapContent(item, 'definition')"
@@ -149,6 +154,7 @@ const locale = {
     editorial: "Editorial",
     scope: "Scope",
     license: "License",
+    languages: "Languages",
   },
   de: {
     showAllAncestors: "zeige alle übergeordneten Konzepte",
@@ -163,6 +169,7 @@ const locale = {
     editorial: "Editorial",
     scope: "Scope",
     license: "Lizenz",
+    languages: "Sprachen",
   },
 }
 // Determines current language from jskos.languagePreference and locale
@@ -173,10 +180,6 @@ const t = (prop) => locale[language.value][prop]
  * TODO!
  * Icons
  * broader
- * Scheme props:
- *  - url/publisher?
- *  - languages
- *  - type
  */
 export default defineComponent({
   name: "ItemDetails",
