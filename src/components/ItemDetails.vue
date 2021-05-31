@@ -22,11 +22,10 @@
     <!-- License -->
     <div
       v-if="item.license && item.license.length">
-      {{ t("license") }}:<a
+      {{ t("license") }}:<auto-link
         v-for="(license, index) in item.license"
         :key="index"
         :href="license.uri"
-        target="_blank"
         class="item-details-licenseBadge">
         <img
           v-if="licenseBadges[license.uri]"
@@ -34,7 +33,7 @@
         <span v-else>
           {{ license.uri }}
         </span>
-      </a>
+      </auto-link>
     </div>
     <tabs
       borders="bottom"
@@ -46,7 +45,7 @@
           <li
             v-for="(identifier, index) in [item.uri].concat(item.identifier).filter(identifier => identifier != null)"
             :key="index">
-            <auto-link :link="identifier" />
+            <auto-link :href="identifier" />
             <template v-if="identifier === item.uri">
               <span class="jskos-vue-text-lightGrey"> (URI)</span>
             </template>
