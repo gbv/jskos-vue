@@ -146,6 +146,11 @@
       </template>
     </item-details>
   </p>
+  <p>
+    <item-details
+      v-bind="examples.detailedScheme"
+      @select="handleClick" />
+  </p>
 </template>
 
 <script>
@@ -227,6 +232,81 @@ const examples = reactive({
           },
         },
       ],
+      broader: [
+        {
+          uri: "https://example.com/D",
+          notation: ["D"],
+          prefLabel: {
+            en: "an Ancestor",
+            de: "ein Elternkonzept",
+          },
+        },
+        {
+          uri: "https://example.com/D-alt",
+          notation: ["D-alt"],
+          prefLabel: {
+            en: "a broader concept",
+            de: "ein übergeordnetes Konzept",
+          },
+        },
+      ],
+    },
+  },
+  detailedScheme: {
+    item: {
+      prefLabel: {
+        de: "Dewey-Dezimalklassifikation",
+        en: "Dewey Decimal Classification",
+      },
+      license: [
+        {
+          uri: "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+        },
+        {
+          uri: "some:other:license",
+        },
+      ],
+      uri: "http://bartoc.org/en/node/241",
+      url: "http://www.oclc.org/dewey/",
+      publisher: [
+        {
+          uri: "http://viaf.org/viaf/156508705",
+          prefLabel: {
+            en: "Online Computer Library Center (OCLC)",
+          },
+        },
+        {
+          uri: "http://d-nb.info/gnd/1086052218",
+          prefLabel: {
+            de: "OCLC",
+          },
+          altLabel: {
+            de: [
+              "OCLC Online Computer Library Center",
+            ],
+          },
+          url: "https://www.oclc.org/",
+        },
+      ],
+      identifier: [
+        "http://www.wikidata.org/entity/Q48460",
+        "http://dewey.info/scheme/edition/e23/",
+      ],
+      created: "2013-09-06T14:57:00Z",
+      issued: "1876",
+      modified: "2021-03-15T15:09:24.994Z",
+      languages: [
+        "ar",
+        "nb",
+        "zh",
+        "fr",
+        "de",
+      ],
+      type: [
+        "http://www.w3.org/2004/02/skos/core#ConceptScheme",
+        "http://w3id.org/nkos/nkostype#classification_schema",
+      ],
+      // top concepts (?)
     },
   },
 })
