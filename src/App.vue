@@ -114,6 +114,14 @@
       }">
       indicators: {{ !!examples.detailed.itemListOptions.indicatorByUri }}
     </button>
+    <button
+      v-if="!examples.detailed.item.scopeNote"
+      @click="examples.detailed.item.scopeNote = {
+        de: ['Scope Deutsch'],
+        en: ['Scope English'],
+      }">
+      Add scopeNote
+    </button>
   </p>
   <p>
     <item-details
@@ -166,12 +174,21 @@ const examples = reactive({
         en: "Detailed Item",
         de: "Detalliertes Item",
       },
+      altLabel: {
+        fr: ["Désignation alternative"],
+        de: ["Alternative Benennung", "noch eine"],
+      },
+      editorialNote: {
+        en: ["Editorial English"],
+        de: ["Editorial Deutsch"],
+        fr: ["Editorial Français"],
+      },
       identifier: ["uri:detailed", "test"],
       created: "2021-05-27",
       issued: "2021-05-27",
       modified: "2021-05-28",
       definition: {
-        en: ["a defintion"],
+        en: ["a defintion", "a second definition"],
         de: ["eine Definition"],
       },
       narrower: [
@@ -246,6 +263,7 @@ export default defineComponent({
   color: #2c3e50;
   margin: 30px auto 0 auto;
   max-width: 450px;
+  line-height: 1.4;
 }
 .item-list-styled {
   background: lightcoral;
