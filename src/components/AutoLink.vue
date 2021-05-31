@@ -1,10 +1,10 @@
 <template>
   <a
-    v-if="isValidURL(link)"
-    :href="link"
+    v-if="href.startsWith('http://') || href.startsWith('https://')"
+    :href="href"
     class="u-textBreak"
-    target="_blank">{{ text || link }}</a>
-  <span v-else>{{ text || link }}</span>
+    target="_blank"><slot>{{ text || href }}</slot></a>
+  <span v-else><slot>{{ text || href }}</slot></span>
 </template>
 
 <script>
@@ -18,7 +18,7 @@ export default {
     /**
      * The string that is potentially a URL.
      */
-    link: {
+    href: {
       type: String,
       default: "",
     },
@@ -28,17 +28,6 @@ export default {
     text: {
       type: String,
       default: "",
-    },
-  },
-  methods: {
-    // from: https://stackoverflow.com/a/43467144/11050851
-    isValidURL(string) {
-      try {
-        new URL(string)
-        return true
-      } catch (_) {
-        return false
-      }
     },
   },
 }
