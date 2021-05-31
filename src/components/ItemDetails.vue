@@ -50,7 +50,47 @@
         </template>
       </tab>
       <tab :title="t('labels')">
-        TODO
+        <ul class="item-details-list">
+          <li
+            v-for="language in [jskos.languagePreference.selectLanguage(item.prefLabel)].concat(Object.keys(item.prefLabel || {}).filter(language => language != jskos.languagePreference.selectLanguage(item.prefLabel))).filter(language => language && language != '-')"
+            :key="language">
+            {{ jskos.prefLabel(item, { language }) }}
+            <span class="jskos-vue-text-lightGrey">({{ language }})</span>
+          </li>
+        </ul>
+        <!-- Explanation:
+            1. Get all language keys for altLabels (Object.keys)
+            2. Create objects in the form { language, label } (map)
+            3. Flatten the array (reduce)
+            4. Filter `-` language (filter)
+            5. Sort current language higher (sort)
+           -->
+        <ul
+          v-if="jskos.languageMapContent(item, 'altLabel')"
+          class="item-details-list">
+          <li>
+            <b>{{ t("altLabels") }}:</b>
+          </li>
+          <li
+            v-for="({ language, label }, index) in
+              Object.keys(item.altLabel || {})
+                .map(language => item.altLabel[language].map(label => ({ language, label })))
+                .reduce((prev, cur) => prev.concat(cur), [])
+                .filter(item => item.language != '-')
+                .sort((a, b) => {
+                  if (a.language === jskos.languagePreference.selectLanguage(item.altLabel) && b.language !== jskos.languagePreference.selectLanguage(item.altLabel)) {
+                    return -1
+                  }
+                  if (b.language === jskos.languagePreference.selectLanguage(item.altLabel) && a.language !== jskos.languagePreference.selectLanguage(item.altLabel)) {
+                    return 1
+                  }
+                  return 0
+                })"
+            :key="`${language}-${index}`">
+            {{ label }}
+            <span class="jskos-vue-text-lightGrey">({{ language }})</span>
+          </li>
+        </ul>
       </tab>
       <tab
         v-if="item.scopeNote"
@@ -116,10 +156,10 @@ const t = (prop) => locale[language.value][prop]
 
 /**
  * TODO!
- * Labels
  * Notes
  * Icons
  * broader
+ * Scheme props
  */
 export default defineComponent({
   name: "ItemDetails",
