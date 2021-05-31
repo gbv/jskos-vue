@@ -99,8 +99,20 @@
   <p>
     Settings:
     <button
-      @click="examples.detailed.clickable = !examples.detailed.clickable">
-      clickable: {{ examples.detailed.clickable }}
+      @click="examples.detailed.itemListOptions.clickable = !examples.detailed.itemListOptions.clickable">
+      clickable: {{ examples.detailed.itemListOptions.clickable }}
+    </button>
+    <button
+      @click="() => {
+        if (examples.detailed.itemListOptions.indicatorByUri) {
+          examples.detailed.itemListOptions._indicatorByUri = examples.detailed.itemListOptions.indicatorByUri
+          delete examples.detailed.itemListOptions.indicatorByUri
+        } else {
+          examples.detailed.itemListOptions.indicatorByUri = examples.detailed.itemListOptions._indicatorByUri
+          delete examples.detailed.itemListOptions._indicatorByUri
+        }
+      }">
+      indicators: {{ !!examples.detailed.itemListOptions.indicatorByUri }}
     </button>
   </p>
   <p>
@@ -111,6 +123,9 @@
         <tab title="Test">
           This tab was added via the "tabs" slot.
         </tab>
+        <div style="position: absolute; top: 0; right: 0;">
+          🚀
+        </div>
       </template>
       <template #beforeName>
         🆇
@@ -137,7 +152,13 @@ Array.prototype.move = function(from, to) {
 
 const examples = reactive({
   detailed: {
-    clickable: true,
+    itemListOptions: {
+      clickable: true,
+      indicatorByUri: {
+        "https://example.com/DT2": true,
+        "https://example.com/DT3": true,
+      },
+    },
     item: {
       uri: "https://example.com/DT",
       notation: ["DT"],
@@ -168,6 +189,14 @@ const examples = reactive({
           prefLabel: {
             en: "another Child",
             de: "ein weiteres Unterkonzept",
+          },
+        },
+        {
+          uri: "https://example.com/DT3",
+          notation: ["DT3"],
+          prefLabel: {
+            en: "yet another Child",
+            de: "noch ein weiteres Unterkonzept",
           },
         },
       ],
