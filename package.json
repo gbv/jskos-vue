@@ -38,20 +38,20 @@
   ],
   "dependencies": {
     "jskos-tools": "^1.0.17",
-    "jskos-vue-tabs": "^0.1.1",
+    "jskos-vue-tabs": "^0.1.2",
     "vue": "^3.0.11"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.2.2",
     "@vue/compiler-sfc": "^3.0.11",
-    "eslint": "^7.26.0",
+    "eslint": "^7.27.0",
     "eslint-config-gbv": "^1.0.3",
-    "eslint-plugin-vue": "^7.9.0",
+    "eslint-plugin-vue": "^7.10.0",
     "lint-staged": "^11.0.0",
     "mocha": "^8.4.0",
     "mocha-eslint": "^7.0.0",
     "pre-commit": "^1.2.2",
-    "vite": "^2.3.3",
+    "vite": "^2.3.4",
     "yesno": "^0.3.1"
   },
   "author": "Stefan Peters <stefan.peters@gbv.de>",
