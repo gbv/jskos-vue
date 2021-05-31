@@ -1,10 +1,17 @@
 <template>
   <div class="item-details">
     <!-- Ancestors -->
+    <!-- TODO: Only show part of ancestors? -->
     <item-list
       v-bind="itemListOptions"
       :items="item.ancestors || []"
       class="item-details-ancestors"
+      @select="itemListOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
+    <!-- Broader -->
+    <item-list
+      v-bind="itemListOptions"
+      :items="(item.broader || []).filter(i => !jskos.isContainedIn(i, item.ancestors || []))"
+      class="item-details-broader"
       @select="itemListOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
     <div class="item-details-name">
       <slot name="beforeName" />
@@ -179,7 +186,6 @@ const t = (prop) => locale[language.value][prop]
 /**
  * TODO!
  * Icons
- * broader
  */
 export default defineComponent({
   name: "ItemDetails",
@@ -268,18 +274,18 @@ export default defineComponent({
   font-size: 1rem;
 }
 .item-details-tabs {
-  margin-top: 5px;
+  margin-top: 8px;
 }
 .item-details-list {
   list-style: none;
   margin: 0 0 10px 0;
   padding: 0;
 }
-.item-details-narrower, .item-details-ancestors {
-  margin-top: 5px;
-  margin-bottom: 5px;
+.item-details-narrower, .item-details-ancestors, .item-details-broader {
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
-.item-details-narrower > li:before, .item-details-ancestors > li:before {
+.item-details-narrower > li:before, .item-details-ancestors > li:before, .item-details-broader > li:before {
   font-family: monospace;
   font-size: 1.3em;
   padding-right: 2px;
@@ -289,6 +295,9 @@ export default defineComponent({
 }
 .item-details-ancestors > li:before {
   content: "↱";
+}
+.item-details-broader > li:before {
+  content: "˄";
 }
 .item-details-licenseBadge {
   padding-left: 5px;
