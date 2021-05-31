@@ -74,14 +74,28 @@
         </ul>
       </tab>
       <tab
-        v-if="item.scopeNote"
+        v-if="jskos.languageMapContent(item, 'scopeNote')"
         :title="t('scope')">
-        TODO
+        <ul class="item-details-list">
+          <li
+            v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'scopeNote')"
+            :key="`${language}-${index}`">
+            {{ label }}
+            <span class="jskos-vue-text-lightGrey">({{ language }})</span>
+          </li>
+        </ul>
       </tab>
       <tab
-        v-if="item.editorialNote"
+        v-if="jskos.languageMapContent(item, 'editorialNote')"
         :title="t('editorial')">
-        TODO
+        <ul class="item-details-list">
+          <li
+            v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'editorialNote')"
+            :key="`${language}-${index}`">
+            {{ label }}
+            <span class="jskos-vue-text-lightGrey">({{ language }})</span>
+          </li>
+        </ul>
       </tab>
       <slot name="tabs" />
     </tabs>
@@ -137,7 +151,6 @@ const t = (prop) => locale[language.value][prop]
 
 /**
  * TODO!
- * Notes
  * Icons
  * broader
  * Scheme props
