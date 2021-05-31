@@ -36,35 +36,29 @@
             </li>
           </template>
         </ul>
-        <template v-if="item.definition">
-          <ul class="item-details-list">
-            <li>
-              <b>{{ t("definition") }}:</b>
-            </li>
-            <li
-              v-for="language in [jskos.languagePreference.selectLanguage(item.definition)].concat(Object.keys(item.definition).filter(language => language != jskos.languagePreference.selectLanguage(item.definition) && language != '-'))"
-              :key="language">
-              {{ jskos.definition(item, { language }).join(", ") }} <span class="jskos-vue-text-lightGrey">({{ language }})</span>
-            </li>
-          </ul>
-        </template>
+        <ul
+          v-if="jskos.languageMapContent(item, 'definition')"
+          class="item-details-list">
+          <li>
+            <b>{{ t("definition") }}:</b>
+          </li>
+          <li
+            v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'definition')"
+            :key="`${language}-${index}`">
+            {{ label }}
+            <span class="jskos-vue-text-lightGrey">({{ language }})</span>
+          </li>
+        </ul>
       </tab>
       <tab :title="t('labels')">
         <ul class="item-details-list">
           <li
-            v-for="language in [jskos.languagePreference.selectLanguage(item.prefLabel)].concat(Object.keys(item.prefLabel || {}).filter(language => language != jskos.languagePreference.selectLanguage(item.prefLabel))).filter(language => language && language != '-')"
-            :key="language">
-            {{ jskos.prefLabel(item, { language }) }}
+            v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'prefLabel')"
+            :key="`${language}-${index}`">
+            {{ label }}
             <span class="jskos-vue-text-lightGrey">({{ language }})</span>
           </li>
         </ul>
-        <!-- Explanation:
-            1. Get all language keys for altLabels (Object.keys)
-            2. Create objects in the form { language, label } (map)
-            3. Flatten the array (reduce)
-            4. Filter `-` language (filter)
-            5. Sort current language higher (sort)
-           -->
         <ul
           v-if="jskos.languageMapContent(item, 'altLabel')"
           class="item-details-list">
@@ -72,20 +66,7 @@
             <b>{{ t("altLabels") }}:</b>
           </li>
           <li
-            v-for="({ language, label }, index) in
-              Object.keys(item.altLabel || {})
-                .map(language => item.altLabel[language].map(label => ({ language, label })))
-                .reduce((prev, cur) => prev.concat(cur), [])
-                .filter(item => item.language != '-')
-                .sort((a, b) => {
-                  if (a.language === jskos.languagePreference.selectLanguage(item.altLabel) && b.language !== jskos.languagePreference.selectLanguage(item.altLabel)) {
-                    return -1
-                  }
-                  if (b.language === jskos.languagePreference.selectLanguage(item.altLabel) && a.language !== jskos.languagePreference.selectLanguage(item.altLabel)) {
-                    return 1
-                  }
-                  return 0
-                })"
+            v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'altLabel')"
             :key="`${language}-${index}`">
             {{ label }}
             <span class="jskos-vue-text-lightGrey">({{ language }})</span>
@@ -182,11 +163,37 @@ export default defineComponent({
   },
   emits: ["select"],
   setup() {
+    const iterateLanguageMapContent = (item, prop) => {
+      /** Explanation:
+          1. Get all language keys for altLabels (Object.keys)
+          2. Create objects in the form { language, label } (map)
+          3. Flatten the array (reduce)
+          4. Filter `-` language (filter)
+          5. Sort current language higher (sort)
+       */
+      return Object.keys((item && item[prop]) || {})
+        .map(language => {
+          const map = item[prop][language]
+          return (Array.isArray(map) ? map : [map]).map(label => ({ language, label }))
+        })
+        .reduce((prev, cur) => prev.concat(cur), [])
+        .filter(item => item.language != "-")
+        .sort((a, b) => {
+          if (a.language === jskos.languagePreference.selectLanguage(item[prop]) && b.language !== jskos.languagePreference.selectLanguage(item[prop])) {
+            return -1
+          }
+          if (b.language === jskos.languagePreference.selectLanguage(item[prop]) && a.language !== jskos.languagePreference.selectLanguage(item[prop])) {
+            return 1
+          }
+          return 0
+        })
+    }
     return {
       utils,
       jskos,
       language,
       t,
+      iterateLanguageMapContent,
     }
   },
 })
