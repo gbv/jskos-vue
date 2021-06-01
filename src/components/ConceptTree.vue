@@ -6,10 +6,14 @@
     @select="$emit('select', $event)">
     <template #beforeItem="{ item }">
       <div
-        class="jskos-vue-conceptTree-arrow"
+        v-for="n in item.depth"
+        :key="n"
         :style="{
-          'padding-left': `${item.depth * 10}px`,
-        }"
+          'flex': '0 0 10px',
+          'border-right': '1px dashed lightgray',
+        }" />
+      <div
+        class="jskos-vue-conceptTree-arrow"
         @click.stop="toggle(item.concept)">
         <arrow
           v-if="item.concept && item.concept.narrower && item.concept.narrower.length !== 0"
