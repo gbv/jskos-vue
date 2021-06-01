@@ -2,27 +2,25 @@
   <ul class="item-list">
     <li
       v-for="item in items"
-      :key="item && item.uri"
-      :style="styleForItem(item)"
-      @click.stop="$emit('select', { item, row: true })">
-      <template v-if="item">
-        <slot
-          name="beforeItem"
-          :item="item" />
-        <item-name
-          :item="item"
-          :show-notation="showNotation"
-          :show-label="showLabel"
-          :clickable="clickable"
-          @click.stop="$emit('select', { item, row: false })" />
-        <slot
-          name="afterItem"
-          :item="item" />
-      </template>
-      <template v-else>
-        <!-- TODO -->
-        ...
-      </template>
+      :key="getItem(item) && getItem(item).uri"
+      :style="styleForItem(getItem(item))"
+      @click.stop="$emit('select', { item: getItem(item), row: true })">
+      <slot
+        name="beforeItem"
+        :item="item" />
+      <item-name
+        v-if="getItem(item)"
+        :item="getItem(item)"
+        :show-notation="showNotation"
+        :show-label="showLabel"
+        :clickable="clickable"
+        @click.stop="$emit('select', { item: getItem(item), row: false })" />
+      <loading-indicator
+        v-else
+        size="sm" />
+      <slot
+        name="afterItem"
+        :item="item" />
     </li>
   </ul>
 </template>
@@ -30,16 +28,22 @@
 <script>
 import { defineComponent } from "vue"
 import ItemName from "./ItemName.vue"
+import LoadingIndicator from "./LoadingIndicator.vue"
 
 export default defineComponent({
   name: "ItemList",
   components: {
     ItemName,
+    LoadingIndicator,
   },
   props: {
     items: {
       type: Array,
       required: true,
+    },
+    itemProperty: {
+      type: String,
+      default: null,
     },
     showNotation: {
       type: Boolean,
@@ -74,6 +78,12 @@ export default defineComponent({
         style.borderRight = `5px solid ${color}`
       }
       return style
+    },
+    getItem(item) {
+      if (this.itemProperty) {
+        return item[this.itemProperty]
+      }
+      return item
     },
   },
 })
