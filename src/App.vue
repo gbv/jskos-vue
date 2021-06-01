@@ -169,11 +169,14 @@
   <h2>
     ConceptTree
   </h2>
-  <p>
-    <concept-tree
-      :concepts="[examples.detailed.item]"
-      @select="handleClick" />
-  </p>
+  <concept-tree
+    :concepts="[examples.detailed.item]"
+    @select="handleClick" />
+  <concept-tree
+    v-if="examples.conceptTree.concepts"
+    :concepts="examples.conceptTree.concepts"
+    @open="examples.conceptTree.loadNarrower($event)"
+    @select="handleClick" />
 </template>
 
 <script>
@@ -185,6 +188,12 @@ Array.prototype.move = function(from, to) {
   this.splice(to, 0, this.splice(from, 1)[0])
   return this
 }
+
+import * as cdk from "cocoda-sdk"
+const registry = cdk.initializeRegistry({
+  provider: "ConceptApi",
+  api: "https://coli-conc.gbv.de/api/",
+})
 
 const examples = reactive({
   detailed: {
@@ -332,6 +341,26 @@ const examples = reactive({
       // top concepts (?)
     },
   },
+  conceptTree: {
+    scheme: null,
+    async loadScheme() {
+      this.scheme = (await registry.getSchemes({
+        params: {
+          uri: "http://bartoc.org/en/node/241", // DDC
+        },
+      }))[0]
+    },
+    concepts: null,
+    async loadConcepts() {
+      this.concepts = jskos.sortConcepts(await this.scheme._getTop())
+    },
+    async loadNarrower(concept) {
+      if (concept.narrower && !concept.narrower.includes(null)) {
+        return
+      }
+      concept.narrower = jskos.sortConcepts(await concept._getNarrower())
+    },
+  },
 })
 
 export default defineComponent({
@@ -345,6 +374,13 @@ export default defineComponent({
     })
     jskos.languagePreference.store = state
     jskos.languagePreference.path = "languages"
+
+    // Initialize conceptTree example
+    ;(async () => {
+      await examples.conceptTree.loadScheme()
+      await examples.conceptTree.loadConcepts()
+    })()
+
     return {
       state,
       examples,
