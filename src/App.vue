@@ -172,8 +172,12 @@
   <concept-tree
     :concepts="[examples.detailed.item]"
     @select="handleClick" />
+  <h2>
+    ConceptTree - DDC from API + Scroll
+  </h2>
   <concept-tree
     v-if="examples.conceptTree.concepts"
+    style="height: 400px; overflow: scroll; border: 2px solid #0001;"
     :concepts="examples.conceptTree.concepts"
     @open="examples.conceptTree.loadNarrower($event)"
     @select="handleClick" />
