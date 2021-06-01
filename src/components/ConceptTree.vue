@@ -109,7 +109,7 @@ export default defineComponent({
 }
 .jskos-vue-conceptTree > li:hover {
   cursor: pointer;
-  background: lightcoral;
+  background: #fdbd58;
 }
 .jskos-vue-conceptTree-arrow {
   width: 20px;
