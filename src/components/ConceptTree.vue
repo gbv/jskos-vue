@@ -1,24 +1,22 @@
 <template>
-  <div class="jskos-vue-conceptTree">
-    <item-list
-      class="jskos-vue-conceptTree-list"
-      :items="items"
-      item-property="concept"
-      @select="$emit('select', $event)">
-      <template #beforeItem="{ item }">
-        <div
-          class="jskos-vue-conceptTree-arrow"
-          :style="{
-            'padding-left': `${item.depth * 10}px`,
-          }"
-          @click.stop="toggle(item.concept)">
-          <arrow
-            v-if="item.concept && item.concept.narrower && item.concept.narrower.length !== 0"
-            :direction="isOpen[item.concept.uri] ? 'down' : 'right'" />
-        </div>
-      </template>
-    </item-list>
-  </div>
+  <item-list
+    class="jskos-vue-conceptTree"
+    :items="items"
+    item-property="concept"
+    @select="$emit('select', $event)">
+    <template #beforeItem="{ item }">
+      <div
+        class="jskos-vue-conceptTree-arrow"
+        :style="{
+          'padding-left': `${item.depth * 10}px`,
+        }"
+        @click.stop="toggle(item.concept)">
+        <arrow
+          v-if="item.concept && item.concept.narrower && item.concept.narrower.length !== 0"
+          :direction="isOpen[item.concept.uri] ? 'down' : 'right'" />
+      </div>
+    </template>
+  </item-list>
 </template>
 
 <script>
@@ -104,9 +102,12 @@ export default defineComponent({
 
 <style>
 .jskos-vue-conceptTree {
-
+  user-select: none;
 }
-.jskos-vue-conceptTree-list > li:hover {
+.jskos-vue-conceptTree > li {
+  display: flex;
+}
+.jskos-vue-conceptTree > li:hover {
   cursor: pointer;
   background: lightcoral;
 }
