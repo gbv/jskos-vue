@@ -20,6 +20,13 @@
     <loading-indicator size="xl" />
   </p>
   <p>
+    Arrows:
+    <arrow direction="left" /> (left)
+    <arrow direction="right" /> (right)
+    <arrow direction="up" /> (up)
+    <arrow direction="down" /> (down)
+  </p>
+  <p>
     Item (notation+label):
     <item-name
       :item="{ notation: ['IN'], prefLabel: { en: 'ItemName' } }" />
@@ -87,6 +94,7 @@
         { uri: 'test:1', notation: ['1'], prefLabel: { en: 'Concept 1' } },
         { uri: 'test:2', notation: ['2'], prefLabel: { en: 'Concept 2' } },
         { uri: 'test:3', notation: ['3'], prefLabel: { en: 'Concept 3' } },
+        null,
       ]"
       :indicator-by-uri="{
         'test:1': true,
@@ -98,7 +106,7 @@
         🚀
       </template>
       <template #afterItem="{ item }">
-        ({{ item.uri }})
+        ({{ item && item.uri }})
       </template>
     </item-list>
   </p>
@@ -156,6 +164,14 @@
   <p>
     <item-details
       v-bind="examples.detailedScheme"
+      @select="handleClick" />
+  </p>
+  <h2>
+    ConceptTree
+  </h2>
+  <p>
+    <concept-tree
+      :concepts="[examples.detailed.item]"
       @select="handleClick" />
   </p>
 </template>
