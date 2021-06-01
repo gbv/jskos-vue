@@ -13,6 +13,13 @@
     </span>
   </p>
   <p>
+    Loading indicator:
+    <loading-indicator size="sm" />
+    <loading-indicator size="md" />
+    <loading-indicator size="lg" />
+    <loading-indicator size="xl" />
+  </p>
+  <p>
     Item (notation+label):
     <item-name
       :item="{ notation: ['IN'], prefLabel: { en: 'ItemName' } }" />
