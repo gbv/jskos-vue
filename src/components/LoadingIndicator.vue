@@ -37,10 +37,10 @@ export default defineComponent ({
   setup(props) {
     return {
       sizePixels: computed(() => ({
-        sm: 12,
-        md: 18,
-        lg: 24,
-        xl: 30,
+        sm: 9,
+        md: 15,
+        lg: 21,
+        xl: 27,
       }[props.size])),
     }
   },
