@@ -1,5 +1,6 @@
 <template>
   <item-list
+    ref="itemList"
     class="jskos-vue-conceptTree"
     :items="items"
     :style="style"
@@ -113,6 +114,11 @@ export default defineComponent({
       toggle,
       style,
     }
+  },
+  methods: {
+    scrollToUri(uri) {
+      this.$refs.itemList.scrollToUri(uri)
+    },
   },
 })
 </script>

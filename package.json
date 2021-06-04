@@ -39,7 +39,8 @@
   "dependencies": {
     "jskos-tools": "^1.0.17",
     "jskos-vue-tabs": "^0.1.2",
-    "vue": "^3.0.11"
+    "vue": "^3.0.11",
+    "vue-scrollto": "^2.20.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.2.2",

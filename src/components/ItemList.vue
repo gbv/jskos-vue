@@ -4,6 +4,7 @@
       v-for="item in items"
       :key="getItem(item) && getItem(item).uri"
       :style="styleForItem(getItem(item))"
+      :data-uri="getItem(item) && getItem(item).uri"
       @click.stop="$emit('select', { item: getItem(item), row: true })">
       <slot
         name="beforeItem"
@@ -29,6 +30,7 @@
 import { defineComponent } from "vue"
 import ItemName from "./ItemName.vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
+import VueScrollTo from "vue-scrollto"
 
 export default defineComponent({
   name: "ItemList",
@@ -84,6 +86,21 @@ export default defineComponent({
         return item[this.itemProperty]
       }
       return item
+    },
+    scrollToUri(uri) {
+      const container = this.$el
+      const el = container.querySelectorAll(`[data-uri='${uri}']`)[0]
+      const options = {
+        container,
+        easing: "ease-in",
+        offset: -50,
+        cancelable: true,
+        x: false,
+        y: true,
+      }
+      if (el) {
+        VueScrollTo.scrollTo(el, 200, options)
+      }
     },
   },
 })
