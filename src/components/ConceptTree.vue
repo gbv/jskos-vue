@@ -2,16 +2,14 @@
   <item-list
     class="jskos-vue-conceptTree"
     :items="items"
+    :style="style"
     item-property="concept"
     @select="$emit('select', $event)">
     <template #beforeItem="{ item }">
       <div
         v-for="n in item.depth"
         :key="n"
-        :style="{
-          'flex': '0 0 10px',
-          'border-right': '1px dashed lightgray',
-        }" />
+        class="jskos-vue-conceptTree-depthSpacer" />
       <div
         class="jskos-vue-conceptTree-arrow"
         @click.stop="toggle(item.concept)">
@@ -43,6 +41,14 @@ export default defineComponent({
     concepts: {
       type: Array,
       required: true,
+    },
+    rowHoverColor: {
+      type: String,
+      default: "#fdbd58aa",
+    },
+    arrowHoverColor: {
+      type: String,
+      default: "#666",
     },
   },
   emits: ["select", "open", "close"],
@@ -93,12 +99,19 @@ export default defineComponent({
       }
       return items
     })
+
+    const style = computed(() => ({
+      "--row-hover-color": props.rowHoverColor,
+      "--arrow-hover-color": props.arrowHoverColor,
+    }))
+
     return {
       items,
       isOpen,
       open,
       close,
       toggle,
+      style,
     }
   },
 })
@@ -113,11 +126,17 @@ export default defineComponent({
 }
 .jskos-vue-conceptTree > li:hover {
   cursor: pointer;
-  background: #fdbd58;
+  background: var(--row-hover-color);
+}
+.jskos-vue-conceptTree-depthSpacer {
+  flex: 0 0 10px;
+  border-right: 1px dashed lightgray;
 }
 .jskos-vue-conceptTree-arrow {
-  width: 20px;
-  display: inline-block;
+  flex: 0 0 20px;
   text-align: right;
+}
+.jskos-vue-conceptTree-arrow:hover > .jskos-vue-arrow {
+  border-color: var(--arrow-hover-color);
 }
 </style>
