@@ -110,6 +110,23 @@
       </template>
     </item-list>
   </p>
+  <h2>
+    ItemList with 10,000 items (scrolling)
+  </h2>
+  <p>
+    <button @click="loadLongItemList">
+      Load data
+    </button>
+    <button @click="$refs.longItemList.scrollToUri(longItemListGetRandomUri())">
+      Scroll to random
+    </button>
+  </p>
+  <item-list
+    ref="longItemList"
+    style="height: 300px; overflow: scroll; border: 2px solid #0001;"
+    :items="examples.longConceptList"
+    :clickable="true"
+    @select="handleClick" />
   <h2>Item Details</h2>
   <p>
     Settings:
@@ -372,6 +389,7 @@ const examples = reactive({
       concept.narrower = jskos.sortConcepts(await concept._getNarrower())
     },
   },
+  longConceptList: [],
 })
 
 export default defineComponent({
@@ -391,10 +409,24 @@ export default defineComponent({
       await examples.conceptTree.loadScheme()
       await examples.conceptTree.loadConcepts()
     })()
+    // Initialize long ConceptList example
+    const loadLongItemList = async () => {
+      const url = "https://coli-conc.gbv.de/api/voc/concepts?uri=http://dewey.info/scheme/edition/e23/&limit=10000"
+      const response = await fetch(url)
+      const data = await response.json()
+      examples.longConceptList = data
+    }
+    const longItemListGetRandomUri = () => {
+      const index = Math.floor(Math.random() * examples.longConceptList.length)
+      console.log(examples.longConceptList[index].uri)
+      return examples.longConceptList[index] && examples.longConceptList[index].uri
+    }
 
     return {
       state,
       examples,
+      loadLongItemList,
+      longItemListGetRandomUri,
     }
   },
   methods: {
