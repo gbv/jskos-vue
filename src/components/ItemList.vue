@@ -93,7 +93,7 @@ export default defineComponent({
       const options = {
         container,
         easing: "ease-in",
-        offset: -50,
+        offset: -15,
         cancelable: true,
         x: false,
         y: true,
