@@ -175,8 +175,15 @@
   <h2>
     ConceptTree - DDC from API + Scroll
   </h2>
+  <p>
+    <button
+      @click="$refs.conceptTree.scrollToUri('http://dewey.info/class/6--0/e23/')">
+      Scroll to 6--0
+    </button>
+  </p>
   <concept-tree
     v-if="examples.conceptTree.concepts"
+    ref="conceptTree"
     style="height: 400px; overflow: scroll; border: 2px solid #0001;"
     :concepts="examples.conceptTree.concepts"
     @open="examples.conceptTree.loadNarrower($event)"
