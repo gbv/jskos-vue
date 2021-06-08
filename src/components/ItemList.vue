@@ -1,5 +1,5 @@
 <template>
-  <ul class="item-list">
+  <ul class="jskos-vue-itemList">
     <li
       v-for="item in items"
       :key="getItem(item) && getItem(item).uri"
@@ -107,11 +107,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.item-list {
+.jskos-vue-itemList {
   list-style: none;
   padding: 0;
 }
-.item-list > li {
+.jskos-vue-itemList > li {
   position: relative;
 }
 </style>

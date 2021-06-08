@@ -1,19 +1,19 @@
 <template>
-  <div class="item-details">
+  <div class="jskos-vue-itemDetails">
     <!-- Ancestors -->
     <!-- TODO: Only show part of ancestors? -->
     <item-list
       v-bind="itemListOptions"
       :items="item.ancestors || []"
-      class="item-details-ancestors"
+      class="jskos-vue-itemDetails-ancestors"
       @select="itemListOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
     <!-- Broader -->
     <item-list
       v-bind="itemListOptions"
       :items="(item.broader || []).filter(i => !jskos.isContainedIn(i, item.ancestors || []))"
-      class="item-details-broader"
+      class="jskos-vue-itemDetails-broader"
       @select="itemListOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
-    <div class="item-details-name">
+    <div class="jskos-vue-itemDetails-name">
       <slot name="beforeName" />
       <item-name
         :item="item" />
@@ -26,7 +26,7 @@
         v-for="(license, index) in item.license"
         :key="index"
         :href="license.uri"
-        class="item-details-licenseBadge">
+        class="jskos-vue-itemDetails-licenseBadge">
         <img
           v-if="licenseBadges[license.uri]"
           :src="licenseBadges[license.uri]">
@@ -38,10 +38,10 @@
     <tabs
       borders="bottom"
       size="sm"
-      class="item-details-tabs">
+      class="jskos-vue-itemDetails-tabs">
       <tab :title="t('info')">
         <!-- Identifier -->
-        <ul class="item-details-list">
+        <ul class="jskos-vue-itemDetails-list">
           <li
             v-for="(identifier, index) in [item.uri].concat(item.identifier).filter(identifier => identifier != null)"
             :key="index">
@@ -51,7 +51,7 @@
             </template>
           </li>
         </ul>
-        <ul class="item-details-list">
+        <ul class="jskos-vue-itemDetails-list">
           <li v-if="types.length">
             <b>{{ t("type") }}:</b> {{ types.map(t => jskos.prefLabel(t)).join(", ") }}
           </li>
@@ -69,7 +69,7 @@
         </ul>
         <ul
           v-if="jskos.languageMapContent(item, 'definition')"
-          class="item-details-list">
+          class="jskos-vue-itemDetails-list">
           <li>
             <b>{{ t("definition") }}:</b>
           </li>
@@ -82,7 +82,7 @@
         </ul>
       </tab>
       <tab :title="t('labels')">
-        <ul class="item-details-list">
+        <ul class="jskos-vue-itemDetails-list">
           <li
             v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'prefLabel')"
             :key="`${language}-${index}`">
@@ -92,7 +92,7 @@
         </ul>
         <ul
           v-if="jskos.languageMapContent(item, 'altLabel')"
-          class="item-details-list">
+          class="jskos-vue-itemDetails-list">
           <li>
             <b>{{ t("altLabels") }}:</b>
           </li>
@@ -107,7 +107,7 @@
       <tab
         v-if="jskos.languageMapContent(item, 'scopeNote')"
         :title="t('scope')">
-        <ul class="item-details-list">
+        <ul class="jskos-vue-itemDetails-list">
           <li
             v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'scopeNote')"
             :key="`${language}-${index}`">
@@ -119,7 +119,7 @@
       <tab
         v-if="jskos.languageMapContent(item, 'editorialNote')"
         :title="t('editorial')">
-        <ul class="item-details-list">
+        <ul class="jskos-vue-itemDetails-list">
           <li
             v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'editorialNote')"
             :key="`${language}-${index}`">
@@ -134,7 +134,7 @@
     <item-list
       v-bind="itemListOptions"
       :items="item.narrower || []"
-      class="item-details-narrower"
+      class="jskos-vue-itemDetails-narrower"
       @select="itemListOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
   </div>
 </template>
@@ -288,44 +288,44 @@ export default defineComponent({
 </script>
 
 <style>
-.item-details {
+.jskos-vue-itemDetails {
   position: relative;
   font-size: 0.85rem;
 }
-.item-details-name {
+.jskos-vue-itemDetails-name {
   position: relative;
   font-size: 1rem;
 }
-.item-details-tabs {
+.jskos-vue-itemDetails-tabs {
   margin-top: 8px;
 }
-.item-details-list {
+.jskos-vue-itemDetails-list {
   list-style: none;
   margin: 0 0 10px 0;
   padding: 0;
 }
-.item-details-narrower, .item-details-ancestors, .item-details-broader {
+.jskos-vue-itemDetails-narrower, .jskos-vue-itemDetails-ancestors, .jskos-vue-itemDetails-broader {
   margin-top: 4px;
   margin-bottom: 4px;
 }
-.item-details-narrower > li:before, .item-details-ancestors > li:before, .item-details-broader > li:before {
+.jskos-vue-itemDetails-narrower > li:before, .jskos-vue-itemDetails-ancestors > li:before, .jskos-vue-itemDetails-broader > li:before {
   font-family: monospace;
   font-size: 1.3em;
   padding-right: 2px;
 }
-.item-details-narrower > li:before {
+.jskos-vue-itemDetails-narrower > li:before {
   content: "↳";
 }
-.item-details-ancestors > li:before {
+.jskos-vue-itemDetails-ancestors > li:before {
   content: "↱";
 }
-.item-details-broader > li:before {
+.jskos-vue-itemDetails-broader > li:before {
   content: "˄";
 }
-.item-details-licenseBadge {
+.jskos-vue-itemDetails-licenseBadge {
   padding-left: 5px;
 }
-.item-details-licenseBadge > img {
+.jskos-vue-itemDetails-licenseBadge > img {
   height: 1em;
   vertical-align: middle;
   padding-bottom: 4px;

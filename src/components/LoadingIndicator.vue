@@ -6,7 +6,7 @@
       width: `${sizePixels}px`,
       height: `${sizePixels}px`,
     }"
-    class="jskos-vue-loader" />
+    class="jskos-vue-loadingIndicator" />
 </template>
 
 <script>
@@ -49,7 +49,7 @@ export default defineComponent ({
 
 <!-- from: https://www.w3schools.com/howto/howto_css_loader.asp -->
 <style scoped>
-.jskos-vue-loader {
+.jskos-vue-loadingIndicator {
   border-radius: 50%;
   animation: spin 2s linear infinite;
   display: inline-block;

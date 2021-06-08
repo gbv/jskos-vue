@@ -1,12 +1,12 @@
 <template>
   <span
     :class="{
-      'item-name': true,
+      'jskos-vue-itemName': true,
       clickable,
     }">
     <span
       v-if="showNotation || label === ''"
-      class="notation"
+      class="jskos-vue-itemName-notation"
       v-html="notation" />
     {{ label }}
     <template v-if="notation === '' && label === ''">
@@ -97,10 +97,10 @@ export default component
 </script>
 
 <style scoped>
-.notation {
+.jskos-vue-itemName-notation {
   font-weight: bold;
 }
-.item-name.clickable:hover {
+.jskos-vue-itemName.clickable:hover {
   cursor: pointer;
   text-decoration: underline;
 }
