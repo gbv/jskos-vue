@@ -6,9 +6,8 @@
     }">
     <span
       v-if="showNotation || label === ''"
-      class="notation">
-      {{ notation }}
-    </span>
+      class="notation"
+      v-html="notation" />
     {{ label }}
     <template v-if="notation === '' && label === ''">
       {{ fallbackLabel }}
@@ -17,10 +16,27 @@
 </template>
 
 <script>
-import { defineComponent, computed } from "vue"
+import { defineComponent, reactive, computed } from "vue"
 import * as jskos from "jskos-tools"
 
-export default defineComponent({
+const plugins = reactive({
+  label: [],
+  processLabel(label, options) {
+    for (let plugin of this.label) {
+      label = plugin(label, options)
+    }
+    return label
+  },
+  notation: [],
+  processNotation(notation, options) {
+    for (let plugin of this.notation) {
+      notation = plugin(notation, options)
+    }
+    return notation
+  },
+})
+
+const component = defineComponent({
   name: "ItemName",
   props: {
     item: {
@@ -51,15 +67,15 @@ export default defineComponent({
   setup(props) {
     const notation = computed(() =>
       props.showNotation
-        ? jskos.notation(props.item)
+        ? plugins.processNotation(jskos.notation(props.item), props)
         : "",
     )
     const label = computed(() =>
       props.showLabel
-        ? jskos.prefLabel(props.item, {
+        ? plugins.processLabel(jskos.prefLabel(props.item, {
           fallbackToUri: !notation.value,
           language: props.language || jskos.languagePreference.selectLanguage(props.item.prefLabel),
-        })
+        }), props)
         : "",
     )
     return {
@@ -68,6 +84,16 @@ export default defineComponent({
     }
   },
 })
+
+// Add methods to component for adding plugins
+component.addLabelPlugin = (plugin) => {
+  plugins.label.push(plugin)
+}
+component.addNotationPlugin = (plugin) => {
+  plugins.notation.push(plugin)
+}
+
+export default component
 </script>
 
 <style scoped>
