@@ -205,6 +205,31 @@
     :concepts="examples.conceptTree.concepts"
     @open="examples.conceptTree.loadNarrower($event)"
     @select="handleClick" />
+  <h2>
+    ConceptTree - DDC from API + Scroll + beforeItem/afterItem
+  </h2>
+  <concept-tree
+    v-if="examples.conceptTree.concepts"
+    style="height: 400px; overflow: scroll; border: 2px solid #0001;"
+    :concepts="examples.conceptTree.concepts"
+    @open="examples.conceptTree.loadNarrower($event)"
+    @select="handleClick">
+    <template #beforeItem="{ item }">
+      <span
+        class="opacity-hover"
+        @click.stop="alert(`Clicked on Star for item ${item.uri}`)">
+        ⭐️
+      </span>
+    </template>
+    <template #afterItem="{ item }">
+      <div
+        class="opacity-hover"
+        style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);"
+        @click.stop="alert(`Clicked on Rocket for item ${item.uri}`)">
+        🚀
+      </div>
+    </template>
+  </concept-tree>
 </template>
 
 <script>
@@ -433,6 +458,9 @@ export default defineComponent({
     handleClick({ item, row }) {
       alert(`Clicked on item with URI ${item.uri}. (row: ${row})`)
     },
+    alert() {
+      alert(...arguments)
+    },
   },
 })
 </script>
@@ -453,5 +481,8 @@ export default defineComponent({
 .item-list-styled > li:hover {
   cursor: pointer;
   background: red;
+}
+.opacity-hover:hover {
+  opacity: 50%;
 }
 </style>
