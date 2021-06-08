@@ -111,4 +111,7 @@ export default defineComponent({
   list-style: none;
   padding: 0;
 }
+.item-list > li {
+  position: relative;
+}
 </style>
