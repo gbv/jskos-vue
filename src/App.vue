@@ -237,6 +237,32 @@ import { defineComponent, reactive } from "vue"
 import * as jskos from "jskos-tools"
 import { Tab } from "jskos-vue-tabs"
 
+// Add ItemName plugin
+import ItemName from "./components/ItemName.vue"
+ItemName.addNotationPlugin((notation, { item }) => {
+  // Add leading zeros for DDC items
+  let fill = ""
+  // For DDC and SDNB only: fill number notation with trailing zeros
+  if (jskos.compare({
+    uri : "http://dewey.info/scheme/edition/e23/",
+    identifier : [
+      "http://bartoc.org/en/node/241",
+      "http://bartoc.org/en/node/18497",
+      "http://www.wikidata.org/entity/Q67011877",
+      "http://id.loc.gov/vocabulary/classSchemes/sdnb",
+      "http://uri.gbv.de/terminology/sdnb",
+    ],
+  }, item.inScheme && item.inScheme[0]) && !isNaN(parseInt(notation))) {
+    while (notation.length + fill.length < 3) {
+      fill += "0"
+    }
+  }
+  if (fill.length) {
+    notation += `<span class='jskos-vue-text-lightGrey'>${fill}</span>`
+  }
+  return notation
+})
+
 Array.prototype.move = function(from, to) {
   this.splice(to, 0, this.splice(from, 1)[0])
   return this
