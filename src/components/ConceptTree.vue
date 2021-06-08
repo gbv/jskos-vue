@@ -18,6 +18,14 @@
           v-if="item.concept && item.concept.narrower && item.concept.narrower.length !== 0"
           :direction="isOpen[item.concept.uri] ? 'down' : 'right'" />
       </div>
+      <slot
+        name="beforeItem"
+        :item="item.concept" />
+    </template>
+    <template #afterItem="{ item }">
+      <slot
+        name="afterItem"
+        :item="item.concept" />
     </template>
   </item-list>
 </template>
