@@ -1,0 +1,45 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        run: npm ci
+      - name: Build
+        run: BUILD_MODE=app npm run build -- --base=/jskos-vue/$BRANCH
+        env:
+          BRANCH: ${{ github.ref != 'refs/heads/main' && 'dev/' || '' }}
+      # Note: If the Deploy step is adjusted, the Retry copy below needs to be adjusted as well.
+      # (This is an unfortunate workaround, see login-client-vue/#1.)
+      - name: Deploy
+        continue-on-error: true
+        id: deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          keep_files: true
+          destination_dir: ${{ github.ref != 'refs/heads/main' && 'dev' || '' }}
+      - name: Deploy Retry
+        if: steps.test.outcome == 'failure'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          keep_files: true
+          destination_dir: ${{ github.ref != 'refs/heads/main' && 'dev' || '' }}
