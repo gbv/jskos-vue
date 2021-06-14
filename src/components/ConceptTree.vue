@@ -135,10 +135,10 @@ export default defineComponent({
 .jskos-vue-conceptTree {
   user-select: none;
 }
-.jskos-vue-conceptTree > li {
+.jskos-vue-conceptTree > div {
   display: flex;
 }
-.jskos-vue-conceptTree > li:hover {
+.jskos-vue-conceptTree > div:hover {
   cursor: pointer;
   background: var(--row-hover-color);
 }

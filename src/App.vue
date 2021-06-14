@@ -504,7 +504,7 @@ export default defineComponent({
 .item-list-styled {
   background: lightcoral;
 }
-.item-list-styled > li:hover {
+.item-list-styled > div:hover {
   cursor: pointer;
   background: red;
 }
