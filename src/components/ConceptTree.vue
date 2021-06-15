@@ -12,6 +12,7 @@
         :key="n"
         class="jskos-vue-conceptTree-depthSpacer" />
       <div
+        v-if="hierarchy"
         class="jskos-vue-conceptTree-arrow"
         @click.stop="toggle(item.concept)">
         <arrow
@@ -53,6 +54,10 @@ export default defineComponent({
     concepts: {
       type: Array,
       required: true,
+    },
+    hierarchy: {
+      type: Boolean,
+      default: true,
     },
     selectedColor: {
       type: String,
@@ -111,7 +116,9 @@ export default defineComponent({
           isSelected: jskos.compare(props.modelValue, concept),
         }
         items.push(item)
-        items = items.concat(getChildrenItems(item))
+        if (props.hierarchy) {
+          items = items.concat(getChildrenItems(item))
+        }
       }
       return items
     })

@@ -235,6 +235,15 @@
       </div>
     </template>
   </concept-tree>
+  <h2>
+    ConceptTree - DDC from API + no hierarchy
+  </h2>
+  <concept-tree
+    v-if="examples.conceptTree.concepts"
+    v-model="examples.conceptTree.selected"
+    style="border: 2px solid #0001;"
+    :concepts="examples.conceptTree.concepts.slice(0, 6)"
+    :hierarchy="false" />
 </template>
 
 <script>
