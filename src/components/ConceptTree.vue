@@ -5,7 +5,7 @@
     :items="items"
     :style="style"
     item-property="concept"
-    @select="$emit('select', $event)">
+    @select="$emit('select', $event); $emit('update:modelValue', $event.item)">
     <template #beforeItem="{ item }">
       <div
         v-for="n in item.depth"
@@ -18,6 +18,9 @@
           v-if="item.concept && item.concept.narrower && item.concept.narrower.length !== 0"
           :direction="isOpen[item.concept.uri] ? 'down' : 'right'" />
       </div>
+      <div
+        v-if="jskos.compare(item.concept, modelValue)"
+        :style="`position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: -1; background-color: ${selectedColor};`" />
       <slot
         name="beforeItem"
         :item="item.concept" />
@@ -51,6 +54,10 @@ export default defineComponent({
       type: Array,
       required: true,
     },
+    selectedColor: {
+      type: String,
+      default: "#fdbd58aa",
+    },
     rowHoverColor: {
       type: String,
       default: "#fdbd58aa",
@@ -60,7 +67,7 @@ export default defineComponent({
       default: "#666",
     },
   },
-  emits: ["select", "open", "close"],
+  emits: ["select", "open", "close", "update:modelValue"],
   setup(props, { emit }) {
     const isOpen = reactive({})
     const open = (concept) => {
@@ -121,6 +128,7 @@ export default defineComponent({
       close,
       toggle,
       style,
+      jskos,
     }
   },
   methods: {

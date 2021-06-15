@@ -197,19 +197,24 @@
       @click="$refs.conceptTree.scrollToUri('http://dewey.info/class/6--0/e23/')">
       Scroll to 6--0
     </button>
+    Selected: {{ examples.conceptTree.selected && examples.conceptTree.selected.notation[0] || "none" }}
+    <button @click="examples.conceptTree.selected = null">
+      deselect
+    </button>
   </p>
   <concept-tree
     v-if="examples.conceptTree.concepts"
     ref="conceptTree"
+    v-model="examples.conceptTree.selected"
     style="height: 400px; overflow: scroll; border: 2px solid #0001;"
     :concepts="examples.conceptTree.concepts"
-    @open="examples.conceptTree.loadNarrower($event)"
-    @select="handleClick" />
+    @open="examples.conceptTree.loadNarrower($event)" />
   <h2>
     ConceptTree - DDC from API + Scroll + beforeItem/afterItem
   </h2>
   <concept-tree
     v-if="examples.conceptTree.concepts"
+    v-model="examples.conceptTree.selected"
     style="height: 400px; overflow: scroll; border: 2px solid #0001;"
     :concepts="examples.conceptTree.concepts"
     @open="examples.conceptTree.loadNarrower($event)"
@@ -439,6 +444,7 @@ const examples = reactive({
       }
       concept.narrower = jskos.sortConcepts(await concept._getNarrower())
     },
+    selected: null,
   },
   longConceptList: [],
 })
