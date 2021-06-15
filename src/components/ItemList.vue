@@ -77,7 +77,7 @@ export default defineComponent({
         color = this.indicatorColor
       }
       if (color) {
-        style.borderRight = `5px solid ${color}`
+        style.boxShadow = `inset -4px 0px 0px 0px ${color}`
       }
       return style
     },
