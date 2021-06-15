@@ -210,13 +210,14 @@
     :concepts="examples.conceptTree.concepts"
     @open="examples.conceptTree.loadNarrower($event)" />
   <h2>
-    ConceptTree - DDC from API + Scroll + beforeItem/afterItem
+    ConceptTree - DDC from API + Scroll + beforeItem/afterItem + itemListOptions
   </h2>
   <concept-tree
     v-if="examples.conceptTree.concepts"
     v-model="examples.conceptTree.selected"
     style="height: 400px; overflow: scroll; border: 2px solid #0001;"
     :concepts="examples.conceptTree.concepts"
+    :item-list-options="examples.conceptTree.itemListOptions"
     @open="examples.conceptTree.loadNarrower($event)"
     @select="handleClick">
     <template #beforeItem="{ item }">
@@ -229,7 +230,7 @@
     <template #afterItem="{ item }">
       <div
         class="opacity-hover"
-        style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);"
+        style="position: absolute; right: 2px; top: 50%; transform: translateY(-50%);"
         @click.stop="alert(`Clicked on Rocket for item ${item.uri}`)">
         🚀
       </div>
@@ -454,6 +455,14 @@ const examples = reactive({
       concept.narrower = jskos.sortConcepts(await concept._getNarrower())
     },
     selected: null,
+    itemListOptions: {
+      indicatorByUri: {
+        "http://dewey.info/class/00/e23/": true,
+        "http://dewey.info/class/1/e23/": true,
+        "http://dewey.info/class/2/e23/": true,
+        "http://dewey.info/class/4/e23/": true,
+      },
+    },
   },
   longConceptList: [],
 })

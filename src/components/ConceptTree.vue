@@ -1,6 +1,7 @@
 <template>
   <item-list
     ref="itemList"
+    v-bind="itemListOptions"
     class="jskos-vue-conceptTree"
     :items="items"
     :style="style"
@@ -58,6 +59,10 @@ export default defineComponent({
     hierarchy: {
       type: Boolean,
       default: true,
+    },
+    itemListOptions: {
+      type: Object,
+      default: () => ({}),
     },
     selectedColor: {
       type: String,
