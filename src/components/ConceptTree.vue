@@ -2,7 +2,10 @@
   <item-list
     ref="itemList"
     v-bind="itemListOptions"
-    class="jskos-vue-conceptTree"
+    :class="{
+      'jskos-vue-conceptTree': true,
+      'jskos-vue-conceptTree-noHierarchy': !hierarchy,
+    }"
     :items="items"
     :style="style"
     item-property="concept"
@@ -172,5 +175,9 @@ export default defineComponent({
 }
 .jskos-vue-conceptTree-arrow:hover > .jskos-vue-arrow {
   border-color: var(--arrow-hover-color);
+}
+/* Add padding to list elements when hierachy is turned off */
+.jskos-vue-conceptTree-noHierarchy > div {
+  padding: 0 5px;
 }
 </style>
