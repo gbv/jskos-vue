@@ -230,7 +230,7 @@
     <template #afterItem="{ item }">
       <div
         class="opacity-hover"
-        style="position: absolute; right: 2px; top: 50%; transform: translateY(-50%);"
+        style="position: absolute; width: 20px; right: 2px; top: 50%; transform: translateY(-50%);"
         @click.stop="alert(`Clicked on Rocket for item ${item.uri}`)">
         🚀
       </div>
