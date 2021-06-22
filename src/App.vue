@@ -184,6 +184,29 @@
       @select="handleClick" />
   </p>
   <h2>
+    ConceptSearch - DDC from API, with ItemDetails for selected
+  </h2>
+  <p>
+    <button @click="$refs.conceptSearch.focus()">
+      Focus input
+    </button>
+    <concept-search
+      v-if="examples.conceptTree.scheme"
+      ref="conceptSearch"
+      :scheme="examples.conceptTree.scheme"
+      @select="examples.conceptSearch.selected = $event" />
+  </p>
+  <p>
+    <item-details
+      v-if="examples.conceptSearch.selected"
+      :item="examples.conceptSearch.selected"
+      @select="() => {
+        if (!$event.row) {
+          examples.conceptSearch.selected = $event.item
+        }
+      }" />
+  </p>
+  <h2>
     ConceptTree
   </h2>
   <concept-tree
@@ -465,6 +488,9 @@ const examples = reactive({
     },
   },
   longConceptList: [],
+  conceptSearch: {
+    selected: null,
+  },
 })
 
 export default defineComponent({
@@ -516,6 +542,12 @@ export default defineComponent({
 </script>
 
 <style>
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
