@@ -7,13 +7,12 @@
       ref="searchInput"
       v-model="query"
       placeholder="Type to search..."
-      @click="isOpen = query !== ''"
+      @click="openResults"
       @keydown.down.prevent="onArrowDown"
       @keydown.up.prevent="onArrowUp"
       @keyup.enter="onEnter"
       @keyup.esc="$refs.searchInput.blur(); closeResults()"
-      @focus="isOpen = query !== ''"
-      @blurs="closeResults">
+      @focus="openResults">
     <!-- Results -->
     <div
       v-show="isOpen"
@@ -52,7 +51,6 @@
 <script>
 /**
  * TODOs:
- * - debounce requests
  * - add types popover (or at least provide a way to add it after the fact)
  * - add setSearchQuery method
  * - add drag and drop for concepts
@@ -97,6 +95,7 @@ export default defineComponent({
     const preventHovering = ref(false)
     // Template refs (will be set at mount)
     const conceptSearch = ref(null)
+    const searchInput = ref(null)
     const resultList = ref(null)
 
     const search = debounce(async (searchQuery) => {
@@ -158,6 +157,9 @@ export default defineComponent({
       }
     })
 
+    const openResults = () => {
+      isOpen.value = query.value !== ""
+    }
     const closeResults = () => {
       isOpen.value = false
     }
@@ -219,6 +221,7 @@ export default defineComponent({
         ],
         handler: () => {
           // if (!this.filterPopoverShow) {
+          console.log("hi")
           isOpen.value = false
           searchSelected.value = -1
           // }
@@ -244,9 +247,11 @@ export default defineComponent({
       searchSelected,
       results,
       uniqueID,
+      openResults,
       closeResults,
       chooseResult,
       conceptSearch,
+      searchInput,
       resultList,
       mouseover(index) {
         if (!preventHovering.value) {
@@ -286,12 +291,10 @@ export default defineComponent({
         chooseResult(chosenIndex)
       },
       highlightQueryInResult,
+      focus() {
+        searchInput.value.focus()
+      },
     }
-  },
-  methods: {
-    focus() {
-      this.$refs.searchInput && this.$refs.searchInput.focus()
-    },
   },
 })
 </script>
