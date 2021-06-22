@@ -11,6 +11,7 @@
 - [Usage](#usage)
   - [Node](#node)
   - [Browser](#browser)
+  - [Additional Notes](#additional-notes)
 - [Publish](#publish)
 - [License](#license)
 
@@ -101,6 +102,18 @@ Fully working HTML example:
     </script>
   </body>
 </html>
+```
+
+### Additional Notes
+It is recommended to use the following CSS snippet in your applications to make sure box sizing is correctly calculated ([more info](https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/)):
+
+```css
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
 ```
 
 ## Publish
