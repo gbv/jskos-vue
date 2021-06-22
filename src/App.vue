@@ -194,15 +194,16 @@
       v-if="examples.conceptTree.scheme"
       ref="conceptSearch"
       :scheme="examples.conceptTree.scheme"
-      @select="examples.conceptSearch.selected = $event" />
+      @select="examples.conceptSearch.setSelected($event)" />
   </p>
   <p>
     <item-details
       v-if="examples.conceptSearch.selected"
       :item="examples.conceptSearch.selected"
-      @select="() => {
-        if (!$event.row) {
-          examples.conceptSearch.selected = $event.item
+      :item-list-options="{ clickable: true }"
+      @select="(event) => {
+        if (!event.row) {
+          examples.conceptSearch.setSelected(event.item)
         }
       }" />
   </p>
@@ -490,6 +491,21 @@ const examples = reactive({
   longConceptList: [],
   conceptSearch: {
     selected: null,
+    async setSelected(concept) {
+      // 1. Set selected to concept
+      this.selected = concept
+      // 2. Load data from API
+      const registry = concept._registry || concept.inScheme[0]._registry
+      if (registry) {
+        concept = (await registry.getConcepts({ concepts: [concept] }))[0]
+        concept.narrower = jskos.sortConcepts(await concept._getNarrower())
+        concept.ancestors = jskos.sortConcepts(await concept._getAncestors())
+        // 3. Set selected to new concept
+        if (concept) {
+          this.selected = concept
+        }
+      }
+    },
   },
 })
 
