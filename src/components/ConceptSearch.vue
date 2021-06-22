@@ -221,7 +221,6 @@ export default defineComponent({
         ],
         handler: () => {
           // if (!this.filterPopoverShow) {
-          console.log("hi")
           isOpen.value = false
           searchSelected.value = -1
           // }
