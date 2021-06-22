@@ -187,7 +187,7 @@
     ConceptSearch - DDC from API, with ItemDetails for selected
   </h2>
   <p>
-    <button @click="$refs.conceptSearch.focus()">
+    <button @click.stop="$refs.conceptSearch.focus()">
       Focus input
     </button>
     <concept-search
