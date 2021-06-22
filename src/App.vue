@@ -190,6 +190,12 @@
     <button @click.stop="$refs.conceptSearch.focus()">
       Focus input
     </button>
+    <button @click.stop="$refs.conceptSearch.setQuery('test')">
+      Set query
+    </button>
+    <button @click.stop="$refs.conceptSearch.setQuery('tests', true)">
+      Set query and focus
+    </button>
     <concept-search
       v-if="examples.conceptTree.scheme"
       ref="conceptSearch"
