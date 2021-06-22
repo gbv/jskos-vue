@@ -1,3 +1,14 @@
+/* Define CSS variables that can be overridden */
+:root {
+  --jskos-vue-conceptSearch-selected-color: inherit;
+  --jskos-vue-conceptSearch-selected-bg-color: #fdbd58aa;
+}
 .jskos-vue-text-lightGrey {
   color: #737373;
+}
+.jskos-vue-text-small {
+  font-size: 0.85rem;
+}
+.jskos-vue-text-bold {
+  font-weight: bold;
 }
