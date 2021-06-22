@@ -52,11 +52,10 @@
 /**
  * TODOs:
  * - add types popover (or at least provide a way to add it after the fact)
- * - add setSearchQuery method
  * - add drag and drop for concepts
  */
 
-import { computed, defineComponent, ref, watch } from "vue"
+import { computed, defineComponent, nextTick, ref, watch } from "vue"
 import jskos from "jskos-tools"
 import VueScrollTo from "vue-scrollto"
 import { addClickHandlers, debounce } from "../utils"
@@ -143,7 +142,6 @@ export default defineComponent({
         results.value = ["Waiting for you to stop typing..."]
         isLoading.value = true
         isOpen.value = true
-        // TODO: Debounce
         search(newQuery)
       }
     })
@@ -292,6 +290,17 @@ export default defineComponent({
       highlightQueryInResult,
       focus() {
         searchInput.value.focus()
+      },
+      setQuery(newQuery, focus = false) {
+        query.value = newQuery
+        if (focus) {
+          searchInput.value.focus()
+        } else {
+          // Workaround because results will open automatically when query changes to a non-empty string
+          nextTick(() => {
+            closeResults()
+          })
+        }
       },
     }
   },
