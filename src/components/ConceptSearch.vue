@@ -61,7 +61,7 @@
 import { computed, defineComponent, ref, watch } from "vue"
 import jskos from "jskos-tools"
 import VueScrollTo from "vue-scrollto"
-import { addClickHandlers } from "../utils"
+import { addClickHandlers, debounce } from "../utils"
 
 function escape(unsafe) {
   return unsafe
@@ -99,7 +99,7 @@ export default defineComponent({
     const conceptSearch = ref(null)
     const resultList = ref(null)
 
-    const search = async (searchQuery) => {
+    const search = debounce(async (searchQuery) => {
       if (!_registry.value) {
         return []
       }
@@ -128,7 +128,7 @@ export default defineComponent({
         cancel.value = null
         isLoading.value = false
       }
-    }
+    }, 200)
 
     watch(query, (newQuery) => {
       searchSelected.value = -1
