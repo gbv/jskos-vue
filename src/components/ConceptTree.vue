@@ -21,7 +21,8 @@
         @click.stop="toggle(item.concept)">
         <arrow
           v-if="item.concept && item.concept.narrower && item.concept.narrower.length !== 0"
-          :direction="isOpen[item.concept.uri] ? 'down' : 'right'" />
+          :direction="isOpen[item.concept.uri] ? 'down' : 'right'"
+          :clickable="true" />
       </div>
       <div
         v-if="jskos.compare(item.concept, modelValue)"
@@ -74,10 +75,6 @@ export default defineComponent({
     rowHoverColor: {
       type: String,
       default: "#fdbd58aa",
-    },
-    arrowHoverColor: {
-      type: String,
-      default: "#666",
     },
   },
   emits: ["select", "open", "close", "update:modelValue"],
@@ -133,7 +130,6 @@ export default defineComponent({
 
     const style = computed(() => ({
       "--row-hover-color": props.rowHoverColor,
-      "--arrow-hover-color": props.arrowHoverColor,
     }))
 
     return {
@@ -173,8 +169,8 @@ export default defineComponent({
   flex: 0 0 20px;
   text-align: right;
 }
-.jskos-vue-conceptTree-arrow:hover > .jskos-vue-arrow {
-  border-color: var(--arrow-hover-color);
+.jskos-vue-conceptTree-arrow > div {
+  padding: 0 !important;
 }
 /* Add padding to list elements when hierachy is turned off */
 .jskos-vue-conceptTree-noHierarchy > div {
