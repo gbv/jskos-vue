@@ -1,5 +1,8 @@
 /* Define CSS variables that can be overridden */
 :root {
+  /* Arrow */
+  --jskos-vue-arrow-color: black;
+  --jskos-vue-arrow-hover-color: #666;
   /* ConceptSearch */
   --jskos-vue-conceptSearch-results-bgColor: white;
   --jskos-vue-conceptSearch-results-shadowColor: rgba(0, 0, 0, 0.2);
