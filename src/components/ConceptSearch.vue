@@ -20,8 +20,7 @@
       <div
         v-if="isLoading"
         class="jskos-vue-conceptSearch-loading">
-        <!-- <loading-indicator /> -->
-        Loading...
+        <loading-indicator size="md" />
       </div>
       <ul
         v-else
@@ -57,6 +56,7 @@
 
 import { computed, defineComponent, nextTick, ref, watch } from "vue"
 import jskos from "jskos-tools"
+import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
 import { addClickHandlers, debounce } from "../utils"
 
@@ -71,6 +71,9 @@ function escape(unsafe) {
 
 export default defineComponent({
   name: "ConceptSearch",
+  components: {
+    LoadingIndicator,
+  },
   props: {
     scheme: {
       type: Object,
@@ -325,9 +328,9 @@ export default defineComponent({
   width: 100%;
   padding: 0;
   margin: 3px 0;
-  background-color: white;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-  z-index: 10;
+  background-color: var(--jskos-vue-conceptSearch-results-bgColor);
+  box-shadow: 0 2px 4px 0 var(--jskos-vue-conceptSearch-results-shadowColor);
+  z-index: var(--jskos-vue-conceptSearch-results-zIndex);
 }
 
 .jskos-vue-conceptSearch-results-list {
@@ -344,16 +347,13 @@ export default defineComponent({
 
 .jskos-vue-conceptSearch-selected {
   color: var(--jskos-vue-conceptSearch-selected-color);
-  background-color: var(--jskos-vue-conceptSearch-selected-bg-color);
+  background-color: var(--jskos-vue-conceptSearch-selected-bgColor);
 }
 
 .jskos-vue-conceptSearch-loading {
   width: 100%;
-  height: 50px;
-  padding: 0px 0px 0px 12px;
-  z-index: 3;
-  display: flex;
-  justify-content: left;
-  align-items: center;
+  height: 30px;
+  padding: 4px 0 0 10px;
+  z-index: var(--jskos-vue-conceptSearch-results-zIndex);
 }
 </style>

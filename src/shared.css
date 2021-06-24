@@ -1,7 +1,11 @@
 /* Define CSS variables that can be overridden */
 :root {
+  /* ConceptSearch */
+  --jskos-vue-conceptSearch-results-bgColor: white;
+  --jskos-vue-conceptSearch-results-shadowColor: rgba(0, 0, 0, 0.2);
   --jskos-vue-conceptSearch-selected-color: inherit;
-  --jskos-vue-conceptSearch-selected-bg-color: #fdbd58aa;
+  --jskos-vue-conceptSearch-selected-bgColor: #fdbd58aa;
+  --jskos-vue-conceptSearch-results-zIndex: 10;
 }
 .jskos-vue-text-lightGrey {
   color: #737373;
