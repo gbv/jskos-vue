@@ -22,6 +22,8 @@
     "fix": "npm run lint -- --fix",
     "lint-staged": "lint-staged",
     "yesno": "node -e \"const yesno = require('yesno'); yesno({ question: 'Are you sure you want to continue?' }).then(ok => process.exit(ok ? 0 : 1));\"",
+    "docs:dev": "vuepress dev docs --clean-cache",
+    "docs:build": "vuepress build docs --clean-cache",
     "release": "test $(git rev-parse --abbrev-ref HEAD) = dev && git pull && npm test && npm run build && npm version $SEMVER && npm run --silent yesno && (git push && git checkout main && git merge dev && git push --follow-tags && git checkout dev) || (git tag -d $(git describe --tags) && git reset --hard HEAD~1)",
     "release:patch": "SEMVER=patch npm run release",
     "release:minor": "SEMVER=minor npm run release",
@@ -54,6 +56,7 @@
     "mocha-eslint": "^7.0.0",
     "pre-commit": "^1.2.2",
     "vite": "^2.3.7",
+    "vuepress": "^2.0.0-beta.19",
     "yesno": "^0.3.1"
   },
   "author": "Stefan Peters <stefan.peters@gbv.de>",
