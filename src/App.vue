@@ -23,8 +23,12 @@
     Arrows:
     <arrow direction="left" /> (left)
     <arrow direction="right" /> (right)
-    <arrow direction="up" /> (up)
-    <arrow direction="down" /> (down)
+    <arrow
+      direction="up"
+      :clickable="true" /> (up + clickable)
+    <arrow
+      direction="down"
+      :clickable="true" /> (down + clickable)
   </p>
   <p>
     Item (notation+label):
