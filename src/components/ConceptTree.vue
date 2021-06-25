@@ -12,10 +12,12 @@
     item-property="concept"
     @select="$emit('select', $event); $emit('update:modelValue', $event.item)">
     <template #beforeItem="{ item }">
+      <!-- Use divs for depth spacers so we can have visual lines for the hierarchy -->
       <div
         v-for="n in item.depth"
         :key="n"
         class="jskos-vue-conceptTree-depthSpacer" />
+      <!-- Show arrow for concepts with narrower concepts -->
       <div
         v-if="hierarchy"
         class="jskos-vue-conceptTree-arrow"
@@ -25,14 +27,19 @@
           :direction="isOpen[item.concept.uri] ? 'down' : 'right'"
           :clickable="true" />
       </div>
+      <!-- Highlight background for row if selected -->
+      <!-- TODO: Why use div instead of CSS class? -->
+      <!-- TODO: Why not use item.isSelected? -->
       <div
         v-if="jskos.compare(item.concept, modelValue)"
         :style="`position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: -1; background-color: ${selectedColor};`" />
+      <!-- Slot for additional content before item -->
       <slot
         name="beforeItem"
         :item="item.concept" />
     </template>
     <template #afterItem="{ item }">
+      <!-- Slot for additional content after item -->
       <slot
         name="afterItem"
         :item="item.concept" />
