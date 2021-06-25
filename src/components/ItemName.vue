@@ -39,26 +39,32 @@ const plugins = reactive({
 const component = defineComponent({
   name: "ItemName",
   props: {
+    // JSKOS item
     item: {
       type: Object,
       required: true,
     },
+    // whether to show the item's notation
     showNotation: {
       type: Boolean,
       default: true,
     },
+    // whether to show the item's label
     showLabel: {
       type: Boolean,
       default: true,
     },
+    // fallback label (only shown if both notation and label are empty)
     fallbackLabel: {
       type: String,
       default: "???",
     },
+    // change language of the label (by default uses jskos-tools' "languagePreference")
     language: {
       type: String,
       default: "",
     },
+    // whether the item is clickable
     clickable: {
       type: Boolean,
       default: false,
