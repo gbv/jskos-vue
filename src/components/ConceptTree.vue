@@ -1,4 +1,5 @@
 <template>
+  <!-- ConceptTree is basically an extension of ItemList -->
   <item-list
     ref="itemList"
     v-bind="itemListOptions"
@@ -52,26 +53,32 @@ export default defineComponent({
     Arrow,
   },
   props: {
+    // v-model value is the selected concept and is marked specifically
     modelValue: {
       type: Object,
       default: null,
     },
+    // array of concepts to be displayed
     concepts: {
       type: Array,
       required: true,
     },
+    // whether to display concept hierarchy (via narrower concepts)
     hierarchy: {
       type: Boolean,
       default: true,
     },
+    // options to be passed along to ItemList component
     itemListOptions: {
       type: Object,
       default: () => ({}),
     },
+    // row background color for the selected (v-model) concept
     selectedColor: {
       type: String,
       default: "#fdbd58aa",
     },
+    // row hovel background color
     rowHoverColor: {
       type: String,
       default: "#fdbd58aa",
@@ -79,13 +86,16 @@ export default defineComponent({
   },
   emits: ["select", "open", "close", "update:modelValue"],
   setup(props, { emit }) {
+    // reactive object of concept URIs to open status values
     const isOpen = reactive({})
     const open = (concept) => {
       isOpen[concept.uri] = true
+      // a certain concept's narrower concepts were opened
       emit("open", concept)
     }
     const close = (concept) => {
       delete isOpen[concept.uri]
+      // a certain concept's narrower concepts were closed
       emit("close", concept)
     }
     const toggle = (concept) => {
@@ -95,6 +105,7 @@ export default defineComponent({
         open (concept)
       }
     }
+    // recursively get all children (narrower) items for a concept, depending on open status
     const getChildrenItems = (item) => {
       let items = []
       let concept = item.concept
@@ -112,6 +123,7 @@ export default defineComponent({
       }
       return items
     }
+    // convert list of concepts into items with concept, depth, and isSelected
     const items = computed(() => {
       let items = []
       for (let concept of props.concepts) {
@@ -128,6 +140,7 @@ export default defineComponent({
       return items
     })
 
+    // TODO: Move to CSS variable
     const style = computed(() => ({
       "--row-hover-color": props.rowHoverColor,
     }))
@@ -143,6 +156,7 @@ export default defineComponent({
     }
   },
   methods: {
+    // scroll to a certain concept via URI
     scrollToUri(uri) {
       this.$refs.itemList.scrollToUri(uri)
     },
