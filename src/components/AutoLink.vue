@@ -2,7 +2,6 @@
   <a
     v-if="href.startsWith('http://') || href.startsWith('https://')"
     :href="href"
-    class="u-textBreak"
     target="_blank"><slot>{{ text || href }}</slot></a>
   <span v-else><slot>{{ text || href }}</slot></span>
 </template>
@@ -15,16 +14,12 @@
 export default {
   name: "AutoLink",
   props: {
-    /**
-     * The string that is potentially a URL.
-     */
+    // The string that is potentially a URL.
     href: {
       type: String,
       default: "",
     },
-    /**
-     * The text that is shown (defaults to URL).
-     */
+    //  The text that is shown (defaults to URL).
     text: {
       type: String,
       default: "",
