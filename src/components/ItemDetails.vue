@@ -82,6 +82,7 @@
         </ul>
       </tab>
       <tab :title="t('labels')">
+        <!-- prefLabel -->
         <ul class="jskos-vue-itemDetails-list">
           <li
             v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'prefLabel')"
@@ -90,6 +91,7 @@
             <span class="jskos-vue-text-lightGrey">({{ language }})</span>
           </li>
         </ul>
+        <!-- altLabel -->
         <ul
           v-if="jskos.languageMapContent(item, 'altLabel')"
           class="jskos-vue-itemDetails-list">
@@ -104,6 +106,7 @@
           </li>
         </ul>
       </tab>
+      <!-- scopeNote -->
       <tab
         v-if="jskos.languageMapContent(item, 'scopeNote')"
         :title="t('scope')">
@@ -116,6 +119,7 @@
           </li>
         </ul>
       </tab>
+      <!-- editorialNote -->
       <tab
         v-if="jskos.languageMapContent(item, 'editorialNote')"
         :title="t('editorial')">
@@ -128,6 +132,7 @@
           </li>
         </ul>
       </tab>
+      <!-- Slot for additional tabs -->
       <slot name="tabs" />
     </tabs>
     <!-- Narrower -->
@@ -148,6 +153,7 @@ import AutoLink from "./AutoLink.vue"
 import * as utils from "../utils.js"
 import { computed, defineComponent } from "vue"
 
+// Localization
 const locale = {
   en: {
     showAllAncestors: "show all ancestors",
@@ -200,10 +206,12 @@ export default defineComponent({
     AutoLink,
   },
   props: {
+    // JSKOS item to be displayed
     item: {
       type: Object,
       required: true,
     },
+    // options to be passed along to ItemList component instances
     itemListOptions: {
       type: Object,
       default: () => ({}),
@@ -236,6 +244,7 @@ export default defineComponent({
           return 0
         })
     }
+    // TODO: Do this differently? Allow adding additional badges?
     const licenseBadges = {
       "http://creativecommons.org/publicdomain/zero/1.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/cc-zero.svg",
       "http://creativecommons.org/licenses/by/3.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by.svg",
