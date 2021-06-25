@@ -3,6 +3,7 @@
     ref="conceptSearch"
     class="jskos-vue-conceptSearch"
     @mousemove="mousemove">
+    <!-- Input field -->
     <input
       ref="searchInput"
       v-model="query"
@@ -17,11 +18,13 @@
     <div
       v-show="isOpen"
       class="jskos-vue-conceptSearch-results jskos-vue-text-small">
+      <!-- Loading indicator if necessary -->
       <div
         v-if="isLoading"
         class="jskos-vue-conceptSearch-loading">
         <loading-indicator size="md" />
       </div>
+      <!-- If not loading, show results -->
       <ul
         v-else
         ref="resultList"
@@ -40,6 +43,7 @@
         <li
           v-if="results.length == 0"
           class="jskos-vue-conceptSearch-results-item">
+          <!-- TODO: Add other languages -->
           <div>No results</div>
         </li>
       </ul>
@@ -60,6 +64,8 @@ import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
 import { addClickHandlers, debounce } from "../utils"
 
+// HTML escape method
+// TODO: Move to utils?
 function escape(unsafe) {
   return unsafe
     .replace(/&/g, "&amp;")
@@ -75,10 +81,12 @@ export default defineComponent({
     LoadingIndicator,
   },
   props: {
+    // Scheme to search in
     scheme: {
       type: Object,
       required: true,
     },
+    // Registry to access the scheme (used if scheme._registry is not available)
     registry: {
       type: Object,
       default: null,
@@ -109,9 +117,11 @@ export default defineComponent({
 
       isLoading.value = true
 
+      // use suggest endpoint
       const promise = _registry.value.suggest({ search: searchQuery, scheme: props.scheme })
       cancel.value = promise.cancel
 
+      // convert into different array
       let suggestResults
       try {
         suggestResults = (await promise).slice(1).reduce((current, next) => { current = next.map((element, index) => (current[index] || []).concat(element)); return current }, [])
@@ -124,6 +134,7 @@ export default defineComponent({
         suggestResults = []
       }
 
+      // check if value has changed since starting the request
       if (searchQuery === query.value.trim()) {
         results.value = suggestResults
         cancel.value = null
@@ -145,9 +156,11 @@ export default defineComponent({
         results.value = ["Waiting for you to stop typing..."]
         isLoading.value = true
         isOpen.value = true
+        // Actually perform the search
         search(newQuery)
       }
     })
+    // clear search if scheme changes
     watch(() => props.scheme, (newValue, oldValue) => {
       if (!jskos.compare(oldValue, newValue)) {
         query.value = ""
@@ -195,7 +208,7 @@ export default defineComponent({
       newResult += escape(result.slice(currentIndex))
       return newResult
     }
-
+    // scroll when using up/down arrows to go through the results
     const scrollSelectedIntoView = () => {
       const target = resultList.value.childNodes[searchSelected.value + 1]
       if (target) {
