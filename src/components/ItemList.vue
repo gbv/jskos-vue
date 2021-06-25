@@ -6,6 +6,7 @@
       :style="styleForItem(getItem(item))"
       :data-uri="getItem(item) && getItem(item).uri"
       @click.stop="$emit('select', { item: getItem(item), row: true })">
+      <!-- Slot before each item's ItemName -->
       <slot
         name="beforeItem"
         :item="item" />
@@ -16,9 +17,12 @@
         :show-label="showLabel"
         :clickable="clickable"
         @click.stop="$emit('select', { item: getItem(item), row: false })" />
+      <!-- Show loading indicator for null values -->
+      <!-- TODO: Reconsider. -->
       <loading-indicator
         v-else
         size="sm" />
+      <!-- Slot after each item's ItemName -->
       <slot
         name="afterItem"
         :item="item" />
@@ -39,30 +43,38 @@ export default defineComponent({
     LoadingIndicator,
   },
   props: {
+    // array of items
     items: {
       type: Array,
       required: true,
     },
+    // property for the JSKOS item inside each object in `items` (no property by default)
     itemProperty: {
       type: String,
       default: null,
     },
+    // whether to show notations for items
     showNotation: {
       type: Boolean,
       default: true,
     },
+    // whether to show labels for items
     showLabel: {
       type: Boolean,
       default: true,
     },
+    // whether items are clickable
     clickable: {
       type: Boolean,
       default: false,
     },
+    // show indicator to the right of each item in the list
+    // values can be either boolean or string color values
     indicatorByUri: {
       type: Object,
       default: () => ({}),
     },
+    // default indicator color for `true` values
     indicatorColor: {
       type: String,
       default: "green",
@@ -70,6 +82,7 @@ export default defineComponent({
   },
   emits: ["select"],
   methods: {
+    // style object for item
     styleForItem(item) {
       let style = {}
       let color = this.indicatorByUri[item && item.uri]
@@ -81,12 +94,14 @@ export default defineComponent({
       }
       return style
     },
+    // returns the actual JSKOS item
     getItem(item) {
       if (this.itemProperty) {
         return item[this.itemProperty]
       }
       return item
     },
+    // scrolls to a certain URI in the list
     scrollToUri(uri) {
       const container = this.$el
       const el = container.querySelectorAll(`[data-uri='${uri}']`)[0]
