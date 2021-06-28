@@ -110,4 +110,5 @@ Documentation:
 ```bash
 npm run docs:dev # documentation dev server on port 4311
 npm run docs:build # documentation build
+BASE=/dist/ npm run docs:build # documentation build with base path
 ```

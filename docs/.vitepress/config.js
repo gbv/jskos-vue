@@ -2,6 +2,7 @@ const fs = require("fs")
 const docsDir = "docs"
 
 module.exports = {
+  base: process.env.BASE || "/",
   lang: "en-US",
   title: "jskos-vue",
   description: "",
