@@ -89,26 +89,14 @@ Fully working HTML example:
 </html>
 ```
 
-## Development
-```bash
-git clone https://github.com/gbv/jskos-vue.git
-cd jskos-vue
-npm install
-```
+## Additional Notes
+It is recommended to use the following CSS snippet in your applications to make sure box sizing is correctly calculated ([more info](https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/)):
 
-Development server on port 4310:
-```bash
-npm run dev
-```
-
-Browser build:
-```bash
-npm run build
-```
-
-Documentation:
-```bash
-npm run docs:dev # documentation dev server on port 4311
-npm run docs:build # documentation build
-BASE=/dist/ npm run docs:build # documentation build with base path
+```css
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
 ```
