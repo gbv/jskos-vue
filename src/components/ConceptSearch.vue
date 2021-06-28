@@ -64,6 +64,8 @@ import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
 import { addClickHandlers, debounce } from "../utils"
 
+import "../shared.css"
+
 // HTML escape method
 // TODO: Move to utils?
 function escape(unsafe) {

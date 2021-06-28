@@ -18,6 +18,7 @@
 <script>
 import { defineComponent, reactive, computed } from "vue"
 import * as jskos from "jskos-tools"
+import "../shared.css"
 
 const plugins = reactive({
   label: [],

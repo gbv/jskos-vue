@@ -52,6 +52,7 @@ import { computed, defineComponent, reactive } from "vue"
 import * as jskos from "jskos-tools"
 import ItemList from "./ItemList.vue"
 import Arrow from "./Arrow.vue"
+import "../shared.css"
 
 export default defineComponent({
   name: "ConceptTree",

@@ -152,6 +152,7 @@ import ItemList from "./ItemList.vue"
 import AutoLink from "./AutoLink.vue"
 import * as utils from "../utils.js"
 import { computed, defineComponent } from "vue"
+import "../shared.css"
 
 // Localization
 const locale = {

@@ -35,6 +35,7 @@ import { defineComponent } from "vue"
 import ItemName from "./ItemName.vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
+import "../shared.css"
 
 export default defineComponent({
   name: "ItemList",

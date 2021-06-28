@@ -11,6 +11,7 @@
 
 <script>
 import { defineComponent } from "vue"
+import "../shared.css"
 
 export default defineComponent({
   name: "Arrow",
