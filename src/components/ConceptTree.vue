@@ -191,7 +191,7 @@ export default defineComponent({
   text-align: right;
 }
 .jskos-vue-conceptTree-arrow > div {
-  padding: 0 !important;
+  padding-left: 0 !important;
 }
 /* Add padding to list elements when hierachy is turned off */
 .jskos-vue-conceptTree-noHierarchy > div {

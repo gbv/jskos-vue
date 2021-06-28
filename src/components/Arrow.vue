@@ -34,7 +34,7 @@ export default defineComponent({
 .jskos-vue-arrow {
   display: inline-block;
   vertical-align: middle;
-  padding: 5px 3px;
+  padding: 2px 2px 5px 2px;
 }
 .jskos-vue-arrow > div {
   border: solid var(--jskos-vue-arrow-color);
