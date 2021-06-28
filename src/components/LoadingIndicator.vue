@@ -11,6 +11,8 @@
 
 <script>
 import { computed, defineComponent } from "vue"
+import "../shared.css"
+
 /**
  * Component that displays a spinning loading indicator.
  */
