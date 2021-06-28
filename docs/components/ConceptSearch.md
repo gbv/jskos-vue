@@ -20,6 +20,29 @@ None
 
 ## Examples
 
+<script setup>
+import ConceptSearch from "../../src/components/ConceptSearch.vue"
+
+import * as cdk from "cocoda-sdk"
+const registry = cdk.initializeRegistry({
+  provider: "ConceptApi",
+  api: "https://coli-conc.gbv.de/api/",
+})
+
+const scheme = {
+  uri: "http://dewey.info/scheme/edition/e23/",
+  license: [
+    {
+      uri: "http://creativecommons.org/licenses/by-nc-nd/3.0/"
+    }
+  ],
+}
+</script>
+
+<ConceptSearch
+  :scheme="scheme"
+  :registry="registry" />
+
 ```vue
 <template>
   <ConceptSearch
@@ -46,26 +69,3 @@ const scheme = {
 }
 </script>
 ```
-
-<script setup>
-import ConceptSearch from "../../src/components/ConceptSearch.vue"
-
-import * as cdk from "cocoda-sdk"
-const registry = cdk.initializeRegistry({
-  provider: "ConceptApi",
-  api: "https://coli-conc.gbv.de/api/",
-})
-
-const scheme = {
-  uri: "http://dewey.info/scheme/edition/e23/",
-  license: [
-    {
-      uri: "http://creativecommons.org/licenses/by-nc-nd/3.0/"
-    }
-  ],
-}
-</script>
-
-<ConceptSearch
-  :scheme="scheme"
-  :registry="registry" />
