@@ -1,8 +1,8 @@
 <template>
   <div
     :style="{
-      border: `${sizePixels/3}px solid ${primaryColor}`,
-      'border-top': `${sizePixels/3}px solid ${secondaryColor}`,
+      border: `${sizePixels/3}px solid var(--jskos-vue-loadingIndicator-primary-color)`,
+      'border-top': `${sizePixels/3}px solid var(--jskos-vue-loadingIndicator-secondary-color)`,
       width: `${sizePixels}px`,
       height: `${sizePixels}px`,
     }"
@@ -19,19 +19,11 @@ export default defineComponent ({
   props: {
     /**
      * The size of the loading indicator.
-     * `sm, md, lg`
+     * `sm, md, lg, xl`
      */
     size: {
       type: String,
-      default: "sm",
-    },
-    primaryColor: {
-      type: String,
-      default: "lightgray",
-    },
-    secondaryColor: {
-      type: String,
-      default: "blue",
+      default: "md",
     },
   },
   setup(props) {
@@ -47,15 +39,15 @@ export default defineComponent ({
 })
 </script>
 
-<!-- from: https://www.w3schools.com/howto/howto_css_loader.asp -->
+<!-- adjusted from: https://www.w3schools.com/howto/howto_css_loader.asp -->
 <style scoped>
 .jskos-vue-loadingIndicator {
   border-radius: 50%;
-  animation: spin 2s linear infinite;
+  animation: jskos-vue-loadingIndicator-spin 2s linear infinite;
   display: inline-block;
   vertical-align: middle;
 }
-@keyframes spin {
+@keyframes jskos-vue-loadingIndicator-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }

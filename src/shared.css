@@ -9,6 +9,9 @@
   --jskos-vue-conceptSearch-selected-color: inherit;
   --jskos-vue-conceptSearch-selected-bgColor: #fdbd58aa;
   --jskos-vue-conceptSearch-results-zIndex: 10;
+  /* LoadingIndicator */
+  --jskos-vue-loadingIndicator-primary-color: lightgray;
+  --jskos-vue-loadingIndicator-secondary-color: blue;
 }
 .jskos-vue-text-lightGrey {
   color: #737373;
