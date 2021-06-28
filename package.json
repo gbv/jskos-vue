@@ -16,7 +16,7 @@
   "sideEffects": false,
   "scripts": {
     "test": "mocha --recursive",
-    "dev": "vite",
+    "dev": "vite --port 4310",
     "build": "vite build",
     "lint": "eslint --ignore-path .gitignore --ext .js,.vue .",
     "fix": "npm run lint -- --fix",
