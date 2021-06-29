@@ -8,6 +8,8 @@ Uses [ItemName](./ItemName).
   - required
 - `itemProperty` (string) - defines which property on the objects contains the JSKOS item
   - by default, the objects themselves will be considered the JSKOS items
+- `row` (boolean) - if enabled, the whole row will have a background color on hover (CSS var `--jskos-vue-itemList-hover-bgColor`)
+  - default: `true`
 - `itemNameOptions` (object) - options that are passed along to [ItemName](./ItemName) via v-bind
 - `indicatorByUri` (object) - object that maps item URIs to either color strings or boolean values
   - If either a color or `true` is given for a particular item, an indicator will be shown to the right side of the item in the list.
@@ -22,10 +24,12 @@ Uses [ItemName](./ItemName).
 
 ## Events
 - `select`
-  - Emitted when an item or a row is clicked.
+  - Emitted when an item or a row (if `row` prop is `true`) is clicked.
   - Parameter is an object with properties `item` (containing the clicked JSKOS item) and `row` (containing a boolean which is `true` when the click was initiated via the row, not on the item directly).
 
 ## CSS Variables
+- `--jskos-vue-itemList-hover-bgColor` - row hover background color (for `row` = `true`)
+  - default: #fdbd58aa
 - `--jskos-vue-itemList-indicator-color` - default indicator color (for `true` values)
   - default: green
 
@@ -50,11 +54,9 @@ const select = ({ item, row }) => {
 }
 </script>
 
+<h3>Default, clickable = true, with indicators and slot</h3>
 <item-list
   :items="concepts"
-  :item-name-options="{
-    clickable: true,
-  }"
   :indicator-by-uri="{
     'uri:2': true,
     'uri:3': true,
@@ -71,13 +73,21 @@ const select = ({ item, row }) => {
   </template>
 </item-list>
 
+<h3>row = false, with itemNameOptions</h3>
+<item-list
+  :items="concepts.slice(0, 5)"
+  :row="false"
+  :item-name-options="{
+    clickable: true,
+  }"
+  @select="select" />
+
 ```vue
 <template>
+  <h3>Default, clickable = true, with indicators and slot</h3>
   <item-list
     :items="concepts"
-    :item-name-options="{
-      clickable: true,
-    }"
+    :clickable="true"
     :indicator-by-uri="{
       'uri:2': true,
       'uri:3': true,
@@ -93,6 +103,15 @@ const select = ({ item, row }) => {
       </template>
     </template>
   </item-list>
+
+  <h3>row = false, with itemNameOptions</h3>
+  <item-list
+    :items="concepts.slice(0, 5)"
+    :row="false"
+    :item-name-options="{
+      clickable: true,
+    }"
+    @select="select" />
 </template>
 
 <script setup>

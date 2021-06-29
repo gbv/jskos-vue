@@ -3,9 +3,12 @@
     <div
       v-for="item in items"
       :key="getItem(item) && getItem(item).uri"
+      :class="{
+        'jskos-vue-itemList-row': row,
+      }"
       :style="styleForItem(getItem(item))"
       :data-uri="getItem(item) && getItem(item).uri"
-      @click.stop="$emit('select', { item: getItem(item), row: true })">
+      @click.stop="row && $emit('select', { item: getItem(item), row: true })">
       <!-- Slot before each item's ItemName -->
       <slot
         name="beforeItem"
@@ -51,6 +54,10 @@ export default defineComponent({
     itemProperty: {
       type: String,
       default: null,
+    },
+    row: {
+      type: Boolean,
+      default: true,
     },
     // options to be passed along to ItemName component
     itemNameOptions: {
@@ -112,9 +119,14 @@ export default defineComponent({
 }
 .jskos-vue-itemList > div {
   position: relative;
+  padding-left: 5px;
   box-shadow: inset -3px 0px var(--jskos-vue-itemList-indicator-color);
 }
 .jskos-vue-itemList > div:hover {
   box-shadow: inset -4px 0px var(--jskos-vue-itemList-indicator-color);
+}
+.jskos-vue-itemList-row:hover {
+  cursor: pointer;
+  background-color: var(--jskos-vue-itemList-hover-bgColor);
 }
 </style>
