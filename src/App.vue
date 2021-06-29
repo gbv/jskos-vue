@@ -83,17 +83,17 @@
         { uri: 'test:2', notation: ['2'], prefLabel: { en: 'Concept 2' } },
         { uri: 'test:3', notation: ['3'], prefLabel: { en: 'Concept 3' } },
       ]"
+      :row="false"
       :item-name-options="{
         clickable: true,
       }"
       :indicator-by-uri="{
         'test:1': true,
       }"
-      @select="!$event.row && handleClick($event)" />
+      @select="handleClick($event)" />
   </p>
   <p>
     Item List (styled with slots):
-    <!-- TODO: How to detect clicks on li? -->
     <item-list
       class="item-list-styled"
       :items="[
@@ -131,17 +131,10 @@
     ref="longItemList"
     style="height: 300px; overflow: scroll; border: 2px solid #0001;"
     :items="examples.longConceptList"
-    :item-name-options="{
-      clickable: true,
-    }"
     @select="handleClick" />
   <h2>Item Details</h2>
   <p>
     Settings:
-    <button
-      @click="examples.detailed.itemListOptions.clickable = !examples.detailed.itemListOptions.clickable">
-      clickable: {{ examples.detailed.itemListOptions.clickable }}
-    </button>
     <button
       @click="() => {
         if (examples.detailed.itemListOptions.indicatorByUri) {
@@ -214,7 +207,6 @@
     <item-details
       v-if="examples.conceptSearch.selected"
       :item="examples.conceptSearch.selected"
-      :item-list-options="{ itemNameOptions: { clickable: true } }"
       @select="(event) => {
         if (!event.row) {
           examples.conceptSearch.setSelected(event.item)
@@ -330,9 +322,6 @@ const registry = cdk.initializeRegistry({
 const examples = reactive({
   detailed: {
     itemListOptions: {
-      itemNameOptions: {
-        clickable: true,
-      },
       indicatorByUri: {
         "https://example.com/DT2": true,
         "https://example.com/DT3": true,
