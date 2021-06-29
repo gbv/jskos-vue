@@ -320,7 +320,6 @@ export default defineComponent({
 }
 .jskos-vue-itemDetails-narrower > div:before, .jskos-vue-itemDetails-ancestors > div:before, .jskos-vue-itemDetails-broader > div:before {
   font-family: monospace;
-  font-size: 1.3em;
   padding-right: 2px;
 }
 .jskos-vue-itemDetails-narrower > div:before {
