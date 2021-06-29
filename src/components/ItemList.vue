@@ -75,11 +75,6 @@ export default defineComponent({
       type: Object,
       default: () => ({}),
     },
-    // default indicator color for `true` values
-    indicatorColor: {
-      type: String,
-      default: "green",
-    },
   },
   emits: ["select"],
   methods: {
@@ -87,11 +82,12 @@ export default defineComponent({
     styleForItem(item) {
       let style = {}
       let color = this.indicatorByUri[item && item.uri]
-      if (color === true) {
-        color = this.indicatorColor
+      if (!color) {
+        color = "transparent"
       }
-      if (color) {
-        style.boxShadow = `inset -4px 0px 0px 0px ${color}`
+      // only override color if it's not the default color (`true`)
+      if (color !== true) {
+        style["--jskos-vue-itemList-indicator-color"] = color
       }
       return style
     },
@@ -128,5 +124,6 @@ export default defineComponent({
 }
 .jskos-vue-itemList > div {
   position: relative;
+  box-shadow: inset -4px 0px var(--jskos-vue-itemList-indicator-color);
 }
 </style>

@@ -32,6 +32,10 @@ Uses [ItemName](./ItemName).
   - Emitted when an item or a row is clicked.
   - Parameter is an object with properties `item` (containing the clicked JSKOS item) and `row` (containing a boolean which is `true` when the click was initiated via the row, not on the item directly).
 
+## CSS Variables
+- `--jskos-vue-itemList-indicator-color` - default indicator color (for `true` values)
+  - default: green
+
 ## Examples
 
 <script setup>
