@@ -22,7 +22,7 @@
       <!-- TODO: Reconsider. -->
       <loading-indicator
         v-else
-        size="sm" />
+        style="align-self: center;" />
       <!-- Slot after each item's ItemName -->
       <slot
         name="afterItem"
