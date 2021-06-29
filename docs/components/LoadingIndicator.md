@@ -5,15 +5,6 @@ Spinning loading indicator.
 - `size` (string) - sm/md/lg/xl
   - default: md
 
-## Slots
-None
-
-## Methods
-None
-
-## Events
-None
-
 ## CSS Variables
 - `--jskos-vue-loadingIndicator-primary-color` - color of the ring
   - default: lightgray

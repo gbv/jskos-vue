@@ -15,15 +15,6 @@ Represents a JSKOS item (concept or concept scheme) with its notation and label.
 - `clickable` (boolean) - adjusts mouse pointer and text decoration on hover if `true`
   - default: `false`
 
-## Slots
-None
-
-## Methods
-None
-
-## Events
-None
-
 ## Plugins for notations and labels
 You can adjust how notations/labels are processed in `ItemName` by providing plugins. A plugin is a simple function that receives the current label/notation and the component's props as parameters and returns the processed label/notation. Plugins can be added on the imported component directly using the provided `addLabelPlugin` and `addNotationPlugin` methods.
 

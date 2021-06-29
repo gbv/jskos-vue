@@ -9,12 +9,6 @@ Replacement for the `<a>` element that automatically links the URL if it's valid
 ## Slots
 - default: Alternative to the `text` property.
 
-## Methods
-None
-
-## Events
-None
-
 ## Examples
 
 <script setup>

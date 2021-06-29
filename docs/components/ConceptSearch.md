@@ -6,9 +6,6 @@
 - `registry` (object) - [cocoda-sdk](https://github.com/gbv/cocoda-sdk) registry to access the scheme
   - required if `scheme._registry` is not defined
 
-## Slots
-None
-
 ## Methods
 - `focus()` - focuses the input field
 - `setQuery(newQuery, focus = false)` - sets the query (input field) to `newQuery`; optionally focuses the input field

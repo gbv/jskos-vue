@@ -7,15 +7,6 @@ CSS arrows.
 - `clickable` (boolean) - adjusts color and mouse pointer if `true`
   - default: `false`
 
-## Slots
-None
-
-## Methods
-None
-
-## Events
-None
-
 ## Examples
 
 <script setup>
