@@ -318,18 +318,18 @@ export default defineComponent({
   margin-top: 4px;
   margin-bottom: 4px;
 }
-.jskos-vue-itemDetails-narrower > li:before, .jskos-vue-itemDetails-ancestors > li:before, .jskos-vue-itemDetails-broader > li:before {
+.jskos-vue-itemDetails-narrower > div:before, .jskos-vue-itemDetails-ancestors > div:before, .jskos-vue-itemDetails-broader > div:before {
   font-family: monospace;
   font-size: 1.3em;
   padding-right: 2px;
 }
-.jskos-vue-itemDetails-narrower > li:before {
+.jskos-vue-itemDetails-narrower > div:before {
   content: "↳";
 }
-.jskos-vue-itemDetails-ancestors > li:before {
+.jskos-vue-itemDetails-ancestors > div:before {
   content: "↱";
 }
-.jskos-vue-itemDetails-broader > li:before {
+.jskos-vue-itemDetails-broader > div:before {
   content: "˄";
 }
 .jskos-vue-itemDetails-licenseBadge {
