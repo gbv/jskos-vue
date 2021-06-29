@@ -12,10 +12,8 @@
         :item="item" />
       <item-name
         v-if="getItem(item)"
+        v-bind="itemNameOptions"
         :item="getItem(item)"
-        :show-notation="showNotation"
-        :show-label="showLabel"
-        :clickable="clickable"
         @click.stop="$emit('select', { item: getItem(item), row: false })" />
       <!-- Show loading indicator for null values -->
       <!-- TODO: Reconsider. -->
@@ -54,20 +52,10 @@ export default defineComponent({
       type: String,
       default: null,
     },
-    // whether to show notations for items
-    showNotation: {
-      type: Boolean,
-      default: true,
-    },
-    // whether to show labels for items
-    showLabel: {
-      type: Boolean,
-      default: true,
-    },
-    // whether items are clickable
-    clickable: {
-      type: Boolean,
-      default: false,
+    // options to be passed along to ItemName component
+    itemNameOptions: {
+      type: Object,
+      default: () => ({}),
     },
     // show indicator to the right of each item in the list
     // values can be either boolean or string color values

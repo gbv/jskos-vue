@@ -8,17 +8,10 @@ Uses [ItemName](./ItemName).
   - required
 - `itemProperty` (string) - defines which property on the objects contains the JSKOS item
   - by default, the objects themselves will be considered the JSKOS items
-- `showNotation` (boolean) - whether to show an item's notation
-  - default: `true`
-- `showLabel` (boolean) - whether to show an item's label (`prefLabel`)
-  - default: `true`
-- `clickable` (boolean) - adjusts mouse pointer and text decoration on hover if `true`
-  - default: `false`
+- `itemNameOptions` (object) - options that are passed along to [ItemName](./ItemName) via v-bind
 - `indicatorByUri` (object) - object that maps item URIs to either color strings or boolean values
   - If either a color or `true` is given for a particular item, an indicator will be shown to the right side of the item in the list.
   - Note that lists use the full width of the page, so it makes sense to define a maximum width to make sure indicators can be associated with the right item.
-- `indicatorColor` (string) - default indicator color for `true` values
-  - default: green
 
 ## Slots
 - beforeItem: Content shown before an item (includes parameter `item`).
@@ -59,7 +52,9 @@ const select = ({ item, row }) => {
 
 <item-list
   :items="concepts"
-  :clickable="true"
+  :item-name-options="{
+    clickable: true,
+  }"
   :indicator-by-uri="{
     'uri:2': true,
     'uri:3': true,
@@ -80,7 +75,9 @@ const select = ({ item, row }) => {
 <template>
   <item-list
     :items="concepts"
-    :clickable="true"
+    :item-name-options="{
+      clickable: true,
+    }"
     :indicator-by-uri="{
       'uri:2': true,
       'uri:3': true,

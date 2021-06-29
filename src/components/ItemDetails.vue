@@ -6,13 +6,13 @@
       v-bind="itemListOptions"
       :items="item.ancestors || []"
       class="jskos-vue-itemDetails-ancestors"
-      @select="itemListOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
+      @select="itemListOptions.itemNameOptions && itemListOptions.itemNameOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
     <!-- Broader -->
     <item-list
       v-bind="itemListOptions"
       :items="(item.broader || []).filter(i => !jskos.isContainedIn(i, item.ancestors || []))"
       class="jskos-vue-itemDetails-broader"
-      @select="itemListOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
+      @select="itemListOptions.itemNameOptions && itemListOptions.itemNameOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
     <div class="jskos-vue-itemDetails-name">
       <slot name="beforeName" />
       <item-name
@@ -140,7 +140,7 @@
       v-bind="itemListOptions"
       :items="item.narrower || []"
       class="jskos-vue-itemDetails-narrower"
-      @select="itemListOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
+      @select="itemListOptions.itemNameOptions && itemListOptions.itemNameOptions.clickable && !$event.row && $emit('select', { item: $event.item })" />
   </div>
 </template>
 

@@ -83,7 +83,9 @@
         { uri: 'test:2', notation: ['2'], prefLabel: { en: 'Concept 2' } },
         { uri: 'test:3', notation: ['3'], prefLabel: { en: 'Concept 3' } },
       ]"
-      :clickable="true"
+      :item-name-options="{
+        clickable: true,
+      }"
       :indicator-by-uri="{
         'test:1': true,
       }"
@@ -129,7 +131,9 @@
     ref="longItemList"
     style="height: 300px; overflow: scroll; border: 2px solid #0001;"
     :items="examples.longConceptList"
-    :clickable="true"
+    :item-name-options="{
+      clickable: true,
+    }"
     @select="handleClick" />
   <h2>Item Details</h2>
   <p>
@@ -210,7 +214,7 @@
     <item-details
       v-if="examples.conceptSearch.selected"
       :item="examples.conceptSearch.selected"
-      :item-list-options="{ clickable: true }"
+      :item-list-options="{ itemNameOptions: { clickable: true } }"
       @select="(event) => {
         if (!event.row) {
           examples.conceptSearch.setSelected(event.item)
@@ -326,7 +330,9 @@ const registry = cdk.initializeRegistry({
 const examples = reactive({
   detailed: {
     itemListOptions: {
-      clickable: true,
+      itemNameOptions: {
+        clickable: true,
+      },
       indicatorByUri: {
         "https://example.com/DT2": true,
         "https://example.com/DT3": true,
