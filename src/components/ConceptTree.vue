@@ -8,7 +8,6 @@
       'jskos-vue-conceptTree-noHierarchy': !hierarchy,
     }"
     :items="items"
-    :style="style"
     item-property="concept"
     @select="$emit('select', $event); $emit('update:modelValue', $event.item)">
     <template #beforeItem="{ item }">
@@ -28,11 +27,10 @@
           :clickable="true" />
       </div>
       <!-- Highlight background for row if selected -->
-      <!-- TODO: Why use div instead of CSS class? -->
-      <!-- TODO: Why not use item.isSelected? -->
+      <!-- Note: We're using a separate div here because we can't add a CSS class to an individual ItemList row -->
       <div
-        v-if="jskos.compare(item.concept, modelValue)"
-        :style="`position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: -1; background-color: ${selectedColor};`" />
+        v-if="item.isSelected"
+        class="jskos-vue-conceptTree-selectedOverlay" />
       <!-- Slot for additional content before item -->
       <slot
         name="beforeItem"
@@ -80,16 +78,6 @@ export default defineComponent({
     itemListOptions: {
       type: Object,
       default: () => ({}),
-    },
-    // row background color for the selected (v-model) concept
-    selectedColor: {
-      type: String,
-      default: "#fdbd58aa",
-    },
-    // row hovel background color
-    rowHoverColor: {
-      type: String,
-      default: "#fdbd58aa",
     },
   },
   emits: ["select", "open", "close", "update:modelValue"],
@@ -148,18 +136,12 @@ export default defineComponent({
       return items
     })
 
-    // TODO: Move to CSS variable
-    const style = computed(() => ({
-      "--row-hover-color": props.rowHoverColor,
-    }))
-
     return {
       items,
       isOpen,
       open,
       close,
       toggle,
-      style,
       jskos,
     }
   },
@@ -181,7 +163,16 @@ export default defineComponent({
 }
 .jskos-vue-conceptTree > div:hover {
   cursor: pointer;
-  background: var(--row-hover-color);
+  background: var(--jskos-vue-conceptTree-hover-bgColor);
+}
+.jskos-vue-conceptTree-selectedOverlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  background: var(--jskos-vue-conceptTree-selected-bgColor);
 }
 .jskos-vue-conceptTree-depthSpacer {
   flex: 0 0 10px;

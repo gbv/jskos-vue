@@ -3,11 +3,14 @@
   /* Arrow */
   --jskos-vue-arrow-color: black;
   --jskos-vue-arrow-hover-color: #666;
+  /* ConceptTree */
+  --jskos-vue-conceptTree-selected-bgColor: #fdbd58aa;
+  --jskos-vue-conceptTree-hover-bgColor: var(--jskos-vue-conceptTree-selected-bgColor);
   /* ConceptSearch */
   --jskos-vue-conceptSearch-results-bgColor: white;
   --jskos-vue-conceptSearch-results-shadowColor: rgba(0, 0, 0, 0.2);
   --jskos-vue-conceptSearch-selected-color: inherit;
-  --jskos-vue-conceptSearch-selected-bgColor: #fdbd58aa;
+  --jskos-vue-conceptSearch-selected-bgColor: var(--jskos-vue-conceptTree-selected-bgColor);
   --jskos-vue-conceptSearch-results-zIndex: 10;
   /* ItemList */
   --jskos-vue-itemList-indicator-color: green;
