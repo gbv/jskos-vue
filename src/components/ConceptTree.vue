@@ -160,6 +160,7 @@ export default defineComponent({
 }
 .jskos-vue-conceptTree > div {
   display: flex;
+  padding-left: 0px !important;
 }
 .jskos-vue-conceptTree > div:hover {
   cursor: pointer;
@@ -187,6 +188,6 @@ export default defineComponent({
 }
 /* Add padding to list elements when hierachy is turned off */
 .jskos-vue-conceptTree-noHierarchy > div {
-  padding: 0 5px;
+  padding-left: 5px !important;
 }
 </style>
