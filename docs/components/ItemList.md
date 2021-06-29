@@ -87,7 +87,6 @@ const select = ({ item, row }) => {
   <h3>Default, clickable = true, with indicators and slot</h3>
   <item-list
     :items="concepts"
-    :clickable="true"
     :indicator-by-uri="{
       'uri:2': true,
       'uri:3': true,
