@@ -124,6 +124,9 @@ export default defineComponent({
 }
 .jskos-vue-itemList > div {
   position: relative;
+  box-shadow: inset -3px 0px var(--jskos-vue-itemList-indicator-color);
+}
+.jskos-vue-itemList > div:hover {
   box-shadow: inset -4px 0px var(--jskos-vue-itemList-indicator-color);
 }
 </style>
