@@ -1,19 +1,22 @@
 /* Define CSS variables that can be overridden */
 :root {
+  /* General */
+  --jskos-vue-highlight-bgColor: #fdbd5888;
   /* Arrow */
   --jskos-vue-arrow-color: black;
   --jskos-vue-arrow-hover-color: #666;
+  /* ItemList */
+  --jskos-vue-itemList-hover-bgColor: var(--jskos-vue-highlight-bgColor);
+  --jskos-vue-itemList-indicator-color: green;
   /* ConceptTree */
-  --jskos-vue-conceptTree-selected-bgColor: #fdbd58aa;
-  --jskos-vue-conceptTree-hover-bgColor: var(--jskos-vue-conceptTree-selected-bgColor);
+  --jskos-vue-conceptTree-selected-bgColor: var(--jskos-vue-highlight-bgColor);
+  --jskos-vue-conceptTree-hover-bgColor: var(--jskos-vue-highlight-bgColor);
   /* ConceptSearch */
   --jskos-vue-conceptSearch-results-bgColor: white;
   --jskos-vue-conceptSearch-results-shadowColor: rgba(0, 0, 0, 0.2);
   --jskos-vue-conceptSearch-selected-color: inherit;
-  --jskos-vue-conceptSearch-selected-bgColor: var(--jskos-vue-conceptTree-selected-bgColor);
+  --jskos-vue-conceptSearch-selected-bgColor: var(--jskos-vue-highlight-bgColor);
   --jskos-vue-conceptSearch-results-zIndex: 10;
-  /* ItemList */
-  --jskos-vue-itemList-indicator-color: green;
   /* LoadingIndicator */
   --jskos-vue-loadingIndicator-primary-color: lightgray;
   --jskos-vue-loadingIndicator-secondary-color: blue;
