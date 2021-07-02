@@ -4,7 +4,9 @@
 [![NPM package name](https://img.shields.io/badge/npm-jskos--vue-blue.svg)](https://www.npmjs.com/package/jskos-vue)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 
-> A suite of components and utilities for Vue 3 related to [JSKOS](https://gbv.github.io/jskos/jskos.html).
+> A suite of components and plugins for Vue 3 related to [JSKOS](https://gbv.github.io/jskos/jskos.html).
+
+**Note that this is still under development and breaking changes can occur at any time!**
 
 ## Documentation
 Please refer to the documentation on how to install and use jskos-vue in your project.
@@ -38,7 +40,11 @@ npm run docs:build # documentation build
 BASE=/dist/ npm run docs:build # documentation build with base path
 ```
 
-### Publish
+## Maintainers
+- [@stefandesu](https://github.com/stefandesu)
+- [@nichtich](https://github.com/nichtich)
+
+## Publish
 When a new release is ready (i.e. the features are finished, merged into `dev`, and all tests succeed), run the included release script (replace "patch" with "minor" or "major" if necessary):
 
 ```bash
