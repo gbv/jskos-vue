@@ -153,6 +153,7 @@ import AutoLink from "./AutoLink.vue"
 import * as utils from "../utils.js"
 import { computed, defineComponent } from "vue"
 import "../shared.css"
+import "jskos-vue-tabs/dist/style.css"
 
 // Localization
 const locale = {
