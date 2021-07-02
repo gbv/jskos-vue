@@ -2,6 +2,7 @@
 :root {
   /* General */
   --jskos-vue-highlight-bgColor: #fdbd5888;
+  --jskos-vue-color-lightGrey: #737373;
   /* Arrow */
   --jskos-vue-arrow-color: black;
   --jskos-vue-arrow-hover-color: #666;
@@ -22,7 +23,7 @@
   --jskos-vue-loadingIndicator-secondary-color: blue;
 }
 .jskos-vue-text-lightGrey {
-  color: #737373;
+  color: var(--jskos-vue-color-lightGrey);
 }
 .jskos-vue-text-small {
   font-size: 0.85rem;

@@ -75,9 +75,9 @@
           </li>
           <li
             v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'definition')"
-            :key="`${language}-${index}`">
+            :key="`${language}-${index}`"
+            :lang="`${language}`">
             {{ label }}
-            <span class="jskos-vue-text-lightGrey">({{ language }})</span>
           </li>
         </ul>
       </tab>
@@ -86,9 +86,9 @@
         <ul class="jskos-vue-itemDetails-list">
           <li
             v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'prefLabel')"
-            :key="`${language}-${index}`">
+            :key="`${language}-${index}`"
+            :lang="`${language}`">
             {{ label }}
-            <span class="jskos-vue-text-lightGrey">({{ language }})</span>
           </li>
         </ul>
         <!-- altLabel -->
@@ -100,9 +100,9 @@
           </li>
           <li
             v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'altLabel')"
-            :key="`${language}-${index}`">
+            :key="`${language}-${index}`"
+            :lang="`${language}`">
             {{ label }}
-            <span class="jskos-vue-text-lightGrey">({{ language }})</span>
           </li>
         </ul>
       </tab>
@@ -113,9 +113,9 @@
         <ul class="jskos-vue-itemDetails-list">
           <li
             v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'scopeNote')"
-            :key="`${language}-${index}`">
+            :key="`${language}-${index}`"
+            :lang="`${language}`">
             {{ label }}
-            <span class="jskos-vue-text-lightGrey">({{ language }})</span>
           </li>
         </ul>
       </tab>
@@ -126,9 +126,9 @@
         <ul class="jskos-vue-itemDetails-list">
           <li
             v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'editorialNote')"
-            :key="`${language}-${index}`">
+            :key="`${language}-${index}`"
+            :lang="`${language}`">
             {{ label }}
-            <span class="jskos-vue-text-lightGrey">({{ language }})</span>
           </li>
         </ul>
       </tab>
@@ -314,6 +314,14 @@ export default defineComponent({
   list-style: none;
   margin: 0 0 10px 0;
   padding: 0;
+}
+.jskos-vue-itemDetails-list > li:after {
+  content: attr(lang);
+  color: var(--jskos-vue-color-lightGrey);
+  font-size: 80%;
+  top: -0.5em;
+  right: -0.2em;
+  position: relative;
 }
 .jskos-vue-itemDetails-narrower, .jskos-vue-itemDetails-ancestors, .jskos-vue-itemDetails-broader {
   margin-top: 4px;
