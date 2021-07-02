@@ -36,6 +36,9 @@ const app = createApp(App)
 import * as JskosVue from "jskos-vue"
 app.use(JskosVue)
 
+// Import stylesheet
+import "jskos-vue/dist/style.css"
+
 app.mount('#app')
 ```
 
@@ -50,6 +53,9 @@ const app = createApp(App)
 import { ItemName } from "jskos-vue"
 app.use(ItemName)
 
+// Import stylesheet
+import "jskos-vue/dist/style.css"
+
 app.mount('#app')
 ```
 
@@ -58,6 +64,8 @@ You can also add individual components where needed (e.g. in some SFC, tree-shak
 ```js
 import { defineComponent } from "vue"
 import { ItemName } from "jskos-vue"
+// Import stylesheet
+import "jskos-vue/dist/style.css"
 
 export default defineComponent({
   // ...
@@ -79,19 +87,35 @@ Fully working HTML example:
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vue App</title>
+    <!-- Our library's stylesheet here (adjust version if necessary) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jskos-vue@0.1/dist/style.css">
   </head>
   <body>
     <div id="app">
-      <!-- TODO -->
+      <!-- You can use the components here -->
+      <button @click="scroll">Scroll to 25</button>
+      <item-list
+        ref="itemList"
+        style="height: 100px; overflow: scroll; border: 1px solid black; margin-top: 20px;"
+        :items="Array.from({ length: 50 }, (v, i) => ({ uri: `uri:${i}`, notation: [`${i}`], prefLabel: { en: `Test ${i}` }}))" />
     </div>
     <!-- Vue 3 production build -->
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-    <!-- TODO: Additional libraries, i.e. jskos-tools, jskos-vue-tabs, cocoda-sdk, etc. -->
+    <!-- Additional libraries (refer to "Requirements" above to see which are needed) -->
+    <script src="https://cdn.jsdelivr.net/npm/jskos-tools@1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jskos-vue-tabs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-scrollto@2"></script>
     <!-- Our library (adjust version if necessary) -->
     <script src="https://cdn.jsdelivr.net/npm/jskos-vue@0.1/dist/jskos-vue.umd.min.js"></script>
     <script>
       // Here, we are creating an empty Vue app and include the library as a plugin.
-      Vue.createApp({}).use(ViteTestLibrary).mount("#app")
+      Vue.createApp({
+        methods: {
+          scroll() {
+            this.$refs.itemList.scrollToUri("uri:25")
+          }
+        },
+      }).use(JskosVue).mount("#app")
     </script>
   </body>
 </html>
