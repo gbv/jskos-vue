@@ -17,13 +17,15 @@ if (process.env.BUILD_MODE !== "app") {
       name: "JskosVue",
     },
     rollupOptions: {
-      external: ["vue", "jskos-tools", "jskos-vue-tabs"],
+      external: ["vue", "jskos-tools", "jskos-vue-tabs", "vue-scrollto", "cocoda-sdk"],
       output: {
         exports: "named",
         globals: {
           vue: "Vue",
           "jskos-tools": "jskos",
           "jskos-vue-tabs": "JskosVueTabs",
+          "vue-scrollto": "VueScrollTo",
+          "cocoda-sdk": "cdk",
         },
       },
     },
