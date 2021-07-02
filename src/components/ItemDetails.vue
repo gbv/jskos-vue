@@ -1,5 +1,11 @@
 <template>
   <div class="jskos-vue-itemDetails">
+    <div class="jskos-vue-itemDetails-name">
+      <slot name="beforeName" />
+      <item-name
+        :item="item" />
+      <slot name="afterName" />
+    </div>
     <!-- Ancestors -->
     <!-- TODO: Only show part of ancestors? -->
     <item-list
@@ -13,12 +19,6 @@
       :items="(item.broader || []).filter(i => !jskos.isContainedIn(i, item.ancestors || []))"
       class="jskos-vue-itemDetails-broader"
       @select="$emit('select', { item: $event.item })" />
-    <div class="jskos-vue-itemDetails-name">
-      <slot name="beforeName" />
-      <item-name
-        :item="item" />
-      <slot name="afterName" />
-    </div>
     <!-- License -->
     <div
       v-if="item.license && item.license.length">
