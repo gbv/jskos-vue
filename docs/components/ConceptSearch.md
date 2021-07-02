@@ -1,5 +1,7 @@
 # ConceptSearch
 
+Input field to search and select a concept from a concept scheme. Matching concepts are shown via [ItemList](./ItemList). Shows a [LoadingIndicator](./LoadingIndicator) while waiting for results.
+
 ## Props
 - `scheme` (object) - JSKOS scheme to search in
   - required
