@@ -42,14 +42,10 @@ Component to display a concept tree.
 <script setup>
 import ConceptTree from "../../src/components/ConceptTree.vue"
 import * as jskos from "jskos-tools"
-import { reactive } from "vue"
-
 import * as cdk from "cocoda-sdk"
-const registry = cdk.initializeRegistry({
-  provider: "ConceptApi",
-  api: "https://coli-conc.gbv.de/api/",
-})
+import { reactive, onMounted } from "vue"
 
+let registry
 const state = reactive({
   scheme: null,
   async loadScheme() {
@@ -71,10 +67,15 @@ const state = reactive({
   },
   selected: null,
 })
-;(async () => {
+
+onMounted(async () => {
+  registry = cdk.initializeRegistry({
+    provider: "ConceptApi",
+    api: "https://coli-conc.gbv.de/api/",
+  })
   await state.loadScheme()
   await state.loadConcepts()
-})()
+})
 
 const alert = (...args) => window.alert(...args)
 </script>
@@ -119,14 +120,10 @@ const alert = (...args) => window.alert(...args)
 <script setup>
 import { ConceptTree } from "jskos-vue"
 import * as jskos from "jskos-tools"
-import { reactive } from "vue"
-
 import * as cdk from "cocoda-sdk"
-const registry = cdk.initializeRegistry({
-  provider: "ConceptApi",
-  api: "https://coli-conc.gbv.de/api/",
-})
+import { reactive, onMounted } from "vue"
 
+let registry
 const state = reactive({
   scheme: null,
   async loadScheme() {
@@ -148,10 +145,15 @@ const state = reactive({
   },
   selected: null,
 })
-;(async () => {
+
+onMounted(async () => {
+  registry = cdk.initializeRegistry({
+    provider: "ConceptApi",
+    api: "https://coli-conc.gbv.de/api/",
+  })
   await state.loadScheme()
   await state.loadConcepts()
-})()
+})
 
 const alert = (...args) => window.alert(...args)
 </script>

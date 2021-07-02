@@ -27,12 +27,6 @@ import { Tab } from "jskos-vue-tabs"
 import * as jskos from "jskos-tools"
 import { reactive } from "vue"
 
-import * as cdk from "cocoda-sdk"
-const registry = cdk.initializeRegistry({
-  provider: "ConceptApi",
-  api: "https://coli-conc.gbv.de/api/",
-})
-
 const state = reactive({
   itemListOptions: {
     indicatorByUri: {
@@ -180,12 +174,6 @@ import { ItemDetails } from "jskos-vue"
 import { Tab } from "jskos-vue-tabs"
 import * as jskos from "jskos-tools"
 import { reactive } from "vue"
-
-import * as cdk from "cocoda-sdk"
-const registry = cdk.initializeRegistry({
-  provider: "ConceptApi",
-  api: "https://coli-conc.gbv.de/api/",
-})
 
 const state = reactive({
   itemListOptions: {

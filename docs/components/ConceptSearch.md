@@ -19,11 +19,15 @@
 
 <script setup>
 import ConceptSearch from "../../src/components/ConceptSearch.vue"
-
 import * as cdk from "cocoda-sdk"
-const registry = cdk.initializeRegistry({
-  provider: "ConceptApi",
-  api: "https://coli-conc.gbv.de/api/",
+import { ref, onMounted } from "vue"
+
+const registry = ref(null)
+onMounted(() => {
+  registry.value = cdk.initializeRegistry({
+    provider: "ConceptApi",
+    api: "https://coli-conc.gbv.de/api/",
+  })
 })
 
 const scheme = {
@@ -49,11 +53,15 @@ const scheme = {
 
 <script setup>
 import { ConceptSearch } from "jskos-vue"
-
 import * as cdk from "cocoda-sdk"
-const registry = cdk.initializeRegistry({
-  provider: "ConceptApi",
-  api: "https://coli-conc.gbv.de/api/",
+import { ref, onMounted } from "vue"
+
+const registry = ref(null)
+onMounted(() => {
+  registry.value = cdk.initializeRegistry({
+    provider: "ConceptApi",
+    api: "https://coli-conc.gbv.de/api/",
+  })
 })
 
 const scheme = {
