@@ -2,17 +2,11 @@
   "name": "jskos-vue",
   "version": "0.0.0",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "main": "./dist/jskos-vue.umd.js",
   "module": "./dist/jskos-vue.es.js",
-  "exports": {
-    ".": {
-      "import": "./src/index.js",
-      "require": "./dist/jskos-vue.umd.js"
-    }
-  },
+  "style": "./dist/style.css",
   "sideEffects": false,
   "scripts": {
     "test": "mocha --recursive",
@@ -41,7 +35,7 @@
   ],
   "dependencies": {
     "jskos-tools": "^1.0.17",
-    "jskos-vue-tabs": "^0.1.2",
+    "jskos-vue-tabs": "^0.1.3",
     "vue": "^3.1.2",
     "vue-scrollto": "^2.20.0"
   },
