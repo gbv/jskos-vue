@@ -1,7 +1,7 @@
 <template>
   <div
-    ref="conceptSearch"
-    class="jskos-vue-conceptSearch"
+    ref="itemSearch"
+    class="jskos-vue-itemSearch"
     @mousemove="mousemove">
     <!-- Input field -->
     <input
@@ -17,32 +17,32 @@
     <!-- Results -->
     <div
       v-show="isOpen"
-      class="jskos-vue-conceptSearch-results jskos-vue-text-small">
+      class="jskos-vue-itemSearch-results jskos-vue-text-small">
       <!-- Loading indicator if necessary -->
       <div
         v-if="isLoading"
-        class="jskos-vue-conceptSearch-loading">
+        class="jskos-vue-itemSearch-loading">
         <loading-indicator size="md" />
       </div>
       <!-- If not loading, show results -->
       <ul
         v-else
         ref="resultList"
-        class="jskos-vue-conceptSearch-results-list">
+        class="jskos-vue-itemSearch-results-list">
         <li
           v-for="(result, i) in results"
           :key="i"
           :class="{
-            'jskos-vue-conceptSearch-selected': i === searchSelected,
+            'jskos-vue-itemSearch-selected': i === searchSelected,
           }"
-          class="jskos-vue-conceptSearch-results-item"
+          class="jskos-vue-itemSearch-results-item"
           @click="chooseResult(i)"
           @mouseover="mouseover(i)">
           <span v-html="highlightQueryInResult(result[0])" />
         </li>
         <li
           v-if="results.length == 0"
-          class="jskos-vue-conceptSearch-results-item">
+          class="jskos-vue-itemSearch-results-item">
           <!-- TODO: Add other languages -->
           <div>No results</div>
         </li>
@@ -78,7 +78,7 @@ function escape(unsafe) {
 }
 
 export default defineComponent({
-  name: "ConceptSearch",
+  name: "ItemSearch",
   components: {
     LoadingIndicator,
   },
@@ -106,7 +106,7 @@ export default defineComponent({
     const uniqueID = "abc"
     const preventHovering = ref(false)
     // Template refs (will be set at mount)
-    const conceptSearch = ref(null)
+    const itemSearch = ref(null)
     const searchInput = ref(null)
     const resultList = ref(null)
 
@@ -233,7 +233,7 @@ export default defineComponent({
       // Result list
       {
         elements: [
-          conceptSearch.value,
+          itemSearch.value,
         ],
         handler: () => {
           // if (!this.filterPopoverShow) {
@@ -245,7 +245,7 @@ export default defineComponent({
       // Types popover
       // {
       //   elements: [
-      //     document.getElementById(`conceptSearch-filter-${this.isLeft ? "left" : "right"}`),
+      //     document.getElementById(`itemSearch-filter-${this.isLeft ? "left" : "right"}`),
       //     this.$refs.filterPopover,
       //   ],
       //   handler: () => {
@@ -265,7 +265,7 @@ export default defineComponent({
       openResults,
       closeResults,
       chooseResult,
-      conceptSearch,
+      itemSearch,
       searchInput,
       resultList,
       mouseover(index) {
@@ -326,16 +326,16 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.jskos-vue-conceptSearch {
+.jskos-vue-itemSearch {
   position: relative;
   height: 34px;
 }
-.jskos-vue-conceptSearch > input {
+.jskos-vue-itemSearch > input {
   width: 100%;
   padding: 4px 8px;
 }
 
-.jskos-vue-conceptSearch-results {
+.jskos-vue-itemSearch-results {
   position: absolute;
   overflow: auto;
   height: auto;
@@ -343,32 +343,32 @@ export default defineComponent({
   width: 100%;
   padding: 0;
   margin: 3px 0;
-  background-color: var(--jskos-vue-conceptSearch-results-bgColor);
-  box-shadow: 0 2px 4px 0 var(--jskos-vue-conceptSearch-results-shadowColor);
-  z-index: var(--jskos-vue-conceptSearch-results-zIndex);
+  background-color: var(--jskos-vue-itemSearch-results-bgColor);
+  box-shadow: 0 2px 4px 0 var(--jskos-vue-itemSearch-results-shadowColor);
+  z-index: var(--jskos-vue-itemSearch-results-zIndex);
 }
 
-.jskos-vue-conceptSearch-results-list {
+.jskos-vue-itemSearch-results-list {
   padding: 0;
   margin: 0;
 }
 
-.jskos-vue-conceptSearch-results-item {
+.jskos-vue-itemSearch-results-item {
   list-style: none;
   text-align: left;
   cursor: pointer;
   padding: 3px 0px 3px 12px;
 }
 
-.jskos-vue-conceptSearch-selected {
-  color: var(--jskos-vue-conceptSearch-selected-color);
-  background-color: var(--jskos-vue-conceptSearch-selected-bgColor);
+.jskos-vue-itemSearch-selected {
+  color: var(--jskos-vue-itemSearch-selected-color);
+  background-color: var(--jskos-vue-itemSearch-selected-bgColor);
 }
 
-.jskos-vue-conceptSearch-loading {
+.jskos-vue-itemSearch-loading {
   width: 100%;
   height: 30px;
   padding: 4px 0 0 10px;
-  z-index: var(--jskos-vue-conceptSearch-results-zIndex);
+  z-index: var(--jskos-vue-itemSearch-results-zIndex);
 }
 </style>

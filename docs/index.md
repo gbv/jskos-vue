@@ -11,11 +11,11 @@ Note that it was specifically developed with the needs of our [Cocoda Mapping To
   - [Node.js](https://nodejs.org/) version >=12.0.0
   - A modern browser
 - [jskos-tools](https://github.com/gbv/jskos-tools)
-  - Needed for ConceptSearch, ConceptTree, ItemDetails, ItemList, and ItemName.
+  - Needed for ItemSearch, ConceptTree, ItemDetails, ItemList, and ItemName.
 - [jskos-vue-tabs](https://github.com/gbv/jskos-vue-tabs)
   - Needed for ItemDetails.
 - [vue-scrollto](https://github.com/rigor789/vue-scrollto)
-  - Needed for ConceptSearch, ConceptTree, ItemDetails, and ItemList.
+  - Needed for ItemSearch, ConceptTree, ItemDetails, and ItemList.
 
 For a Node.js project, it is recommended to use either [Vue CLI](https://cli.vuejs.org) or [Vite](https://vitejs.dev).
 

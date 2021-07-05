@@ -1,6 +1,6 @@
-# ConceptSearch
+# ItemSearch
 
-Input field to search and select a concept from a concept scheme. Matching concepts are shown via [ItemList](./ItemList). Shows a [LoadingIndicator](./LoadingIndicator) while waiting for results.
+Input field to search and select an item (usually concept or concept scheme) from a list of search results. Shows a [LoadingIndicator](./LoadingIndicator) while waiting for results.
 
 ## Props
 - `scheme` (object) - JSKOS scheme to search in
@@ -20,7 +20,7 @@ Input field to search and select a concept from a concept scheme. Matching conce
 ## Examples
 
 <script setup>
-import ConceptSearch from "../../src/components/ConceptSearch.vue"
+import ItemSearch from "../../src/components/ItemSearch.vue"
 import * as cdk from "cocoda-sdk"
 import { ref, onMounted } from "vue"
 
@@ -42,19 +42,19 @@ const scheme = {
 }
 </script>
 
-<ConceptSearch
+<ItemSearch
   :scheme="scheme"
   :registry="registry" />
 
 ```vue
 <template>
-  <ConceptSearch
+  <ItemSearch
     :scheme="scheme"
     :registry="registry" />
 </template>
 
 <script setup>
-import { ConceptSearch } from "jskos-vue"
+import { ItemSearch } from "jskos-vue"
 import * as cdk from "cocoda-sdk"
 import { ref, onMounted } from "vue"
 
