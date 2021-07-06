@@ -83,20 +83,34 @@ export default defineComponent({
     LoadingIndicator,
   },
   props: {
-    // Scheme to search in
+    // Scheme if searching for concepts
     scheme: {
       type: Object,
-      required: true,
+      default: null,
     },
-    // Registry to access the scheme (used if scheme._registry is not available)
+    // Registry to access the data (used if scheme._registry is not available)
     registry: {
       type: Object,
+      default: null,
+    },
+    // async function that returns results in OpenSearch Suggest Format
+    search: {
+      type: Function,
       default: null,
     },
   },
   emits: ["select"],
   setup(props, { emit }) {
-    const _registry = computed(() => props.registry || props.scheme._registry)
+    const _registry = computed(() => props.registry || props.scheme && props.scheme._registry)
+    const _search = computed(() => props.search || (async (query, props) => {
+      if (props.scheme) {
+        // Concepts
+        // TODO: Check _registry.value
+        return _registry.value.suggest({ search: query, scheme: props.scheme })
+      }
+      // Schemes/Items
+      return _registry.value.vocSuggest({ search: query })
+    }))
     const isLoading = ref(false)
     const isOpen = ref(false)
     const cancel = ref(null)
@@ -111,16 +125,12 @@ export default defineComponent({
     const resultList = ref(null)
 
     const search = debounce(async (searchQuery) => {
-      if (!_registry.value) {
-        return []
-      }
       searchQuery = searchQuery.trim()
       results.value = []
 
       isLoading.value = true
 
-      // use suggest endpoint
-      const promise = _registry.value.suggest({ search: searchQuery, scheme: props.scheme })
+      const promise = _search.value(searchQuery, props)
       cancel.value = promise.cancel
 
       // convert into different array
@@ -182,10 +192,16 @@ export default defineComponent({
     const chooseResult = (chosenIndex) => {
       closeResults()
       searchSelected.value = -1
-      emit("select", {
+      const item = {
         uri: results.value[chosenIndex][2],
-        inScheme: [props.scheme],
-      })
+      }
+      if (props.scheme) {
+        item.inScheme = [props.scheme]
+        item.type = ["http://www.w3.org/2004/02/skos/core#Concept"]
+      } else {
+        // TODO: Can we adjust anything else for items? Or can we assume schemes here?
+      }
+      emit("select", item)
       // Remove focus
       if (document.activeElement !== document.body) document.activeElement.blur()
     }
