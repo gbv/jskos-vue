@@ -183,7 +183,7 @@ This example uses the [BARTOC API](https://bartoc.org) to search for vocabularie
 
 ```vue
 <template>
-  <ItemSearch
+  <item-search
     :registry="bartocRegistry" />
 </template>
 
