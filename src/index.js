@@ -20,3 +20,6 @@ export * from "./components"
 
 // Shared CSS
 import "./shared.css"
+
+// Export utils as utils
+export * as utils from "./utils"
