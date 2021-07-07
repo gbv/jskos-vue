@@ -185,31 +185,31 @@
       @select="handleClick" />
   </p>
   <h2>
-    ItemSearch - DDC from API, with ItemDetails for selected
+    ItemSuggest - DDC from API, with ItemDetails for selected
   </h2>
   <p>
-    <button @click.stop="$refs.itemSearch.focus()">
+    <button @click.stop="$refs.itemSuggest.focus()">
       Focus input
     </button>
-    <button @click.stop="$refs.itemSearch.setQuery('test')">
+    <button @click.stop="$refs.itemSuggest.setQuery('test')">
       Set query
     </button>
-    <button @click.stop="$refs.itemSearch.setQuery('tests', true)">
+    <button @click.stop="$refs.itemSuggest.setQuery('tests', true)">
       Set query and focus
     </button>
     <concept-search
       v-if="examples.conceptTree.scheme"
-      ref="itemSearch"
+      ref="itemSuggest"
       :scheme="examples.conceptTree.scheme"
-      @select="examples.itemSearch.setSelected($event)" />
+      @select="examples.itemSuggest.setSelected($event)" />
   </p>
   <p>
     <item-details
-      v-if="examples.itemSearch.selected"
-      :item="examples.itemSearch.selected"
+      v-if="examples.itemSuggest.selected"
+      :item="examples.itemSuggest.selected"
       @select="(event) => {
         if (!event.row) {
-          examples.itemSearch.setSelected(event.item)
+          examples.itemSuggest.setSelected(event.item)
         }
       }" />
   </p>
@@ -494,7 +494,7 @@ const examples = reactive({
     },
   },
   longConceptList: [],
-  itemSearch: {
+  itemSuggest: {
     selected: null,
     async setSelected(concept) {
       // 1. Set selected to concept

@@ -4,7 +4,7 @@ import ItemDetails from "./ItemDetails.vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import Arrow from "./Arrow.vue"
 import ConceptTree from "./ConceptTree.vue"
-import ItemSearch from "./ItemSearch.vue"
+import ItemSuggest from "./ItemSuggest.vue"
 
 export {
   ItemName,
@@ -13,5 +13,5 @@ export {
   LoadingIndicator,
   Arrow,
   ConceptTree,
-  ItemSearch,
+  ItemSuggest,
 }

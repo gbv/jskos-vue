@@ -12,12 +12,12 @@
   /* ConceptTree */
   --jskos-vue-conceptTree-selected-bgColor: var(--jskos-vue-highlight-bgColor);
   --jskos-vue-conceptTree-hover-bgColor: var(--jskos-vue-highlight-bgColor);
-  /* ItemSearch */
-  --jskos-vue-itemSearch-results-bgColor: white;
-  --jskos-vue-itemSearch-results-shadowColor: rgba(0, 0, 0, 0.2);
-  --jskos-vue-itemSearch-selected-color: inherit;
-  --jskos-vue-itemSearch-selected-bgColor: var(--jskos-vue-highlight-bgColor);
-  --jskos-vue-itemSearch-results-zIndex: 10;
+  /* ItemSuggest */
+  --jskos-vue-itemSuggest-results-bgColor: white;
+  --jskos-vue-itemSuggest-results-shadowColor: rgba(0, 0, 0, 0.2);
+  --jskos-vue-itemSuggest-selected-color: inherit;
+  --jskos-vue-itemSuggest-selected-bgColor: var(--jskos-vue-highlight-bgColor);
+  --jskos-vue-itemSuggest-results-zIndex: 10;
   /* LoadingIndicator */
   --jskos-vue-loadingIndicator-primary-color: lightgray;
   --jskos-vue-loadingIndicator-secondary-color: blue;

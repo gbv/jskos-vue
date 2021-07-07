@@ -1,4 +1,4 @@
-# ItemSearch
+# ItemSuggest
 
 Input field to search and select an item (usually concept or concept scheme) from a list of search results. Shows a [LoadingIndicator](./LoadingIndicator) while waiting for results.
 
@@ -23,7 +23,7 @@ Input field to search and select an item (usually concept or concept scheme) fro
 ## Examples
 
 <script setup>
-import ItemSearch from "../../src/components/ItemSearch.vue"
+import ItemSuggest from "../../src/components/ItemSuggest.vue"
 import * as cdk from "cocoda-sdk"
 import { ref, onMounted } from "vue"
 
@@ -88,19 +88,19 @@ const searchPokemon = async (query) => {
 
 This example uses the [coli-conc API](https://coli-conc.gbv.de/api/) to search for concept inside German Dewey Decimal Classification (DDC, licensed by [OCLC](https://www.oclc.org/) under CC BY-NC-ND 3.0).
 
-<item-search
+<item-suggest
   :scheme="scheme"
   :registry="registry" />
 
 ```vue
 <template>
-  <item-search
+  <item-suggest
     :scheme="scheme"
     :registry="registry" />
 </template>
 
 <script setup>
-import { ItemSearch } from "jskos-vue"
+import { ItemSuggest } from "jskos-vue"
 import * as cdk from "cocoda-sdk"
 import { ref, onMounted } from "vue"
 
@@ -127,17 +127,17 @@ const scheme = {
 
 This example provides a custom search function (results come from local data in this case).
 
-<item-search
+<item-suggest
   :search="searchPokemon" />
 
 ```vue
 <template>
-  <item-search
+  <item-suggest
     :search="searchPokemon" />
 </template>
 
 <script setup>
-import { ItemSearch } from "jskos-vue"
+import { ItemSuggest } from "jskos-vue"
 // Custom data and search function
 const data = [
   { "id": 1, "name": "Bulbasaur" },
@@ -178,17 +178,17 @@ const searchPokemon = async (query) => {
 
 This example uses the [BARTOC API](https://bartoc.org) to search for vocabularies.
 
-<item-search
+<item-suggest
   :registry="bartocRegistry" />
 
 ```vue
 <template>
-  <item-search
+  <item-suggest
     :registry="bartocRegistry" />
 </template>
 
 <script setup>
-import { ItemSearch } from "jskos-vue"
+import { ItemSuggest } from "jskos-vue"
 import * as cdk from "cocoda-sdk"
 import { ref, onMounted } from "vue"
 
