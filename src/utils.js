@@ -105,3 +105,30 @@ export function cdkRegistryToSuggestFunction(registry, { voc = false, scheme }) 
     }
   }
 }
+
+import { ref } from "vue"
+const draggedItem = ref(null)
+export function addDragAndDrop(callback) {
+  function dragStart(item) {
+    draggedItem.value = item
+  }
+  function dragEnd() {
+    draggedItem.value = null
+  }
+  function dragOver(event) {
+    event.preventDefault()
+  }
+  function drop(event, ...params) {
+    event.preventDefault()
+    if (draggedItem.value) {
+      callback(draggedItem.value, ...params)
+    }
+  }
+  return {
+    dragStart,
+    dragEnd,
+    dragOver,
+    drop,
+    draggedItem,
+  }
+}
