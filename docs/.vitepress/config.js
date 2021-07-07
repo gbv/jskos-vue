@@ -50,11 +50,13 @@ function getGuideSidebar() {
     },
     {
       text: "Utilities",
-      children: [
-        { text: "dateToString", link: "/utilities/dateToString" },
-        { text: "Click Handling", link: "/utilities/clickHandling" },
-        { text: "debounce", link: "/utilities/debounce" },
-      ],
+      children: fs.readdirSync(`./${docsDir}/utilities`).filter(file => file.endsWith(".md")).map(file => {
+        const name = file.replace(".md", "")
+        return {
+          text: name,
+          link: `/utilities/${name}`,
+        }
+      }),
     },
   ]
 }

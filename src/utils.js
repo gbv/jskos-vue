@@ -86,3 +86,22 @@ export function debounce(func, wait, immediate) {
     if (callNow) func.apply(context, args)
   }
 }
+
+/**
+ * Converts a cocoda-sdk registry into a suggest function for concepts that can be used with ItemSuggest.
+ *
+ * By default, it will use `suggest` (i.e. for concepts). With the parameter `options.voc`, it is possible to use `vocSuggest` for concept schemes instead.
+ *
+ * @param {object} registry a registry object initialized by cocoda-sdk
+ * @param {object} options.scheme concept scheme to suggest concepts from
+ * @param {boolean} options.voc whether to use `vocSuggest` instead of `suggest`
+ */
+export function cdkRegistryToSuggestFunction(registry, { voc = false, scheme }) {
+  return async (query) => {
+    if (voc) {
+      return registry.vocSuggest({ search: query })
+    } else {
+      return registry.suggest({ search: query, scheme })
+    }
+  }
+}
