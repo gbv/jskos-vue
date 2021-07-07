@@ -197,7 +197,7 @@
     <button @click.stop="$refs.itemSuggest.setQuery('tests', true)">
       Set query and focus
     </button>
-    <concept-search
+    <item-suggest
       v-if="examples.conceptTree.scheme"
       ref="itemSuggest"
       :scheme="examples.conceptTree.scheme"
