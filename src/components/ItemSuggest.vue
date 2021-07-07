@@ -58,8 +58,7 @@
  * - add drag and drop for concepts
  */
 
-import { computed, defineComponent, nextTick, ref, watch } from "vue"
-import jskos from "jskos-tools"
+import { defineComponent, nextTick, ref, watch } from "vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
 import { addClickHandlers, debounce } from "../utils"
@@ -83,16 +82,6 @@ export default defineComponent({
     LoadingIndicator,
   },
   props: {
-    // Scheme if searching for concepts
-    scheme: {
-      type: Object,
-      default: null,
-    },
-    // Registry to access the data (used if scheme._registry is not available)
-    registry: {
-      type: Object,
-      default: null,
-    },
     // async function that returns results in OpenSearch Suggest Format
     search: {
       type: Function,
@@ -101,16 +90,6 @@ export default defineComponent({
   },
   emits: ["select"],
   setup(props, { emit }) {
-    const _registry = computed(() => props.registry || props.scheme && props.scheme._registry)
-    const _search = computed(() => props.search || (async (query, props) => {
-      if (props.scheme) {
-        // Concepts
-        // TODO: Check _registry.value
-        return _registry.value.suggest({ search: query, scheme: props.scheme })
-      }
-      // Schemes/Items
-      return _registry.value.vocSuggest({ search: query })
-    }))
     const isLoading = ref(false)
     const isOpen = ref(false)
     const cancel = ref(null)
@@ -130,7 +109,7 @@ export default defineComponent({
 
       isLoading.value = true
 
-      const promise = _search.value(searchQuery, props)
+      const promise = props.search(searchQuery)
       cancel.value = promise.cancel
 
       // convert into different array
@@ -172,16 +151,6 @@ export default defineComponent({
         search(newQuery)
       }
     })
-    // clear search if scheme changes
-    watch(() => props.scheme, (newValue, oldValue) => {
-      if (!jskos.compare(oldValue, newValue)) {
-        query.value = ""
-        results.value = []
-        isOpen.value = false
-        isLoading.value = false
-        searchSelected.value = -1
-      }
-    })
 
     const openResults = () => {
       isOpen.value = query.value !== ""
@@ -192,16 +161,9 @@ export default defineComponent({
     const chooseResult = (chosenIndex) => {
       closeResults()
       searchSelected.value = -1
-      const item = {
+      emit("select", {
         uri: results.value[chosenIndex][2],
-      }
-      if (props.scheme) {
-        item.inScheme = [props.scheme]
-        item.type = ["http://www.w3.org/2004/02/skos/core#Concept"]
-      } else {
-        // TODO: Can we adjust anything else for items? Or can we assume schemes here?
-      }
-      emit("select", item)
+      })
       // Remove focus
       if (document.activeElement !== document.body) document.activeElement.blur()
     }

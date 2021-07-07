@@ -3,12 +3,8 @@
 Input field to search and select an item (usually concept or concept scheme) from a list of search results. Shows a [LoadingIndicator](./LoadingIndicator) while waiting for results.
 
 ## Props
-- `scheme` (object) - JSKOS scheme to search in
-  - required if searching for concepts
-- `registry` (object) - [cocoda-sdk](https://github.com/gbv/cocoda-sdk) registry to access the scheme
-  - required if `search` is not given or `scheme._registry` is not defined
-- `search(query, props)` (async function) - a custom search function that provides results in [OpenSearch Suggest Format](https://github.com/dewitt/opensearch/blob/master/mediawiki/Specifications/OpenSearch/Extensions/Suggestions/1.1/Draft%201.wiki)
-  - `query` is the search string, `props` is an object containing these props
+- `search(query)` (async function) - a custom search function that provides results in [OpenSearch Suggest Format](https://github.com/dewitt/opensearch/blob/master/mediawiki/Specifications/OpenSearch/Extensions/Suggestions/1.1/Draft%201.wiki)
+  - `query` is the search string
   - The Promise that is returned by this function can optionally have a property `cancel` attached. If this is the case, it will be called if there is a newer search query and the previous request should be aborted.
 
 ## Methods
@@ -25,6 +21,7 @@ Input field to search and select an item (usually concept or concept scheme) fro
 <script setup>
 import ItemSuggest from "../../src/components/ItemSuggest.vue"
 import * as cdk from "cocoda-sdk"
+import * as utils from "../../src/utils.js"
 import { ref, onMounted } from "vue"
 
 const registry = ref(null)
@@ -84,45 +81,6 @@ const searchPokemon = async (query) => {
 }
 </script>
 
-### Search for concepts inside a concept scheme
-
-This example uses the [coli-conc API](https://coli-conc.gbv.de/api/) to search for concept inside German Dewey Decimal Classification (DDC, licensed by [OCLC](https://www.oclc.org/) under CC BY-NC-ND 3.0).
-
-<item-suggest
-  :scheme="scheme"
-  :registry="registry" />
-
-```vue
-<template>
-  <item-suggest
-    :scheme="scheme"
-    :registry="registry" />
-</template>
-
-<script setup>
-import { ItemSuggest } from "jskos-vue"
-import * as cdk from "cocoda-sdk"
-import { ref, onMounted } from "vue"
-
-const registry = ref(null)
-onMounted(() => {
-  registry.value = cdk.initializeRegistry({
-    provider: "ConceptApi",
-    api: "https://coli-conc.gbv.de/api/",
-  })
-})
-
-const scheme = {
-  uri: "http://dewey.info/scheme/edition/e23/",
-  license: [
-    {
-      uri: "http://creativecommons.org/licenses/by-nc-nd/3.0/"
-    }
-  ],
-}
-</script>
-```
-
 ### Search with a custom search function
 
 This example provides a custom search function (results come from local data in this case).
@@ -174,21 +132,58 @@ const searchPokemon = async (query) => {
 </script>
 ```
 
-### Search for schemes in BARTOC
+### Search for concepts inside a concept scheme
 
-This example uses the [BARTOC API](https://bartoc.org) to search for vocabularies.
+This example uses the [coli-conc API](https://coli-conc.gbv.de/api/) via [cocoda-sdk](https://github.com/gbv/cocoda-sdk) and the [cdkRegistryToSuggestFunction helper](../utilities/cdkRegistryToSuggestFunction) to search for concept inside German Dewey Decimal Classification (DDC, licensed by [OCLC](https://www.oclc.org/) under CC BY-NC-ND 3.0).
 
 <item-suggest
-  :registry="bartocRegistry" />
+  :search="utils.cdkRegistryToSuggestFunction(registry, { scheme })" />
 
 ```vue
 <template>
   <item-suggest
-    :registry="bartocRegistry" />
+    :search="utils.cdkRegistryToSuggestFunction(registry, { scheme })" />
 </template>
 
 <script setup>
-import { ItemSuggest } from "jskos-vue"
+import { ItemSuggest, utils } from "jskos-vue"
+import * as cdk from "cocoda-sdk"
+import { ref, onMounted } from "vue"
+
+const registry = ref(null)
+onMounted(() => {
+  registry.value = cdk.initializeRegistry({
+    provider: "ConceptApi",
+    api: "https://coli-conc.gbv.de/api/",
+  })
+})
+
+const scheme = {
+  uri: "http://dewey.info/scheme/edition/e23/",
+  license: [
+    {
+      uri: "http://creativecommons.org/licenses/by-nc-nd/3.0/"
+    }
+  ],
+}
+</script>
+```
+
+### Search for schemes in BARTOC
+
+This example uses the [BARTOC API](https://bartoc.org) via [cocoda-sdk](https://github.com/gbv/cocoda-sdk) and the [cdkRegistryToSuggestFunction helper](../utilities/cdkRegistryToSuggestFunction) to search for vocabularies.
+
+<item-suggest
+  :search="utils.cdkRegistryToSuggestFunction(bartocRegistry, { voc: true })" />
+
+```vue
+<template>
+  <item-suggest
+    :search="utils.cdkRegistryToSuggestFunction(bartocRegistry, { voc: true })" />
+</template>
+
+<script setup>
+import { ItemSuggest, utils } from "jskos-vue"
 import * as cdk from "cocoda-sdk"
 import { ref, onMounted } from "vue"
 

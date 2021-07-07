@@ -200,8 +200,8 @@
     <item-suggest
       v-if="examples.conceptTree.scheme"
       ref="itemSuggest"
-      :scheme="examples.conceptTree.scheme"
-      @select="examples.itemSuggest.setSelected($event)" />
+      :search="utils.cdkRegistryToSuggestFunction(examples.conceptTree.scheme._registry, { scheme: examples.conceptTree.scheme })"
+      @select="examples.itemSuggest.setSelected($event, examples.conceptTree.scheme._registry)" />
   </p>
   <p>
     <item-details
@@ -280,6 +280,7 @@
 <script>
 import { defineComponent, reactive } from "vue"
 import * as jskos from "jskos-tools"
+import * as utils from "./utils"
 import { Tab } from "jskos-vue-tabs"
 
 // Add ItemName plugin
@@ -496,11 +497,11 @@ const examples = reactive({
   longConceptList: [],
   itemSuggest: {
     selected: null,
-    async setSelected(concept) {
+    async setSelected(concept, _registry) {
       // 1. Set selected to concept
       this.selected = concept
       // 2. Load data from API
-      const registry = concept._registry || concept.inScheme[0]._registry
+      const registry = _registry || concept._registry || concept.inScheme[0]._registry
       if (registry) {
         concept = (await registry.getConcepts({ concepts: [concept] }))[0]
         concept.narrower = jskos.sortConcepts(await concept._getNarrower())
@@ -549,6 +550,7 @@ export default defineComponent({
       examples,
       loadLongItemList,
       longItemListGetRandomUri,
+      utils,
     }
   },
   methods: {
