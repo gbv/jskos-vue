@@ -8,7 +8,7 @@ Uses [ItemName](./ItemName).
   - required
 - `itemProperty` (string) - defines which property on the objects contains the JSKOS item
   - by default, the objects themselves will be considered the JSKOS items
-- `row` (boolean) - if enabled, the whole row will have a background color on hover (CSS var `--jskos-vue-itemList-hover-bgColor`)
+- `rowMode` (boolean) - if enabled, the whole row will have a background color on hover (CSS var `--jskos-vue-itemList-hover-bgColor`) and be clickable
   - default: `true`
 - `itemNameOptions` (object) - options that are passed along to [ItemName](./ItemName) via v-bind
 - `indicatorByUri` (object) - object that maps item URIs to either color strings or boolean values
@@ -24,11 +24,11 @@ Uses [ItemName](./ItemName).
 
 ## Events
 - `select`
-  - Emitted when an item or a row (if `row` prop is `true`) is clicked.
+  - Emitted when an item or a row (if `rowMode` prop is `true`) is clicked.
   - Parameter is an object with properties `item` (containing the clicked JSKOS item) and `row` (containing a boolean which is `true` when the click was initiated via the row, not on the item directly).
 
 ## CSS Variables
-- `--jskos-vue-itemList-hover-bgColor` - row hover background color (for `row` = `true`)
+- `--jskos-vue-itemList-hover-bgColor` - row hover background color (for `rowMode` = `true`)
   - default: #fdbd58aa
 - `--jskos-vue-itemList-indicator-color` - default indicator color (for `true` values)
   - default: green
@@ -73,10 +73,10 @@ const select = ({ item, row }) => {
   </template>
 </item-list>
 
-<h3>row = false, with itemNameOptions</h3>
+<h3>rowMode = false, with itemNameOptions</h3>
 <item-list
   :items="concepts.slice(0, 5)"
-  :row="false"
+  :row-mode="false"
   :item-name-options="{
     clickable: true,
   }"
@@ -103,10 +103,10 @@ const select = ({ item, row }) => {
     </template>
   </item-list>
 
-  <h3>row = false, with itemNameOptions</h3>
+  <h3>rowMode = false, with itemNameOptions</h3>
   <item-list
     :items="concepts.slice(0, 5)"
-    :row="false"
+    :row-mode="false"
     :item-name-options="{
       clickable: true,
     }"

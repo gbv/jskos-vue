@@ -83,7 +83,7 @@
         { uri: 'test:2', notation: ['2'], prefLabel: { en: 'Concept 2' } },
         { uri: 'test:3', notation: ['3'], prefLabel: { en: 'Concept 3' } },
       ]"
-      :row="false"
+      :row-mode="false"
       :item-name-options="{
         clickable: true,
       }"

@@ -4,11 +4,11 @@
       v-for="item in items"
       :key="getItem(item) && getItem(item).uri"
       :class="{
-        'jskos-vue-itemList-row': row,
+        'jskos-vue-itemList-row': rowMode,
       }"
       :style="styleForItem(getItem(item))"
       :data-uri="getItem(item) && getItem(item).uri"
-      @click.stop="row && $emit('select', { item: getItem(item), row: true })">
+      @click.stop="rowMode && $emit('select', { item: getItem(item), row: true })">
       <!-- Slot before each item's ItemName -->
       <slot
         name="beforeItem"
@@ -55,7 +55,7 @@ export default defineComponent({
       type: String,
       default: null,
     },
-    row: {
+    rowMode: {
       type: Boolean,
       default: true,
     },
