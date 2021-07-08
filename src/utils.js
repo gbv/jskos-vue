@@ -106,29 +106,50 @@ export function cdkRegistryToSuggestFunction(registry, { voc = false, scheme }) 
   }
 }
 
-import { ref } from "vue"
+import { ref, computed } from "vue"
 const draggedItem = ref(null)
-export function addDragAndDrop(callback) {
-  function dragStart(item) {
+export const dragAndDrop = {
+  draggedItem,
+  dragstart(item) {
     draggedItem.value = item
-  }
-  function dragEnd() {
+  },
+  dragend() {
     draggedItem.value = null
-  }
-  function dragOver(event) {
-    event.preventDefault()
-  }
-  function drop(event, ...params) {
-    event.preventDefault()
-    if (draggedItem.value) {
-      callback(draggedItem.value, ...params)
+  },
+  addDropzone(element, callback) {
+    // Can be used to determine whether item is currently dragging over an element
+    const draggingOverCounter = ref(0)
+    const isDraggingOver = computed(() => !!draggingOverCounter.value)
+    const dragover = (event) => {
+      // prevent default to allow drop
+      event.preventDefault()
     }
-  }
-  return {
-    dragStart,
-    dragEnd,
-    dragOver,
-    drop,
-    draggedItem,
-  }
+    const dragenter = () => {
+      draggingOverCounter.value += 1
+    }
+    const dragleave = () => {
+      draggingOverCounter.value -= 1
+    }
+    const drop = (event, ...params) => {
+      event.preventDefault()
+      if (draggedItem.value) {
+        callback(draggedItem.value, ...params)
+      }
+      draggingOverCounter.value = 0
+    }
+    // Add event listeners to element if given
+    if (element) {
+      element.addEventListener("dragover", dragover)
+      element.addEventListener("dragenter", dragenter)
+      element.addEventListener("dragleave", dragleave)
+      element.addEventListener("drop", drop)
+    }
+    return {
+      dragover,
+      dragenter,
+      dragleave,
+      drop,
+      isDraggingOver,
+    }
+  },
 }
