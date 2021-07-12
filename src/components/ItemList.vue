@@ -8,6 +8,9 @@
       }"
       :style="styleForItem(getItem(item))"
       :data-uri="getItem(item) && getItem(item).uri"
+      :draggable="rowMode && !!getItem(item)"
+      @dragstart="dragstart(getItem(item))"
+      @dragend="dragend"
       @click.stop="rowMode && $emit('select', { item: getItem(item), row: true })">
       <!-- Slot before each item's ItemName -->
       <slot
@@ -17,6 +20,7 @@
         v-if="getItem(item)"
         v-bind="itemNameOptions"
         :item="getItem(item)"
+        :draggable="!rowMode"
         @click.stop="$emit('select', { item: getItem(item), row: false })" />
       <!-- Show loading indicator for null values -->
       <!-- TODO: Reconsider. -->
@@ -36,6 +40,8 @@ import { defineComponent } from "vue"
 import ItemName from "./ItemName.vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
+import { dragAndDrop } from "../utils"
+const { dragstart, dragend } = dragAndDrop
 import "../shared.css"
 
 export default defineComponent({
@@ -72,6 +78,12 @@ export default defineComponent({
     },
   },
   emits: ["select"],
+  data() {
+    return {
+      dragstart,
+      dragend,
+    }
+  },
   methods: {
     // style object for item
     styleForItem(item) {

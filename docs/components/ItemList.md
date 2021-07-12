@@ -1,7 +1,7 @@
 # ItemList
 A list of JSKOS items with their notation and label.
 
-Uses [ItemName](./ItemName).
+Uses [ItemName](./ItemName). Also uses [dragAndDrop](../utilities/dragAndDrop) and rows are draggable by default.
 
 ## Props
 - `items` (array) - array of objects
