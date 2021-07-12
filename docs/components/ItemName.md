@@ -1,6 +1,8 @@
 # ItemName
 Represents a JSKOS item (concept or concept scheme) with its notation and label.
 
+Uses [dragAndDrop](../utilities/dragAndDrop) and is draggable by default.
+
 ## Props
 - `item` (object) - JSKOS item
   - required

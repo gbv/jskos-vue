@@ -3,7 +3,10 @@
     :class="{
       'jskos-vue-itemName': true,
       clickable,
-    }">
+    }"
+    draggable="true"
+    @dragstart="dragstart(item)"
+    @dragend="dragend">
     <span
       v-if="showNotation || label === ''"
       class="jskos-vue-itemName-notation"
@@ -18,6 +21,8 @@
 <script>
 import { defineComponent, reactive, computed } from "vue"
 import * as jskos from "jskos-tools"
+import { dragAndDrop } from "../utils"
+const { dragstart, dragend } = dragAndDrop
 import "../shared.css"
 
 const plugins = reactive({
@@ -88,6 +93,8 @@ const component = defineComponent({
     return {
       notation,
       label,
+      dragstart,
+      dragend,
     }
   },
 })
