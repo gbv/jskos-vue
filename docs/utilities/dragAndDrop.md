@@ -68,8 +68,11 @@ See the following examples for how this is used in practice.
 ## Examples
 
 <script setup>
-import { onMounted } from "vue"
+import { ref, onMounted } from "vue"
 import { utils } from "../../src"
+import ItemName from "../../src/components/ItemName.vue"
+import ItemList from "../../src/components/ItemList.vue"
+import ItemDetails from "../../src/components/ItemDetails.vue"
 const { draggedItem, dragstart, dragend, addDropzone } = utils.dragAndDrop
 const {
   dragover,
@@ -85,13 +88,20 @@ onMounted(() => {
   addDropzone(document.getElementById("dropzone"), (item) => {
     alert(`Dropped item with URI ${item.uri}`)
   })
+  addDropzone(document.getElementById("dropzone2"), (item) => {
+    alert(`Dropped item with URI ${item.uri}`)
+  })
 })
 const items = [
-  { uri: "item:1" },
-  { uri: "item:2" },
-  { uri: "item:3" },
-]
+  { notation: ["1"] },
+  { notation: ["2"] },
+  { notation: ["3"] },
+].map(i => ({ ...i, uri: `item:${i.notation[0]}`, prefLabel: { en: `Item ${i.notation[0]}` } }))
+// Selected item for ItemDetails
+const selected = ref(items[2])
 </script>
+
+### Basic Example
 
 Currently dragging: {{ draggedItem && draggedItem.uri }}
 
@@ -168,10 +178,10 @@ onMounted(() => {
   })
 })
 const items = [
-  { uri: "item:1" },
-  { uri: "item:2" },
-  { uri: "item:3" },
-]
+  { notation: ["1"] },
+  { notation: ["2"] },
+  { notation: ["3"] },
+].map(i => ({ ...i, uri: `item:${i.notation[0]}`, prefLabel: { en: `Item ${i.notation[0]}` } }))
 </script>
 
 <template>
@@ -229,4 +239,64 @@ const items = [
   background-color: red;
 }
 </style>
+```
+
+### Example with ItemName/ItemList/ItemDetails
+
+<div
+  id="dropzone2"
+  style="height: 100px; width: 250px; display: flex; justify-content: center; align-items: center; border: 1px solid black;">
+  You can drop an item here.
+</div>
+<p>
+ Single item: <item-name :item="items[0]" />
+</p>
+
+ItemList:
+<item-list
+  :items="items" />
+
+ItemDetails (is a dropzone by default):
+
+<item-details
+  :item="selected"
+  @select="selected = $event.item" />
+
+```vue
+<script setup>
+import { onMounted } from "vue"
+import { utils, ItemName, ItemList, ItemDetails } from "jskos-vue"
+const { draggedItem, dragstart, dragend, addDropzone } = utils.dragAndDrop
+// We need to use onMounted so that dropzone2 is mounted in DOM
+onMounted(() => {
+  addDropzone(document.getElementById("dropzone2"), (item) => {
+    alert(`Dropped item with URI ${item.uri}`)
+  })
+})
+const items = [
+  { notation: ["1"] },
+  { notation: ["2"] },
+  { notation: ["3"] },
+].map(i => ({ ...i, uri: `item:${i.notation[0]}`, prefLabel: { en: `Item ${i.notation[0]}` } }))
+// Selected item for ItemDetails
+const selected = ref(items[2])
+</script>
+
+<template>
+  <div
+    id="dropzone2"
+    style="height: 100px; width: 250px; display: flex; justify-content: center; align-items: center; border: 1px solid black;">
+    You can drop an item here.
+  </div>
+  <p>
+  Single item: <item-name :item="items[0]" />
+  </p>
+  ItemList:
+  <item-list :items="items" />
+  ItemDetails (is a dropzone by default):
+
+  <item-details
+    :item="selected"
+    @select="selected = $event.item" />
+</template>
 ```
