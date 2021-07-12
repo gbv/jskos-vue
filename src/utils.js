@@ -106,7 +106,7 @@ export function cdkRegistryToSuggestFunction(registry, { voc = false, scheme }) 
   }
 }
 
-import { ref, computed } from "vue"
+import { ref } from "vue"
 const draggedItem = ref(null)
 export const dragAndDrop = {
   draggedItem,
@@ -118,24 +118,27 @@ export const dragAndDrop = {
   },
   addDropzone(element, callback) {
     // Can be used to determine whether item is currently dragging over an element
-    const draggingOverCounter = ref(0)
-    const isDraggingOver = computed(() => !!draggingOverCounter.value)
+    const isDraggingOver = ref(false)
+    let eventTarget
     const dragover = (event) => {
       // prevent default to allow drop
       event.preventDefault()
     }
-    const dragenter = () => {
-      draggingOverCounter.value += 1
+    const dragenter = (event) => {
+      eventTarget = event.target
+      isDraggingOver.value = true
     }
-    const dragleave = () => {
-      draggingOverCounter.value -= 1
+    const dragleave = (event) => {
+      if (eventTarget === event.target) {
+        isDraggingOver.value = false
+      }
     }
     const drop = (event, ...params) => {
       event.preventDefault()
       if (draggedItem.value) {
         callback(draggedItem.value, ...params)
       }
-      draggingOverCounter.value = 0
+      isDraggingOver.value = false
     }
     // Add event listeners to element if given
     if (element) {
