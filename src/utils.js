@@ -19,7 +19,7 @@ export function dateToString(dateString) {
     }
     return date.toLocaleString(undefined, options)
   } else {
-    return "?"
+    return dateString
   }
 }
 
