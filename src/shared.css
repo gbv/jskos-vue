@@ -6,6 +6,8 @@
   /* Arrow */
   --jskos-vue-arrow-color: black;
   --jskos-vue-arrow-hover-color: #666;
+  /* ItemDetails */
+  --jskos-vue-itemDetails-dropzone-bgCover: #eeeeee99;
   /* ItemList */
   --jskos-vue-itemList-hover-bgColor: var(--jskos-vue-highlight-bgColor);
   --jskos-vue-itemList-indicator-color: green;

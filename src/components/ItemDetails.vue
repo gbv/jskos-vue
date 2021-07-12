@@ -1,5 +1,16 @@
 <template>
-  <div class="jskos-vue-itemDetails">
+  <div
+    class="jskos-vue-itemDetails"
+    @dragover="dragover"
+    @dragenter="dragenter"
+    @dragleave="dragleave"
+    @drop="drop">
+    <!-- Define a dropzone which is shown only when a concept is being dragged over the component -->
+    <div
+      v-show="isDraggingOver && isDraggedConceptDifferent"
+      class="jskos-vue-itemDetails-dropzone jskos-vue-text-small">
+      {{ t("dropzone") }}
+    </div>
     <div class="jskos-vue-itemDetails-name">
       <slot name="beforeName" />
       <item-name
@@ -152,6 +163,7 @@ import ItemList from "./ItemList.vue"
 import AutoLink from "./AutoLink.vue"
 import * as utils from "../utils.js"
 import { computed, defineComponent } from "vue"
+const { draggedItem, addDropzone } = utils.dragAndDrop
 import "../shared.css"
 import "jskos-vue-tabs/dist/style.css"
 
@@ -172,6 +184,7 @@ const locale = {
     license: "License",
     languages: "Languages",
     type: "Type",
+    dropzone: "Drop an item here to select it.",
   },
   de: {
     showAllAncestors: "zeige alle übergeordneten Konzepte",
@@ -188,6 +201,7 @@ const locale = {
     license: "Lizenz",
     languages: "Sprachen",
     type: "Art",
+    dropzone: "Ziehe ein Item hierrein, um es auszuwählen.",
   },
 }
 // Determines current language from jskos.languagePreference and locale
@@ -220,7 +234,7 @@ export default defineComponent({
     },
   },
   emits: ["select"],
-  setup(props) {
+  setup(props, { emit }) {
     const iterateLanguageMapContent = (item, prop) => {
       /** Explanation:
           1. Get all language keys for altLabels (Object.keys)
@@ -284,6 +298,13 @@ export default defineComponent({
       }
       return types
     })
+    // Drag and drop
+    const isDraggedConceptDifferent = computed(() => {
+      return !jskos.compare(props.item, draggedItem.value)
+    })
+    const dropzone = addDropzone(null, (item) => {
+      isDraggedConceptDifferent.value && emit("select", { item })
+    })
     return {
       utils,
       jskos,
@@ -293,6 +314,9 @@ export default defineComponent({
       licenseBadges,
       licenseAttribution,
       types,
+      draggedItem,
+      ...dropzone,
+      isDraggedConceptDifferent,
     }
   },
 })
@@ -348,5 +372,17 @@ export default defineComponent({
   vertical-align: middle;
   padding-bottom: 4px;
   display: inline-block;
+}
+.jskos-vue-itemDetails-dropzone {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  background-color: var(--jskos-vue-itemDetails-dropzone-bgCover);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

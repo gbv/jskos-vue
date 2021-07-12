@@ -1,7 +1,7 @@
 # ItemDetails
 Component to display details for a JSKOS item.
 
-Uses [ItemName](./ItemName), [ItemList](./ItemList), [AutoLink](./AutoLink).
+Uses [ItemName](./ItemName), [ItemList](./ItemList), [AutoLink](./AutoLink). Also uses [dragAndDrop](../utilities/dragAndDrop) and defines a dropzone for items. Dropped items will trigger the `select` event.
 
 ## Props
 - `item` (object) - JSKOS item (concept or concept scheme)
@@ -18,6 +18,10 @@ Uses [ItemName](./ItemName), [ItemList](./ItemList), [AutoLink](./AutoLink).
 - `select`
   - Emitted when a concept is selected.
   - Parameter is an object with properties `item` (containing the clicked JSKOS concept) and `row` (containing a boolean which is `true` when the click was initiated via the row, not on the item directly).
+
+## CSS Variables
+- `--jskos-vue-itemDetails-dropzone-bgCover` - background color for overlay which is shown when an item is being dragged over ItemDetails
+  - default: #eeeeee99
 
 ## Examples
 
