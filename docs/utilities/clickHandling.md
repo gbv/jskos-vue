@@ -1,2 +1,0 @@
-# Click Handling
-TODO
