@@ -17,19 +17,6 @@
         :item="item" />
       <slot name="afterName" />
     </div>
-    <!-- Ancestors -->
-    <!-- TODO: Only show part of ancestors? -->
-    <item-list
-      v-bind="itemListOptions"
-      :items="item.ancestors || []"
-      class="jskos-vue-itemDetails-ancestors"
-      @select="$emit('select', { item: $event.item })" />
-    <!-- Broader -->
-    <item-list
-      v-bind="itemListOptions"
-      :items="(item.broader || []).filter(i => !jskos.isContainedIn(i, item.ancestors || []))"
-      class="jskos-vue-itemDetails-broader"
-      @select="$emit('select', { item: $event.item })" />
     <!-- License -->
     <div
       v-if="item.license && item.license.length">
@@ -46,6 +33,19 @@
         </span>
       </auto-link>
     </div>
+    <!-- Ancestors -->
+    <!-- TODO: Only show part of ancestors? -->
+    <item-list
+      v-bind="itemListOptions"
+      :items="item.ancestors || []"
+      class="jskos-vue-itemDetails-ancestors"
+      @select="$emit('select', { item: $event.item })" />
+    <!-- Broader -->
+    <item-list
+      v-bind="itemListOptions"
+      :items="(item.broader || []).filter(i => !jskos.isContainedIn(i, item.ancestors || []))"
+      class="jskos-vue-itemDetails-broader"
+      @select="$emit('select', { item: $event.item })" />
     <tabs
       borders="bottom"
       size="sm"
