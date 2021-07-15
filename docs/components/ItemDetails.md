@@ -41,6 +41,14 @@ const state = reactive({
   item: {
     uri: "https://example.com/DT",
     notation: ["DT"],
+    license: [
+      {
+        uri: "http://creativecommons.org/publicdomain/zero/1.0/",
+      },
+      {
+        uri: "http://example.com/license/",
+      },
+    ],
     prefLabel: {
       en: "Detailed Item",
       de: "Detalliertes Item",
