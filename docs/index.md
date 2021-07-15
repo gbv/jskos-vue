@@ -121,6 +121,10 @@ Fully working HTML example:
 </html>
 ```
 
+## Development
+
+Please refer to the [GitHub README](https://github.com/gbv/jskos-vue#development) for development instructions.
+
 ## Additional Notes
 It is recommended to use the following CSS snippet in your applications to make sure box sizing is correctly calculated ([more info](https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/)):
 
