@@ -8,7 +8,9 @@
         <!-- Actual modal -->
         <div class="jskos-vue-modal-dialog">
           <header class="jskos-vue-modal-header">
-            <h1>Test Header</h1>
+            <slot name="header">
+              <h1>Test Header</h1>
+            </slot>
             <button
               type="button"
               aria-label="Close"
@@ -17,10 +19,10 @@
             </button>
           </header>
           <div class="jskos-vue-modal-body">
-            Body
+            <slot name="body" />
           </div>
           <footer class="jskos-vue-modal-footer">
-            Footer
+            <slot name="footer" />
           </footer>
         </div>
         <!-- Semi-transparent backdrop -->
@@ -89,22 +91,27 @@ export default defineComponent({
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1000;
+  z-index: var(--jskos-vue-modal-zIndexBase);
   width: 100%;
   height: 100%;
 }
 .jskos-vue-modal-dialog {
-  height: 90%;
-  min-height: calc(100% - 3.5rem);
-  margin: 1.75em auto;
+  max-height: calc(100% - 3.5rem);
+  margin: 1em;
+  min-width: 400px;
   max-width: 800px;
-  background-color: white;
-  position: relative;
+	width: max-content;
+  background-color: var(--jskos-vue-modal-bgColor);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(calc(-50% - 1em)) translateY(calc(-50% - 1em));
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
-  z-index: 1000;
+  z-index: var(--jskos-vue-modal-zIndexBase);
   display: flex;
   flex-direction: column;
+  align-items: stretch;
 }
 .jskos-vue-modal-header {
   border-bottom: 1px solid #dee2e6;
@@ -128,10 +135,14 @@ export default defineComponent({
   opacity: .75;
 }
 .jskos-vue-modal-body {
-  flex: 1 1 auto;
+  min-height: 300px;
+  overflow-y: scroll;
 }
 .jskos-vue-modal-footer {
   border-top: 1px solid #dee2e6;
+  padding: 8px;
+  font-size: var(--jskos-vue-fontSize-small);
+  background-color: var(--jskos-vue-modal-footer-bgColor);
 }
 .jskos-vue-modal-backdrop {
   position: absolute;
@@ -139,19 +150,17 @@ export default defineComponent({
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 999;
+  z-index: calc(var(--jskos-vue-modal-zIndexBase) - 1);
   background-color: #000;
   opacity: 0.5;
 }
 </style>
 
 <style>
-.fade-enter-active,
-.fade-leave-active {
+.fade-enter-active, .fade-leave-active {
   transition: opacity 0.15s ease;
 }
-.fade-enter-from,
-.fade-leave-to {
+.fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
 </style>
