@@ -1,6 +1,7 @@
 /* Define CSS variables that can be overridden */
 :root {
   /* General */
+  --jskos-vue-bgColor: white;
   --jskos-vue-highlight-bgColor: #fdbd5888;
   --jskos-vue-color-lightGrey: #737373;
   /* Arrow */
@@ -15,7 +16,7 @@
   --jskos-vue-conceptTree-selected-bgColor: var(--jskos-vue-highlight-bgColor);
   --jskos-vue-conceptTree-hover-bgColor: var(--jskos-vue-highlight-bgColor);
   /* ItemSuggest */
-  --jskos-vue-itemSuggest-results-bgColor: white;
+  --jskos-vue-itemSuggest-results-bgColor: var(--jskos-vue-bgColor);
   --jskos-vue-itemSuggest-results-shadowColor: rgba(0, 0, 0, 0.2);
   --jskos-vue-itemSuggest-selected-color: inherit;
   --jskos-vue-itemSuggest-selected-bgColor: var(--jskos-vue-highlight-bgColor);
@@ -23,12 +24,22 @@
   /* LoadingIndicator */
   --jskos-vue-loadingIndicator-primary-color: lightgray;
   --jskos-vue-loadingIndicator-secondary-color: blue;
+  /* Modal */
+  --jskos-vue-modal-bgColor: var(--jskos-vue-bgColor);
+  --jskos-vue-modal-footer-bgColor: rgba(0, 0, 0, 0.05);
+  --jskos-vue-modal-minWidth: 400px;
+  --jskos-vue-modal-maxWidth: 800px;
+  --jskos-vue-modal-minHeight: 300px;
+  --jskos-vue-modal-maxHeight: calc(100% - 3.5rem);
+  --jskos-vue-modal-zIndexBase: 1000;
+  /* Text sizes */
+  --jskos-vue-fontSize-small: 0.85rem;
 }
 .jskos-vue-text-lightGrey {
   color: var(--jskos-vue-color-lightGrey);
 }
 .jskos-vue-text-small {
-  font-size: 0.85rem;
+  font-size: var(--jskos-vue-fontSize-small);
 }
 .jskos-vue-text-bold {
   font-weight: bold;
