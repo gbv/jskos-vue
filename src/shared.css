@@ -27,6 +27,10 @@
   /* Modal */
   --jskos-vue-modal-bgColor: var(--jskos-vue-bgColor);
   --jskos-vue-modal-footer-bgColor: rgba(0, 0, 0, 0.05);
+  --jskos-vue-modal-minWidth: 400px;
+  --jskos-vue-modal-maxWidth: 800px;
+  --jskos-vue-modal-minHeight: 300px;
+  --jskos-vue-modal-maxHeight: calc(100% - 3.5rem);
   --jskos-vue-modal-zIndexBase: 1000;
   /* Text sizes */
   --jskos-vue-fontSize-small: 0.85rem;

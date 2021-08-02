@@ -4,7 +4,8 @@
     <transition name="fade">
       <div
         v-if="shown"
-        class="jskos-vue-modal">
+        class="jskos-vue-modal"
+        v-bind="$attrs">
         <!-- Actual modal -->
         <div class="jskos-vue-modal-dialog">
           <header class="jskos-vue-modal-header">
@@ -19,7 +20,7 @@
             </button>
           </header>
           <div class="jskos-vue-modal-body">
-            <slot name="body" />
+            <slot />
           </div>
           <footer class="jskos-vue-modal-footer">
             <slot name="footer" />
@@ -40,6 +41,7 @@ import "../shared.css"
 
 export default defineComponent({
   name: "Modal",
+  inheritAttrs: false,
   props: {
     modelValue: {
       type: Boolean,
@@ -96,11 +98,12 @@ export default defineComponent({
   height: 100%;
 }
 .jskos-vue-modal-dialog {
-  max-height: calc(100% - 3.5rem);
+  min-height: var(--jskos-vue-modal-minHeight);
+  max-height: var(--jskos-vue-modal-maxHeight);
   margin: 1em;
-  min-width: 400px;
-  max-width: 800px;
-	width: max-content;
+  min-width: var(--jskos-vue-modal-minWidth);
+  max-width: var(--jskos-vue-modal-maxWidth);
+  width: max-content;
   background-color: var(--jskos-vue-modal-bgColor);
   position: absolute;
   top: 50%;
@@ -114,6 +117,7 @@ export default defineComponent({
   align-items: stretch;
 }
 .jskos-vue-modal-header {
+  background-color: var(--jskos-vue-modal-bgColor);
   border-bottom: 1px solid #dee2e6;
   display: flex;
 }
@@ -135,7 +139,7 @@ export default defineComponent({
   opacity: .75;
 }
 .jskos-vue-modal-body {
-  min-height: 300px;
+  flex: 1;
   overflow-y: scroll;
 }
 .jskos-vue-modal-footer {
