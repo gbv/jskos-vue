@@ -125,7 +125,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style>
 .jskos-vue-itemList {
   padding: 0;
 }

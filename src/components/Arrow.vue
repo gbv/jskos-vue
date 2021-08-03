@@ -31,7 +31,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style>
 .jskos-vue-arrow {
   display: inline-block;
   vertical-align: middle;

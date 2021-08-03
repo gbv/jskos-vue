@@ -110,7 +110,7 @@ component.addNotationPlugin = (plugin) => {
 export default component
 </script>
 
-<style scoped>
+<style>
 .jskos-vue-itemName-notation {
   font-weight: bold;
 }

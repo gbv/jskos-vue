@@ -88,7 +88,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style>
 .jskos-vue-modal {
   position: fixed;
   top: 0;
@@ -159,9 +159,6 @@ export default defineComponent({
   background-color: #000;
   opacity: 0.5;
 }
-</style>
-
-<style>
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.15s ease;
 }
