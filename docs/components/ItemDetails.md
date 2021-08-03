@@ -29,7 +29,7 @@ Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo
 
 ## CSS Variables
 - `--jskos-vue-itemDetails-dropzone-bgCover` - background color for overlay which is shown when an item is being dragged over ItemDetails
-  - default: #eeeeee99
+  - default: `#eeeeee99`
 
 ## Examples
 

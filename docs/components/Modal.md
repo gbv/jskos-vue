@@ -7,7 +7,7 @@ A full-screen modal.
   - default: `undefined` (= value is kept track of internally)
 
 ## Slots
-- `default`: Body content
+- default: Body content
 - `header`: Header content
 - `footer`: Footer content
 

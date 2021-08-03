@@ -169,3 +169,13 @@ Many of the Vue components in jskos-vue use [CSS variables](https://developer.mo
   direction="right"
   style="--jskos-vue-arrow-color: blue;" />
 ```
+
+There are also some global CSS variables that are used by multiple components:
+- `--jskos-vue-bgColor` - general background color
+  - default: `white`
+- `--jskos-vue-highlight-bgColor` - highlight background color
+  - default: `#fdbd5888`
+- `--jskos-vue-color-lightGrey` - light grey color
+  - default: `#737373`
+
+Note that this list is likely going to grow and that defaults can change any time during 0.x.x releases.

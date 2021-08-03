@@ -7,9 +7,9 @@ Spinning loading indicator.
 
 ## CSS Variables
 - `--jskos-vue-loadingIndicator-primary-color` - color of the ring
-  - default: lightgray
+  - default: `lightgray`
 - `--jskos-vue-loadingIndicator-secondary-color` - color of the spinner
-  - default: blue
+  - default: `blue`
 
 ## Examples
 

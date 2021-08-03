@@ -29,9 +29,9 @@ Uses [ItemName](./ItemName). Also uses [dragAndDrop](../utilities/dragAndDrop) a
 
 ## CSS Variables
 - `--jskos-vue-itemList-hover-bgColor` - row hover background color (for `rowMode` = `true`)
-  - default: #fdbd58aa
+  - default: `#fdbd58aa`
 - `--jskos-vue-itemList-indicator-color` - default indicator color (for `true` values)
-  - default: green
+  - default: `green`
 
 ## Examples
 

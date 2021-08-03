@@ -33,9 +33,9 @@ Component to display a concept tree.
 
 ## CSS Variables
 - `--jskos-vue-conceptTree-selected-bgColor` - row background color for selected concept (v-model)
-  - default: #fdbd58aa
+  - default: `#fdbd58aa`
 - `--jskos-vue-conceptTree-hover-bgColor` - row hover background color
-  - default: #fdbd58aa
+  - default: `#fdbd58aa`
 
 ## Examples
 
