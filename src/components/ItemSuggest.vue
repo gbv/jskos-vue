@@ -12,7 +12,7 @@
       @keydown.down.prevent="onArrowDown"
       @keydown.up.prevent="onArrowUp"
       @keyup.enter="onEnter"
-      @keyup.esc="$refs.searchInput.blur(); closeResults()"
+      @keyup.esc="$refs && $refs.searchInput && $refs.searchInput.blur(); closeResults()"
       @focus="openResults">
     <!-- Results -->
     <div
