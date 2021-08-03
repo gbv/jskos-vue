@@ -1,7 +1,7 @@
 # ItemDetails
 Component to display details for a JSKOS item.
 
-Uses [ItemName](./ItemName), [ItemList](./ItemList), [AutoLink](./AutoLink). Also uses [dragAndDrop](../utilities/dragAndDrop) and defines a dropzone for items. Dropped items will trigger the `select` event.
+Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo), [AutoLink](./AutoLink). Also uses [dragAndDrop](../utilities/dragAndDrop) and defines a dropzone for items. Dropped items will trigger the `select` event.
 
 ## Props
 - `item` (object) - JSKOS item (concept or concept scheme)
@@ -123,6 +123,14 @@ const state = reactive({
           de: "ein übergeordnetes Konzept",
         },
       },
+    ],
+    publisher: [
+      {
+        url: "https://www.gbv.de",
+        prefLabel: {
+          en: "VZG",
+        },
+      }
     ],
   },
 })
