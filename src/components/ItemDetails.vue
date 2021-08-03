@@ -205,8 +205,8 @@ const locale = {
   },
 }
 // Determines current language from jskos.languagePreference and locale
-const language = computed(() => jskos.languagePreference.getLanguages().find(lang => locale[lang]) || "en")
-const t = (prop) => locale[language.value][prop]
+const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => locale[lang]) || "en")
+const t = (prop) => locale[currentLanguage.value][prop]
 
 /**
  * TODO!
@@ -308,7 +308,7 @@ export default defineComponent({
     return {
       utils,
       jskos,
-      language,
+      currentLanguage,
       t,
       iterateLanguageMapContent,
       licenseBadges,
