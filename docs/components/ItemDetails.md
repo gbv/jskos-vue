@@ -34,7 +34,7 @@ Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo
 ## Examples
 
 <script setup>
-import { ItemDetails } from "../../src/components"
+import { ItemDetails, ItemDetailsTabs } from "../../src/components"
 import { Tab } from "jskos-vue-tabs"
 import * as jskos from "jskos-tools"
 import { reactive } from "vue"
@@ -145,6 +145,8 @@ const state = reactive({
 
 const alert = (...args) => window.alert(...args)
 </script>
+
+### Default
 
 <p>
   Settings:
@@ -344,5 +346,124 @@ const alert = (...args) => window.alert(...args)
       </div>
     </template>
   </item-details>
+</template>
+```
+
+### Hide tabs and show them next to component
+
+Note: This works best when using a fixed width for ItemDetailsTabs (otherwise wrapping might change depending on the selected tab).
+
+<div style="display: flex; flex-wrap: wrap;">
+  <item-details
+    v-bind="state"
+    :showTabs="false"
+    style="flex: 1;"
+    @select="alert(`Clicked on item ${$event.item.uri}`)" />
+  <item-details-tabs
+    :item="state.item"
+    style="flex: 0 0 280px; padding-left: 10px;" />
+</div>
+
+```vue
+<script setup>
+import { ItemDetails, ItemDetailsTabs } from "jskos-vue"
+import { reactive } from "vue"
+
+const state = reactive({
+  item: {
+    uri: "https://example.com/DT",
+    notation: ["DT"],
+    prefLabel: {
+      en: "Detailed Item",
+      de: "Detalliertes Item",
+    },
+    altLabel: {
+      fr: ["Désignation alternative"],
+      de: ["Alternative Benennung", "noch eine"],
+    },
+    editorialNote: {
+      en: ["Editorial English"],
+      de: ["Editorial Deutsch"],
+      fr: ["Editorial Français"],
+    },
+    identifier: ["uri:detailed", "test"],
+    created: "2021-05-27",
+    issued: "2021-05-27",
+    modified: "2021-05-28",
+    definition: {
+      en: ["a defintion", "a second definition"],
+      de: ["eine Definition"],
+    },
+    narrower: [
+      {
+        uri: "https://example.com/DT1",
+        notation: ["DT1"],
+        prefLabel: {
+          en: "a Child",
+          de: "ein Unterkonzept",
+        },
+      },
+      {
+        uri: "https://example.com/DT2",
+        notation: ["DT2"],
+        prefLabel: {
+          en: "another Child",
+          de: "ein weiteres Unterkonzept",
+        },
+      },
+      {
+        uri: "https://example.com/DT3",
+        notation: ["DT3"],
+        prefLabel: {
+          en: "yet another Child",
+          de: "noch ein weiteres Unterkonzept",
+        },
+      },
+    ],
+    ancestors: [
+      {
+        uri: "https://example.com/D",
+        notation: ["D"],
+        prefLabel: {
+          en: "an Ancestor",
+          de: "ein Elternkonzept",
+        },
+      },
+    ],
+    broader: [
+      {
+        uri: "https://example.com/D",
+        notation: ["D"],
+        prefLabel: {
+          en: "an Ancestor",
+          de: "ein Elternkonzept",
+        },
+      },
+      {
+        uri: "https://example.com/D-alt",
+        notation: ["D-alt"],
+        prefLabel: {
+          en: "a broader concept",
+          de: "ein übergeordnetes Konzept",
+        },
+      },
+    ],
+  },
+})
+
+const alert = (...args) => window.alert(...args)
+</script>
+
+<template>
+  <div style="display: flex; flex-wrap: wrap;">
+    <item-details
+      v-bind="state"
+      :showTabs="false"
+      style="flex: 1;"
+      @select="alert(`Clicked on item ${$event.item.uri}`)" />
+    <item-details-tabs
+      :item="state.item"
+      style="flex: 0 0 280px; padding-left: 10px;" />
+  </div>
 </template>
 ```
