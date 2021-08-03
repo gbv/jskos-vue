@@ -8,6 +8,14 @@ Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo
   - required
 - `itemListOptions` (object) - options that are passed along to [ItemList](./ItemList) via v-bind
   - default: `{}`
+- `showTabs` (boolean) - option whether to show ItemDetailsTabs
+  - default: `true`
+- `showAncestors` (boolean) - option whether to show the item's ancestors
+  - default: `true`
+- `showBroader` (boolean) - option whether to show the item's broader concepts
+  - default: `true`
+- `showNarrower` (boolean) - option whether to show the item's narrower concepts
+  - default: `true`
 
 ## Slots
 - `beforeName`: Content shown before the item's name.

@@ -25,17 +25,20 @@
     <!-- Ancestors -->
     <!-- TODO: Only show part of ancestors? -->
     <item-list
+      v-if="showAncestors"
       v-bind="itemListOptions"
       :items="item.ancestors || []"
       class="jskos-vue-itemDetails-ancestors"
       @select="$emit('select', { item: $event.item })" />
     <!-- Broader -->
     <item-list
+      v-if="showBroader"
       v-bind="itemListOptions"
       :items="(item.broader || []).filter(i => !jskos.isContainedIn(i, item.ancestors || []))"
       class="jskos-vue-itemDetails-broader"
       @select="$emit('select', { item: $event.item })" />
     <item-details-tabs
+      v-if="showTabs"
       :item="item">
       <template #additionalTabs>
         <slot name="additionalTabs" />
@@ -43,6 +46,7 @@
     </item-details-tabs>
     <!-- Narrower -->
     <item-list
+      v-if="showNarrower"
       v-bind="itemListOptions"
       :items="item.narrower || []"
       class="jskos-vue-itemDetails-narrower"
@@ -103,6 +107,22 @@ export default defineComponent({
     itemListOptions: {
       type: Object,
       default: () => ({}),
+    },
+    showTabs: {
+      type: Boolean,
+      default: true,
+    },
+    showAncestors: {
+      type: Boolean,
+      default: true,
+    },
+    showBroader: {
+      type: Boolean,
+      default: true,
+    },
+    showNarrower: {
+      type: Boolean,
+      default: true,
     },
   },
   emits: ["select"],
