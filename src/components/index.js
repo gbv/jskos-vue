@@ -1,6 +1,7 @@
 import ItemName from "./ItemName.vue"
 import ItemList from "./ItemList.vue"
 import ItemDetails from "./ItemDetails.vue"
+import ItemDetailsTabs from "./ItemDetailsTabs.vue"
 import LicenseInfo from "./LicenseInfo.vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import Arrow from "./Arrow.vue"
@@ -11,6 +12,7 @@ export {
   ItemName,
   ItemList,
   ItemDetails,
+  ItemDetailsTabs,
   LicenseInfo,
   LoadingIndicator,
   Arrow,
