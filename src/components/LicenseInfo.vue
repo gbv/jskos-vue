@@ -23,7 +23,7 @@ import * as jskos from "jskos-tools"
 import AutoLink from "./AutoLink.vue"
 
 export default defineComponent({
-  name: "ItemDetails",
+  name: "LicenseInfo",
   components: {
     AutoLink,
   },
