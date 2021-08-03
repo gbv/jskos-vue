@@ -12,7 +12,7 @@ Uses [ItemName](./ItemName), [ItemList](./ItemList), [AutoLink](./AutoLink). Als
 ## Slots
 - `beforeName`: Content shown before the item's name.
 - `afterName`: Content shown after the item's name.
-- `tabs`: Slot to add additional tabs (via [jskos-vue-tabs](https://github.com/gbv/jskos-vue-tabs)) or absolutely positioned content  for all tabs.
+- `additionalTabs`: Slot to add additional tabs (via [jskos-vue-tabs](https://github.com/gbv/jskos-vue-tabs)) or absolutely positioned content for all tabs.
 
 ## Events
 - `select`
@@ -161,9 +161,9 @@ const alert = (...args) => window.alert(...args)
 <item-details
   v-bind="state"
   @select="alert(`Clicked on item ${$event.item.uri}`)">
-  <template v-slot:tabs>
+  <template v-slot:additionalTabs>
     <tab title="Test">
-      This tab was added via the "tabs" slot.
+      This tab was added via the "additionalTabs" slot.
     </tab>
     <div style="position: absolute; top: 0; right: 0;">
       🚀
@@ -310,9 +310,9 @@ const alert = (...args) => window.alert(...args)
   <item-details
     v-bind="state"
     @select="alert(`Clicked on item ${$event.item.uri}`)">
-    <template v-slot:tabs>
+    <template v-slot:additionalTabs>
       <tab title="Test">
-        This tab was added via the "tabs" slot.
+        This tab was added via the "additionalTabs" slot.
       </tab>
       <div style="position: absolute; top: 0; right: 0;">
         🚀

@@ -144,7 +144,7 @@
         </ul>
       </tab>
       <!-- Slot for additional tabs -->
-      <slot name="tabs" />
+      <slot name="additionalTabs" />
     </tabs>
     <!-- Narrower -->
     <item-list
