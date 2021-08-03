@@ -101,7 +101,7 @@ const showTestModal = () => {
   v-model="tabsModalShown"
   style="--jskos-vue-modal-minWidth: var(--jskos-vue-modal-maxWidth); --jskos-vue-modal-minHeight: var(--jskos-vue-modal-maxHeight);">
   <template v-slot:footer>Test Footer</template>
-  <tabs style="height: 100%">
+  <tabs style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
     <tab title="Tab 1">
       <p>Because the "Tabs" component changes dimensions with the tab content, we fixate <code>minWidth</code> and <code>minHeight</code> via CSS variables.</p>
     </tab>
@@ -130,7 +130,7 @@ const showTestModal = () => {
     v-model="tabsModalShown"
     style="--jskos-vue-modal-minWidth: var(--jskos-vue-modal-maxWidth); --jskos-vue-modal-minHeight: var(--jskos-vue-modal-maxHeight);">
     <template v-slot:footer>Test Footer</template>
-    <tabs style="height: 100%">
+    <tabs style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
       <tab title="Tab 1">
         <p>Because the "Tabs" component changes dimensions with the tab content, we fixate <code>minWidth</code> and <code>minHeight</code> via CSS variables.</p>
       </tab>

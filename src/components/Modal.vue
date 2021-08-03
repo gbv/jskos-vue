@@ -141,6 +141,7 @@ export default defineComponent({
 .jskos-vue-modal-body {
   flex: 1;
   overflow-y: scroll;
+  position: relative;
 }
 .jskos-vue-modal-footer {
   border-top: 1px solid #dee2e6;
