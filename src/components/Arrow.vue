@@ -9,24 +9,20 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue"
+<script setup>
 import "../shared.css"
 
-export default defineComponent({
-  name: "Arrow",
-  props: {
-    direction: {
-      type: String,
-      required: true,
-      validator(value) {
-        return ["up", "down", "left", "right"].includes(value)
-      },
+defineProps({
+  direction: {
+    type: String,
+    required: true,
+    validator(value) {
+      return ["up", "down", "left", "right"].includes(value)
     },
-    clickable: {
-      type: Boolean,
-      default: false,
-    },
+  },
+  clickable: {
+    type: Boolean,
+    default: false,
   },
 })
 </script>

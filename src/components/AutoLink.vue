@@ -6,24 +6,21 @@
   <span v-else><slot>{{ text || href }}</slot></span>
 </template>
 
-<script>
-
+<script setup>
 /**
  * Represents an element that automatically converts a valid URL into a link.
  */
-export default {
-  name: "AutoLink",
-  props: {
-    // The string that is potentially a URL.
-    href: {
-      type: String,
-      default: "",
-    },
-    //  The text that is shown (defaults to URL).
-    text: {
-      type: String,
-      default: "",
-    },
+
+defineProps({
+  // The string that is potentially a URL.
+  href: {
+    type: String,
+    default: "",
   },
-}
+  //  The text that is shown (defaults to URL).
+  text: {
+    type: String,
+    default: "",
+  },
+})
 </script>

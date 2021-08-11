@@ -13,4 +13,10 @@ module.exports = {
     sourceType: "module",
     ecmaVersion: 2020,
   },
+  globals: {
+    defineProps: "readonly",
+    defineEmits: "readonly",
+    defineExpose: "readonly",
+    withDefaults: "readonly",
+  },
 }
