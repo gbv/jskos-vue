@@ -27,7 +27,7 @@
     <item-list
       v-if="showAncestors"
       v-bind="itemListOptions"
-      :items="item.ancestors || []"
+      :items="(item.ancestors || []).filter(Boolean).reverse()"
       class="jskos-vue-itemDetails-ancestors"
       @select="$emit('select', { item: $event.item })" />
     <!-- Broader -->
