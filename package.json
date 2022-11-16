@@ -1,18 +1,17 @@
 {
   "name": "jskos-vue",
   "version": "0.2.2",
-  "type": "module",
   "files": [
     "dist",
     "src"
   ],
-  "main": "./dist/jskos-vue.umd.cjs",
-  "module": "./dist/jskos-vue.js",
+  "main": "./dist/jskos-vue.umd.js",
+  "module": "./dist/jskos-vue.mjs",
   "style": "./dist/style.css",
   "exports": {
     ".": {
-      "import": "./dist/jskos-vue.js",
-      "require": "./dist/jskos-vue.umd.cjs"
+      "import": "./dist/jskos-vue.mjs",
+      "require": "./dist/jskos-vue.umd.js"
     }
   },
   "sideEffects": false,

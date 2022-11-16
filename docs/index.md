@@ -106,7 +106,7 @@ Fully working HTML example:
     <script src="https://cdn.jsdelivr.net/npm/jskos-vue-tabs"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-scrollto@2"></script>
     <!-- Our library (adjust version if necessary) -->
-    <script src="https://cdn.jsdelivr.net/npm/jskos-vue@0.2/dist/jskos-vue.umd.min.cjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jskos-vue@0.2/dist/jskos-vue.umd.min.js"></script>
     <script>
       // Here, we are creating an empty Vue app and include the library as a plugin.
       Vue.createApp({

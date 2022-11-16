@@ -1,4 +1,4 @@
-import lint from "mocha-eslint"
+const lint = require("mocha-eslint")
 
 // ESLint as part of the tests
 let paths = [
