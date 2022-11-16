@@ -34,7 +34,7 @@ Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo
 ## Examples
 
 <script setup>
-import { ItemDetails, ItemDetailsTabs } from "../../src/components"
+import { ItemDetails, ItemDetailsTabs } from "../../src/components/index.js"
 import { Tab } from "jskos-vue-tabs"
 import * as jskos from "jskos-tools"
 import { reactive } from "vue"

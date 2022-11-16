@@ -314,7 +314,7 @@ Array.prototype.move = function(from, to) {
   return this
 }
 
-import * as cdk from "cocoda-sdk"
+import { cdk} from "cocoda-sdk"
 const registry = cdk.initializeRegistry({
   provider: "ConceptApi",
   api: "https://coli-conc.gbv.de/api/",

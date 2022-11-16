@@ -20,7 +20,7 @@ Input field to search and select an item (usually concept or concept scheme) fro
 
 <script setup>
 import ItemSuggest from "../../src/components/ItemSuggest.vue"
-import * as cdk from "cocoda-sdk"
+import { cdk } from "cocoda-sdk"
 import * as utils from "../../src/utils.js"
 import { ref, onMounted } from "vue"
 

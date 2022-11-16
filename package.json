@@ -35,25 +35,24 @@
     "test"
   ],
   "dependencies": {
-    "jskos-tools": "^1.0.17",
+    "jskos-tools": "^1.0.27",
     "jskos-vue-tabs": "^0.1.4",
-    "vue": "^3.2.1",
+    "vue": "^3.2.45",
     "vue-scrollto": "^2.20.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.4.0",
-    "@vue/compiler-sfc": "^3.2.1",
-    "cocoda-sdk": "^1.0.12",
-    "eslint": "^7.32.0",
+    "@vitejs/plugin-vue": "^3.2.0",
+    "cocoda-sdk": "^3.3.0",
+    "eslint": "^8.27.0",
     "eslint-config-gbv": "^1.0.3",
-    "eslint-plugin-vue": "^7.16.0",
-    "lint-staged": "^11.1.2",
-    "mocha": "^9.0.3",
+    "eslint-plugin-vue": "^9.7.0",
+    "lint-staged": "^13.0.3",
+    "mocha": "^10.1.0",
     "mocha-eslint": "^7.0.0",
     "pre-commit": "^1.2.2",
-    "vite": "^2.4.4",
-    "vitepress": "^0.16.0",
-    "yesno": "^0.3.1"
+    "vite": "^3.2.4",
+    "vitepress": "^0.22.4",
+    "yesno": "^0.4.0"
   },
   "author": "Stefan Peters <stefan.peters@gbv.de>",
   "license": "MIT",

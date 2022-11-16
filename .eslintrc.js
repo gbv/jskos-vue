@@ -13,6 +13,9 @@ module.exports = {
     sourceType: "module",
     ecmaVersion: 2020,
   },
+  rules: {
+    "vue/multi-word-component-names": "off",
+  },
   globals: {
     defineProps: "readonly",
     defineEmits: "readonly",

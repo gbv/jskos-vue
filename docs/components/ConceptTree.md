@@ -42,7 +42,7 @@ Component to display a concept tree.
 <script setup>
 import ConceptTree from "../../src/components/ConceptTree.vue"
 import * as jskos from "jskos-tools"
-import * as cdk from "cocoda-sdk"
+import { cdk } from "cocoda-sdk"
 import { reactive, onMounted } from "vue"
 
 let registry
