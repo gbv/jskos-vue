@@ -5,6 +5,7 @@ import ItemDetailsTabs from "./ItemDetailsTabs.vue"
 import LicenseInfo from "./LicenseInfo.vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import Arrow from "./Arrow.vue"
+import AutoLink from "./AutoLink.vue"
 import ConceptTree from "./ConceptTree.vue"
 import ItemSuggest from "./ItemSuggest.vue"
 
@@ -16,6 +17,7 @@ export {
   LicenseInfo,
   LoadingIndicator,
   Arrow,
+  AutoLink,
   ConceptTree,
   ItemSuggest,
 }
