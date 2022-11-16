@@ -1,6 +1,6 @@
 import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
-const path = require("path")
+import { resolve } from "path"
 
 /**
  * Allow two different builds:
@@ -13,7 +13,7 @@ let build
 if (process.env.BUILD_MODE !== "app") {
   build = {
     lib: {
-      entry: path.resolve(__dirname, "src/index.js"),
+      entry: resolve(__dirname, "src/index.js"),
       name: "JskosVue",
     },
     rollupOptions: {
