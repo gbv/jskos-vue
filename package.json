@@ -12,6 +12,10 @@
     ".": {
       "import": "./dist/jskos-vue.mjs",
       "require": "./dist/jskos-vue.umd.js"
+    },
+    "./dist/style.css": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css"
     }
   },
   "sideEffects": false,
