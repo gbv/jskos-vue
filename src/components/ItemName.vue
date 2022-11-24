@@ -11,8 +11,14 @@
       v-if="showNotation || label === ''"
       class="jskos-vue-itemName-notation"
       v-html="notation" />
-    {{ label }}
-    <template v-if="notation === '' && label === ''">
+    <template v-if="label !== ''">
+      <!-- Whitespace between notation and label -->
+      <span
+        v-if="showNotation && notation !== ''"
+        v-html="' '" />
+      {{ label }}
+    </template>
+    <template v-if="(!showNotation || notation === '') && label === ''">
       {{ fallbackLabel }}
     </template>
   </span>
