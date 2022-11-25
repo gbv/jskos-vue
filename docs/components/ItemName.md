@@ -16,6 +16,8 @@ Uses [dragAndDrop](../utilities/dragAndDrop) and is draggable by default.
   - default: uses [jskos-tools' languagePreference](https://gbv.github.io/jskos-tools/#languagepreference)
 - `clickable` (boolean) - adjusts mouse pointer and text decoration on hover if `true`
   - default: `false`
+- `draggable` (boolean) - whether the item is draggable
+  - default: `true`
 
 ## Plugins for notations and labels
 You can adjust how notations/labels are processed in `ItemName` by providing plugins. A plugin is a simple function that receives the current label/notation and the component's props as parameters and returns the processed label/notation. Plugins can be added on the imported component directly using the provided `addLabelPlugin` and `addNotationPlugin` methods.

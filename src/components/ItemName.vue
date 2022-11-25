@@ -4,7 +4,7 @@
       'jskos-vue-itemName': true,
       clickable,
     }"
-    draggable="true"
+    :draggable="draggable"
     @dragstart="dragstart(item)"
     @dragend="dragend">
     <span
@@ -80,6 +80,11 @@ const component = defineComponent({
     clickable: {
       type: Boolean,
       default: false,
+    },
+    // whether the item is draggable
+    draggable: {
+      type: Boolean,
+      default: true,
     },
   },
   setup(props) {

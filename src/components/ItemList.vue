@@ -20,7 +20,7 @@
         v-if="getItem(item)"
         v-bind="itemNameOptions"
         :item="getItem(item)"
-        :draggable="!rowMode"
+        :draggable="(itemNameOptions.draggable !== false) && !rowMode"
         @click.stop="$emit('select', { item: getItem(item), row: false })" />
       <!-- Show loading indicator for null values -->
       <!-- TODO: Reconsider. -->

@@ -79,6 +79,7 @@ const select = ({ item, row }) => {
   :row-mode="false"
   :item-name-options="{
     clickable: true,
+    draggable: false,
   }"
   @select="select" />
 
@@ -109,6 +110,7 @@ const select = ({ item, row }) => {
     :row-mode="false"
     :item-name-options="{
       clickable: true,
+      draggable: false,
     }"
     @select="select" />
 </template>

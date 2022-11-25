@@ -42,10 +42,11 @@
       :show-label="false" />
   </p>
   <p>
-    Item (no notation):
+    Item (no notation, not draggable):
     <item-name
       :item="{ notation: ['IN'], prefLabel: { en: 'ItemName' } }"
-      :show-notation="false" />
+      :show-notation="false"
+      :draggable="false" />
   </p>
   <p>
     Item (clickable):
