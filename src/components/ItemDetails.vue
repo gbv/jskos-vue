@@ -7,7 +7,7 @@
     @drop="drop">
     <!-- Define a dropzone which is shown only when a concept is being dragged over the component -->
     <div
-      v-show="isDraggingOver && isDraggedConceptDifferent"
+      v-show="dropzone && isDraggingOver && isDraggedConceptDifferent"
       class="jskos-vue-itemDetails-dropzone jskos-vue-text-small">
       {{ t("dropzone") }}
     </div>
@@ -124,6 +124,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    dropzone: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ["select"],
   setup(props, { emit }) {
@@ -132,7 +136,7 @@ export default defineComponent({
       return !jskos.compare(props.item, draggedItem.value)
     })
     const dropzone = addDropzone(null, (item) => {
-      isDraggedConceptDifferent.value && emit("select", { item })
+      props.dropzone && isDraggedConceptDifferent.value && emit("select", { item })
     })
     return {
       utils,

@@ -16,6 +16,8 @@ Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo
   - default: `true`
 - `showNarrower` (boolean) - option whether to show the item's narrower concepts
   - default: `true`
+- `dropzone` (boolean) - option whether the component is a drop zone for concepts
+  - default: `true`
 
 ## Slots
 - `beforeName`: Content shown before the item's name.
@@ -46,6 +48,7 @@ const state = reactive({
       "https://example.com/DT3": true,
     },
   },
+  dropzone: true,
   item: {
     uri: "https://example.com/DT",
     notation: ["DT"],
@@ -163,6 +166,10 @@ const alert = (...args) => window.alert(...args)
     indicators: {{ !!state.itemListOptions.indicatorByUri }}
   </button>
   <button
+    @click="state.dropzone = !state.dropzone">
+    dropzone: {{ !!state.dropzone }}
+  </button>
+  <button
     @click="() => {
       if (state.item.scopeNote) {
         delete state.item.scopeNote
@@ -212,6 +219,7 @@ const state = reactive({
       "https://example.com/DT3": true,
     },
   },
+  dropzone: true,
   item: {
     uri: "https://example.com/DT",
     notation: ["DT"],
@@ -310,6 +318,10 @@ const alert = (...args) => window.alert(...args)
         }
       }">
       indicators: {{ !!state.itemListOptions.indicatorByUri }}
+    </button>
+    <button
+      @click="state.dropzone = !state.dropzone">
+      dropzone: {{ !!state.dropzone }}
     </button>
     <button
       @click="() => {
