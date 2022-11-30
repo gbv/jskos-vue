@@ -1,12 +1,12 @@
 <template>
   <div class="jskos-vue-itemList">
     <div
-      v-for="item in items"
+      v-for="(item, index) in items"
       :key="getItem(item) && getItem(item).uri"
       :class="{
         'jskos-vue-itemList-row': rowMode,
       }"
-      :style="styleForItem(getItem(item))"
+      :style="styleForItem(getItem(item), index)"
       :data-uri="getItem(item) && getItem(item).uri"
       :draggable="rowMode && !!getItem(item)"
       @dragstart="dragstart(getItem(item))"
@@ -65,6 +65,11 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    // option to add small indent to items further down the list (e.g. for ancestor concepts)
+    indent: {
+      type: Boolean,
+      default: false,
+    },
     // options to be passed along to ItemName component
     itemNameOptions: {
       type: Object,
@@ -86,7 +91,7 @@ export default defineComponent({
   },
   methods: {
     // style object for item
-    styleForItem(item) {
+    styleForItem(item, index) {
       let style = {}
       let color = this.indicatorByUri[item && item.uri]
       if (!color) {
@@ -95,6 +100,10 @@ export default defineComponent({
       // only override color if it's not the default color (`true`)
       if (color !== true) {
         style["--jskos-vue-itemList-indicator-color"] = color
+      }
+      // add indent if necessary
+      if (this.indent) {
+        style["padding-left"] = `${(index + 1) * 5}px`
       }
       return style
     },
