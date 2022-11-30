@@ -109,6 +109,14 @@ const state = reactive({
     ],
     ancestors: [
       {
+        uri: "https://example.com/D0",
+        notation: ["D0"],
+        prefLabel: {
+          en: "another Ancestor",
+          de: "ein weiteres Elternkonzept",
+        },
+      },
+      {
         uri: "https://example.com/D",
         notation: ["D"],
         prefLabel: {
@@ -272,6 +280,14 @@ const state = reactive({
     ],
     ancestors: [
       {
+        uri: "https://example.com/D0",
+        notation: ["D0"],
+        prefLabel: {
+          en: "another Ancestor",
+          de: "ein weiteres Elternkonzept",
+        },
+      },
+      {
         uri: "https://example.com/D",
         notation: ["D"],
         prefLabel: {
@@ -433,6 +449,14 @@ const state = reactive({
       },
     ],
     ancestors: [
+      {
+        uri: "https://example.com/D0",
+        notation: ["D0"],
+        prefLabel: {
+          en: "another Ancestor",
+          de: "ein weiteres Elternkonzept",
+        },
+      },
       {
         uri: "https://example.com/D",
         notation: ["D"],
