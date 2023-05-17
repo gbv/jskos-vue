@@ -48,8 +48,8 @@ export default defineComponent({
     }
     // TODO: Is it enough to show this as "title"?
     const licenseAttribution = computed(() => {
-      const organisation = (props.item.publisher || []).find(o => o.url)
-      const url = organisation.url || props.item.url
+      const organisation = (props.item.publisher || []).find(o => o.url) ?? props.item.publisher?.[0]
+      const url = organisation?.url ?? props.item.url
       return {
         url,
         label: jskos.prefLabel(organisation) || "?",
