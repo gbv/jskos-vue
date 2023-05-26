@@ -18,6 +18,9 @@ Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo
   - default: `true`
 - `dropzone` (boolean) - option whether the component is a drop zone for concepts
   - default: `true`
+- `draggable` (boolean) - whether item elements are draggable
+  - default: `true`
+  - This will also set `itemListOptions.draggable` if it's not set separately.
 
 ## Slots
 - `beforeName`: Content shown before the item's name.
@@ -49,6 +52,7 @@ const state = reactive({
     },
   },
   dropzone: true,
+  draggable: true,
   item: {
     uri: "https://example.com/DT",
     notation: ["DT"],
@@ -178,6 +182,10 @@ const alert = (...args) => window.alert(...args)
     dropzone: {{ !!state.dropzone }}
   </button>
   <button
+    @click="state.draggable = !state.draggable">
+    draggable: {{ !!state.draggable }}
+  </button>
+  <button
     @click="() => {
       if (state.item.scopeNote) {
         delete state.item.scopeNote
@@ -228,6 +236,7 @@ const state = reactive({
     },
   },
   dropzone: true,
+  draggable: true,
   item: {
     uri: "https://example.com/DT",
     notation: ["DT"],
@@ -338,6 +347,10 @@ const alert = (...args) => window.alert(...args)
     <button
       @click="state.dropzone = !state.dropzone">
       dropzone: {{ !!state.dropzone }}
+    </button>
+    <button
+      @click="state.draggable = !state.draggable">
+      draggable: {{ !!state.draggable }}
     </button>
     <button
       @click="() => {

@@ -10,6 +10,9 @@ Uses [ItemName](./ItemName). Also uses [dragAndDrop](../utilities/dragAndDrop) a
   - by default, the objects themselves will be considered the JSKOS items
 - `rowMode` (boolean) - if enabled, the whole row will have a background color on hover (CSS var `--jskos-vue-itemList-hover-bgColor`) and be clickable
   - default: `true`
+- `draggable` (boolean) - whether the item is draggable
+  - default: `true`
+  - This will also set `itemNameOptions.draggable` if it's not set separately.
 - `itemNameOptions` (object) - options that are passed along to [ItemName](./ItemName) via v-bind
 - `indicatorByUri` (object) - object that maps item URIs to either color strings or boolean values
   - If either a color or `true` is given for a particular item, an indicator will be shown to the right side of the item in the list.

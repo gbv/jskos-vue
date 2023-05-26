@@ -8,7 +8,7 @@
       }"
       :style="styleForItem(getItem(item), index)"
       :data-uri="getItem(item) && getItem(item).uri"
-      :draggable="rowMode && !!getItem(item)"
+      :draggable="rowMode && draggable && !!getItem(item)"
       @dragstart="dragstart(getItem(item))"
       @dragend="dragend"
       @click.stop="rowMode && $emit('select', { item: getItem(item), row: true })">
@@ -18,9 +18,9 @@
         :item="item" />
       <item-name
         v-if="getItem(item)"
-        v-bind="itemNameOptions"
+        v-bind="_itemNameOptions"
         :item="getItem(item)"
-        :draggable="(itemNameOptions.draggable !== false) && !rowMode"
+        :draggable="(_itemNameOptions.draggable !== false) && !rowMode"
         @click.stop="$emit('select', { item: getItem(item), row: false })" />
       <!-- Show loading indicator for null values -->
       <!-- TODO: Reconsider. -->
@@ -65,6 +65,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    draggable: {
+      type: Boolean,
+      default: true,
+    },
     // option to add small indent to items further down the list (e.g. for ancestor concepts)
     indent: {
       type: Boolean,
@@ -88,6 +92,11 @@ export default defineComponent({
       dragstart,
       dragend,
     }
+  },
+  computed: {
+    _itemNameOptions() {
+      return Object.assign({ draggable: this.draggable }, this.itemNameOptions || {})
+    },
   },
   methods: {
     // style object for item

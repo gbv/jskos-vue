@@ -14,7 +14,8 @@
     <div class="jskos-vue-itemDetails-name">
       <slot name="beforeName" />
       <item-name
-        :item="item" />
+        :item="item"
+        :draggable="draggable" />
       <slot name="afterName" />
     </div>
     <!-- License -->
@@ -26,7 +27,7 @@
     <!-- TODO: Only show part of ancestors? -->
     <item-list
       v-if="showAncestors"
-      v-bind="itemListOptions"
+      v-bind="_itemListOptions"
       :items="(item.ancestors || []).filter(Boolean).reverse()"
       :indent="true"
       class="jskos-vue-itemDetails-ancestors"
@@ -34,7 +35,7 @@
     <!-- Broader -->
     <item-list
       v-if="showBroader"
-      v-bind="itemListOptions"
+      v-bind="_itemListOptions"
       :items="(item.broader || []).filter(i => !jskos.isContainedIn(i, item.ancestors || []))"
       class="jskos-vue-itemDetails-broader"
       @select="$emit('select', { item: $event.item })" />
@@ -48,7 +49,7 @@
     <!-- Narrower -->
     <item-list
       v-if="showNarrower"
-      v-bind="itemListOptions"
+      v-bind="_itemListOptions"
       :items="item.narrower || []"
       class="jskos-vue-itemDetails-narrower"
       @select="$emit('select', { item: $event.item })" />
@@ -129,6 +130,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    draggable: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ["select"],
   setup(props, { emit }) {
@@ -139,6 +144,7 @@ export default defineComponent({
     const dropzone = addDropzone(null, (item) => {
       props.dropzone && isDraggedConceptDifferent.value && emit("select", { item })
     })
+    const _itemListOptions = computed(() => Object.assign({ draggable: props.draggable }, props.itemListOptions))
     return {
       utils,
       jskos,
@@ -147,6 +153,7 @@ export default defineComponent({
       draggedItem,
       ...dropzone,
       isDraggedConceptDifferent,
+      _itemListOptions,
     }
   },
 })
