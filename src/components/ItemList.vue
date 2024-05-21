@@ -18,9 +18,9 @@
         :item="item" />
       <item-name
         v-if="getItem(item)"
-        v-bind="_itemNameOptions"
+        v-bind="itemNameOptions_"
         :item="getItem(item)"
-        :draggable="(_itemNameOptions.draggable !== false) && !rowMode"
+        :draggable="(itemNameOptions_.draggable !== false) && !rowMode"
         @click.stop="$emit('select', { item: getItem(item), row: false })" />
       <!-- Show loading indicator for null values -->
       <!-- TODO: Reconsider. -->
@@ -94,7 +94,7 @@ export default defineComponent({
     }
   },
   computed: {
-    _itemNameOptions() {
+    itemNameOptions_() {
       return Object.assign({ draggable: this.draggable }, this.itemNameOptions || {})
     },
   },
