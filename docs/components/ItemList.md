@@ -23,7 +23,10 @@ Uses [ItemName](./ItemName). Also uses [dragAndDrop](../utilities/dragAndDrop) a
 - afterItem: Content shown after an item (includes parameter `item`).
 
 ## Methods
-- `scrollToUri(uri)` - scrolls the item list to a certain item via its URI
+- `isUriInView(uri, partial = 60)` - checks whether a certain item (via its URI) is currently in view
+  - By default, it will return `true` when the item's element is at least 60% visible. To only return `true` when it is fully visible, set `partial` to `false`.
+- `scrollToUri(uri, onlyIfNotInView = false)` - scrolls the item list to a certain item via its URI
+  - When `onlyIfNotInView` is given, scrolling only occurs if the item is not already visible (using `isUriInView`'s default).
 
 ## Events
 - `select`

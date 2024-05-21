@@ -225,8 +225,8 @@
   </h2>
   <p>
     <button
-      @click="$refs.conceptTree.scrollToUri('http://dewey.info/class/6--0/e23/')">
-      Scroll to 6--0
+      @click="$refs.conceptTree.scrollToUri('http://dewey.info/class/4--0/e23/', true)">
+      Scroll to T4--0 (only if not in view)
     </button>
     Selected: {{ examples.conceptTree.selected && examples.conceptTree.selected.notation[0] || "none" }}
     <button @click="examples.conceptTree.selected = null">

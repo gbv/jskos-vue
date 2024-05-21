@@ -16,7 +16,8 @@ Component to display a concept tree.
 - `afterItem`: Content shown after an item (includes parameter `item` that contains the concept).
 
 ## Methods
-- `scrollToUri(uri)` - scrolls the list to a certain item via its URI
+- [`isUriInView` (see ItemList)](./ItemList#methods)
+- [`scrollToUri` (see ItemList)](./ItemList#methods)
 
 ## Events
 - `select`

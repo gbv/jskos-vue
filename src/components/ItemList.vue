@@ -123,8 +123,36 @@ export default defineComponent({
       }
       return item
     },
+    // checks if a certain URI is in view
+    isUriInView(uri, partial = 60) {
+      const container = this.$el
+      const element = container.querySelectorAll(`[data-uri='${uri}']`)[0]
+      if (!container || !element) {
+        return false
+      }
+      // Adapted from https://stackoverflow.com/a/49253390 and https://stackoverflow.com/a/43386795:
+      let cTop = container.scrollTop
+      let cBottom = cTop + container.clientHeight
+      let eTop = element.offsetTop - container.offsetTop
+      let eBottom = eTop + element.clientHeight
+      let isTotal = (eTop >= cTop && eBottom <= cBottom)
+      let isPartial
+      if (partial === true) {
+        isPartial = (eTop < cTop && eBottom > cTop) || (eBottom > cBottom && eTop < cBottom)
+      } else if(typeof partial === "number"){
+        if (eTop < cTop && eBottom > cTop) {
+          isPartial = ((eBottom - cTop) * 100) / element.clientHeight > partial
+        } else if (eBottom > cBottom && eTop < cBottom){ 
+          isPartial = ((cBottom - eTop) * 100) / element.clientHeight > partial
+        }
+      }
+      return !!(isTotal || partial && isPartial)
+    },
     // scrolls to a certain URI in the list
-    scrollToUri(uri) {
+    scrollToUri(uri, onlyIfNotInView = false) {
+      if (onlyIfNotInView && this.isUriInView(uri)) {
+        return
+      }
       const container = this.$el
       const el = container.querySelectorAll(`[data-uri='${uri}']`)[0]
       const options = {

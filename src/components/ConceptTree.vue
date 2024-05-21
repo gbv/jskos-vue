@@ -146,9 +146,13 @@ export default defineComponent({
     }
   },
   methods: {
+    // checks if a certain URI is in view
+    isUriInView(...args) {
+      return this.$refs.itemList.isUriInView(...args)
+    },
     // scroll to a certain concept via URI
-    scrollToUri(uri) {
-      this.$refs.itemList.scrollToUri(uri)
+    scrollToUri(...args) {
+      this.$refs.itemList.scrollToUri(...args)
     },
   },
 })
