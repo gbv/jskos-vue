@@ -96,11 +96,10 @@ const concepts = [
   <span
     v-for="(language, index) in state.languages"
     :key="index">
-    <a
-      href=""
-      @click.prevent="state.languages.move(index, 0)">
+    <button
+      @click="state.languages.move(index, 0)">
       {{ language }}
-    </a> -
+    </button> -
   </span>
 </p>
 <ul>
@@ -118,11 +117,10 @@ const concepts = [
     <span
       v-for="(language, index) in state.languages"
       :key="index">
-      <a
-        href=""
-        @click.prevent="state.languages.move(index, 0)">
-        {{ language }}
-      </a> -
+    <button
+      @click="state.languages.move(index, 0)">
+      {{ language }}
+    </button> -
     </span>
   </p>
   <ul>

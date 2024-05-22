@@ -163,6 +163,7 @@ export default defineComponent({
 .jskos-vue-itemDetails {
   position: relative;
   font-size: 0.85rem;
+  line-height: 1.4;
 }
 .jskos-vue-itemDetails-name {
   position: relative;

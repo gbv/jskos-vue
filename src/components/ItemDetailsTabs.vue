@@ -227,6 +227,9 @@ export default defineComponent({
   margin: 0 0 10px 0;
   padding: 0;
 }
+.jskos-vue-itemDetails-list > li {
+  margin-top: 0;
+}
 .jskos-vue-itemDetails-list > li:after {
   content: attr(lang);
   color: var(--jskos-vue-color-lightGrey);
