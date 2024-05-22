@@ -140,7 +140,7 @@ export default defineComponent({
 }
 .jskos-vue-modal-body {
   flex: 1;
-  overflow-y: scroll;
+  overflow-y: auto;
   position: relative;
 }
 .jskos-vue-modal-footer {
