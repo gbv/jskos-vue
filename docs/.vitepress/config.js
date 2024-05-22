@@ -1,11 +1,13 @@
-const fs = require("fs")
+import { defineConfig } from "vitepress"
+import fs from "node:fs"
 const docsDir = "docs"
 
-module.exports = {
+export default defineConfig({
   base: process.env.BASE || "/",
   lang: "en-US",
   title: "jskos-vue",
   description: "",
+  appearance: false,
 
   themeConfig: {
     repo: "gbv/jskos-vue",
@@ -30,7 +32,7 @@ module.exports = {
       "/utilities/": getGuideSidebar(),
     },
   },
-}
+})
 
 function getGuideSidebar() {
   return [
@@ -40,7 +42,7 @@ function getGuideSidebar() {
     },
     {
       text: "Components",
-      children: fs.readdirSync(`./${docsDir}/components`).filter(file => file.endsWith(".md")).map(file => {
+      items: fs.readdirSync(`./${docsDir}/components`).filter(file => file.endsWith(".md")).map(file => {
         const name = file.replace(".md", "")
         return {
           text: name,
@@ -50,7 +52,7 @@ function getGuideSidebar() {
     },
     {
       text: "Utilities",
-      children: fs.readdirSync(`./${docsDir}/utilities`).filter(file => file.endsWith(".md")).map(file => {
+      items: fs.readdirSync(`./${docsDir}/utilities`).filter(file => file.endsWith(".md")).map(file => {
         const name = file.replace(".md", "")
         return {
           text: name,

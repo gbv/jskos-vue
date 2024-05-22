@@ -5,25 +5,20 @@
     "dist",
     "src"
   ],
-  "main": "./dist/jskos-vue.umd.js",
-  "module": "./dist/jskos-vue.mjs",
-  "style": "./dist/style.css",
+  "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/jskos-vue.mjs",
-      "require": "./dist/jskos-vue.umd.js"
+      "require": "./dist/jskos-vue.umd.cjs",
+      "import": "./dist/jskos-vue.js"
     },
-    "./dist/style.css": {
-      "import": "./dist/style.css",
-      "require": "./dist/style.css"
-    }
+    "./dist/style.css": "./dist/style.css"
   },
   "sideEffects": false,
   "scripts": {
     "test": "mocha --recursive",
     "dev": "vite --port 4310",
     "build": "vite build",
-    "lint": "eslint --ignore-path .gitignore --ext .js,.vue .",
+    "lint": "eslint --ignore-path .gitignore --ext .js,.cjs,.vue .",
     "fix": "npm run lint -- --fix",
     "lint-staged": "lint-staged",
     "docs:dev": "vitepress dev docs --port 4311",
@@ -45,23 +40,23 @@
     "test"
   ],
   "dependencies": {
-    "jskos-tools": "^1.0.27",
-    "jskos-vue-tabs": "^0.1.4",
-    "vue": "^3.2.45",
+    "jskos-tools": "^1.0.36",
+    "jskos-vue-tabs": "^0.1.6",
+    "vue": "^3.4.27",
     "vue-scrollto": "^2.20.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^3.2.0",
-    "cocoda-sdk": "^3.3.0",
-    "eslint": "^8.27.0",
-    "eslint-config-gbv": "^1.0.3",
-    "eslint-plugin-vue": "^9.7.0",
-    "lint-staged": "^13.0.3",
-    "mocha": "^10.1.0",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "cocoda-sdk": "^3.4.8",
+    "eslint": "^8.57.0",
+    "eslint-config-gbv": "^1.1.0",
+    "eslint-plugin-vue": "^9.26.0",
+    "lint-staged": "^15.2.4",
+    "mocha": "^10.4.0",
     "mocha-eslint": "^7.0.0",
     "pre-commit": "^1.2.2",
-    "vite": "^3.2.4",
-    "vitepress": "^0.22.4",
+    "vite": "^5.2.11",
+    "vitepress": "^1.2.2",
     "yesno": "^0.4.0"
   },
   "author": "Stefan Peters <stefan.peters@gbv.de>",

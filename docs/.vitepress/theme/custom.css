@@ -1,0 +1,18 @@
+input {
+  background-color: white;
+}
+
+button,
+input {
+  border: 1px solid #8F8F9D;
+  border-radius: 3px;
+}
+
+button {
+  padding: 1px 5px;
+  background-color: #E9E9ED;
+  margin: 0 3px;
+}
+button:hover {
+  background-color: #D0D0D7;
+}
