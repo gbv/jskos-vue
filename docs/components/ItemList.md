@@ -17,6 +17,8 @@ Uses [ItemName](./ItemName). Also uses [dragAndDrop](../utilities/dragAndDrop) a
 - `indicatorByUri` (object) - object that maps item URIs to either color strings or boolean values
   - If either a color or `true` is given for a particular item, an indicator will be shown to the right side of the item in the list.
   - Note that lists use the full width of the page, so it makes sense to define a maximum width to make sure indicators can be associated with the right item.
+- `highlightByUri` (object) - object that maps item URIs to either color strings or boolean values
+  - If either a color or `true` is given for a particular item, a highlight background color will be used for that item (CSS var `--jskos-vue-conceptTree-selected-bgColor` by default).
 
 ## Slots
 - beforeItem: Content shown before an item (includes parameter `item`).

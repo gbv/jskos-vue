@@ -9,6 +9,7 @@
     }"
     :items="items"
     item-property="concept"
+    :highlight-by-uri="modelValue?.uri ? { [modelValue.uri]: true } : {}"
     @select="$emit('select', $event); $emit('update:modelValue', $event.item)">
     <template #beforeItem="{ item }">
       <!-- Use divs for depth spacers so we can have visual lines for the hierarchy -->
@@ -26,11 +27,6 @@
           :direction="isOpen[item.concept.uri] ? 'down' : 'right'"
           :clickable="true" />
       </div>
-      <!-- Highlight background for row if selected -->
-      <!-- Note: We're using a separate div here because we can't add a CSS class to an individual ItemList row -->
-      <div
-        v-if="item.isSelected"
-        class="jskos-vue-conceptTree-selectedOverlay" />
       <!-- Slot for additional content before item -->
       <slot
         name="beforeItem"
@@ -165,19 +161,6 @@ export default defineComponent({
 .jskos-vue-conceptTree > div {
   display: flex;
   padding-left: 0px !important;
-}
-.jskos-vue-conceptTree > div:hover {
-  cursor: pointer;
-  background: var(--jskos-vue-conceptTree-hover-bgColor);
-}
-.jskos-vue-conceptTree-selectedOverlay {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: -1;
-  background: var(--jskos-vue-conceptTree-selected-bgColor);
 }
 .jskos-vue-conceptTree-depthSpacer {
   flex: 0 0 10px;

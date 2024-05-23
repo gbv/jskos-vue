@@ -85,6 +85,10 @@ export default defineComponent({
       type: Object,
       default: () => ({}),
     },
+    highlightByUri: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   emits: ["select"],
   data() {
@@ -109,6 +113,12 @@ export default defineComponent({
       // only override color if it's not the default color (`true`)
       if (color !== true) {
         style["--jskos-vue-itemList-indicator-color"] = color
+      }
+      let background = this.highlightByUri[item && item.uri]
+      if (!background) {
+        background = "transparent"
+      } else {
+        style["background-color"] = background === true ? "var(--jskos-vue-conceptTree-selected-bgColor)" : background
       }
       // add indent if necessary
       if (this.indent) {
