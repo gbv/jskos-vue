@@ -5,6 +5,7 @@
       v-for="(item, index) in items"
       :key="getItem(item) && getItem(item).uri"
       :class="{
+        'jskos-vue-itemList-item': true,
         'jskos-vue-itemList-row': rowMode,
         'jskos-vue-itemList-row-selectable': rowMode && !!getItem(item),
       }"
@@ -188,12 +189,12 @@ export default defineComponent({
 .jskos-vue-itemList {
   padding: 0;
 }
-.jskos-vue-itemList > div {
+.jskos-vue-itemList-item {
   position: relative;
   padding-left: 5px;
   box-shadow: inset -3px 0px var(--jskos-vue-itemList-indicator-color);
 }
-.jskos-vue-itemList > div:hover {
+.jskos-vue-itemList-item:hover {
   box-shadow: inset -4px 0px var(--jskos-vue-itemList-indicator-color);
 }
 .jskos-vue-itemList-row-selectable:hover {
