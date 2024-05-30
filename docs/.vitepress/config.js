@@ -20,6 +20,10 @@ export default defineConfig({
     nav: [
       { text: "Documentation", link: "/", activeMatch: "^/$|^/introduction/|^/components/|^/utilities/" },
       {
+        text: "GitHub",
+        link: "https://github.com/gbv/jskos-vue",
+      },
+      {
         text: "Release Notes",
         link: "https://github.com/gbv/jskos-vue/releases",
       },
