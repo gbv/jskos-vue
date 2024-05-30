@@ -23,8 +23,12 @@ Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo
   - This will also set `itemListOptions.draggable` if it's not set separately.
 
 ## Slots
+- `before`: Content shown above the component (same as `beforeName`).
 - `beforeName`: Content shown before the item's name.
 - `afterName`: Content shown after the item's name.
+- `beforeTabs`: Content shown right before detail tabs (below ancestors and broader)
+- `afterTabs`: Content shown right after detail tabs (above narrower)
+- `after`: Content shown below the component.
 - `additionalTabs`: Slot to add additional tabs (via [jskos-vue-tabs](https://github.com/gbv/jskos-vue-tabs)) or absolutely positioned content for all tabs.
 
 ## Events

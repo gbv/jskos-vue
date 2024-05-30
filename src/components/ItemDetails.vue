@@ -12,6 +12,7 @@
       {{ t("dropzone") }}
     </div>
     <div class="jskos-vue-itemDetails-name">
+      <slot name="before" />
       <slot name="beforeName" />
       <item-name
         :item="item"
@@ -39,6 +40,7 @@
       :items="(item.broader || []).filter(i => !jskos.isContainedIn(i, item.ancestors || []))"
       class="jskos-vue-itemDetails-broader"
       @select="$emit('select', { item: $event.item })" />
+    <slot name="beforeTabs" />
     <item-details-tabs
       v-if="showTabs"
       :item="item">
@@ -46,6 +48,7 @@
         <slot name="additionalTabs" />
       </template>
     </item-details-tabs>
+    <slot name="afterTabs" />
     <!-- Narrower -->
     <item-list
       v-if="showNarrower"
@@ -53,6 +56,7 @@
       :items="item.narrower || []"
       class="jskos-vue-itemDetails-narrower"
       @select="$emit('select', { item: $event.item })" />
+    <slot name="after" />
   </div>
 </template>
 
