@@ -5,13 +5,14 @@
       :key="getItem(item) && getItem(item).uri"
       :class="{
         'jskos-vue-itemList-row': rowMode,
+        'jskos-vue-itemList-row-selectable': rowMode && !!getItem(item),
       }"
       :style="styleForItem(getItem(item), index)"
       :data-uri="getItem(item) && getItem(item).uri"
       :draggable="rowMode && draggable && !!getItem(item)"
       @dragstart="dragstart(getItem(item))"
       @dragend="dragend"
-      @click.stop="rowMode && $emit('select', { item: getItem(item), row: true })">
+      @click.stop="rowMode && getItem(item) && $emit('select', { item: getItem(item), row: true })">
       <!-- Slot before each item's ItemName -->
       <slot
         name="beforeItem"
@@ -193,7 +194,7 @@ export default defineComponent({
 .jskos-vue-itemList > div:hover {
   box-shadow: inset -4px 0px var(--jskos-vue-itemList-indicator-color);
 }
-.jskos-vue-itemList-row:hover {
+.jskos-vue-itemList-row-selectable:hover {
   cursor: pointer;
   background-color: var(--jskos-vue-itemList-hover-bgColor);
 }

@@ -83,6 +83,7 @@
         { uri: 'test:1', notation: ['1'], prefLabel: { en: 'Concept 1' } },
         { uri: 'test:2', notation: ['2'], prefLabel: { en: 'Concept 2' } },
         { uri: 'test:3', notation: ['3'], prefLabel: { en: 'Concept 3' } },
+        null,
       ]"
       :row-mode="false"
       :item-name-options="{
@@ -584,7 +585,7 @@ html {
 .item-list-styled {
   background: lightcoral;
 }
-.item-list-styled > div:hover {
+.item-list-styled > .jskos-vue-itemList-row-selectable:hover {
   cursor: pointer;
   background: red;
 }
