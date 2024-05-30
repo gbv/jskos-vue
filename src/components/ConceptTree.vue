@@ -38,6 +38,12 @@
         name="afterItem"
         :item="item.concept" />
     </template>
+    <template #beforeList>
+      <slot name="beforeList" />
+    </template>
+    <template #afterList>
+      <slot name="afterList" />
+    </template>
   </item-list>
 </template>
 

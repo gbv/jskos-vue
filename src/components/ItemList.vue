@@ -1,5 +1,6 @@
 <template>
   <div class="jskos-vue-itemList">
+    <slot name="beforeList" />
     <div
       v-for="(item, index) in items"
       :key="getItem(item) && getItem(item).uri"
@@ -33,6 +34,7 @@
         name="afterItem"
         :item="item" />
     </div>
+    <slot name="afterList" />
   </div>
 </template>
 

@@ -21,8 +21,10 @@ Uses [ItemName](./ItemName). Also uses [dragAndDrop](../utilities/dragAndDrop) a
   - If either a color or `true` is given for a particular item, a highlight background color will be used for that item (CSS var `--jskos-vue-conceptTree-selected-bgColor` by default).
 
 ## Slots
-- beforeItem: Content shown before an item (includes parameter `item`).
-- afterItem: Content shown after an item (includes parameter `item`).
+- `beforeList`: Content shown above list.
+- `afterList`: Content shown below list.
+- `beforeItem`: Content shown before an item (includes parameter `item`).
+- `afterItem`: Content shown after an item (includes parameter `item`).
 
 ## Methods
 - `isUriInView(uri, partial = 60)` - checks whether a certain item (via its URI) is currently in view

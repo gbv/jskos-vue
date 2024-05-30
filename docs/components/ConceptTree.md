@@ -12,6 +12,8 @@ Component to display a concept tree.
   - default: `{}`
 
 ## Slots
+- `beforeList`: Content shown above list.
+- `afterList`: Content shown below list.
 - `beforeItem`: Content shown before an item (includes parameter `item` that contains the concept).
 - `afterItem`: Content shown after an item (includes parameter `item` that contains the concept).
 
