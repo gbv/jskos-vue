@@ -7,7 +7,7 @@
     <input
       ref="searchInput"
       v-model="query"
-      placeholder="Type to search..."
+      :placeholder="t('placeholder')"
       @click="openResults"
       @keydown.down.prevent="onArrowDown"
       @keydown.up.prevent="onArrowUp"
@@ -58,12 +58,26 @@
  * - add drag and drop for concepts
  */
 
-import { defineComponent, nextTick, ref, watch } from "vue"
+import * as jskos from "jskos-tools"
+import { computed, defineComponent, nextTick, ref, watch } from "vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
 import { addClickHandlers, debounce } from "../utils"
 
 import "../shared.css"
+
+// Localization
+const locale = {
+  en: {
+    placeholder: "Type to search...",
+  },
+  de: {
+    placeholder: "Tippen zum Suchen...",
+  },
+}
+// Determines current language from jskos.languagePreference and locale
+const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => locale[lang]) || "en")
+const t = (prop) => locale[currentLanguage.value][prop]
 
 // HTML escape method
 // TODO: Move to utils?
@@ -238,6 +252,7 @@ export default defineComponent({
     ])
 
     return {
+      t,
       isLoading,
       isOpen,
       query,
