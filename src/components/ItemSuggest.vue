@@ -7,7 +7,7 @@
     <input
       ref="searchInput"
       v-model="query"
-      :placeholder="t('placeholder')"
+      :placeholder="placeholder === null ? t('placeholder') : placeholder"
       @click="openResults"
       @keydown.down.prevent="onArrowDown"
       @keydown.up.prevent="onArrowUp"
@@ -99,6 +99,10 @@ export default defineComponent({
     // async function that returns results in OpenSearch Suggest Format
     search: {
       type: Function,
+      default: null,
+    },
+    placeholder: {
+      type: String,
       default: null,
     },
   },

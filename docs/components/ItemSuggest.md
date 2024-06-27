@@ -6,6 +6,8 @@ Input field to search and select an item (usually concept or concept scheme) fro
 - `search(query)` (async function) - a custom search function that provides results in [OpenSearch Suggest Format](https://github.com/dewitt/opensearch/blob/master/mediawiki/Specifications/OpenSearch/Extensions/Suggestions/1.1/Draft%201.wiki)
   - `query` is the search string
   - The Promise that is returned by this function can optionally have a property `cancel` attached. If this is the case, it will be called if there is a newer search query and the previous request should be aborted.
+- `placeholder` - override default placeholder ("Type to search...")
+  - `null` uses the default placeholder, providing an empty string clears it
 
 ## Methods
 - `focus()` - focuses the input field
