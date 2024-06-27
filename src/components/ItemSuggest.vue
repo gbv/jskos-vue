@@ -7,6 +7,7 @@
     <input
       ref="searchInput"
       v-model="query"
+      type="search"
       :placeholder="placeholder === null ? t('placeholder') : placeholder"
       @click="openResults"
       @keydown.down.prevent="onArrowDown"
