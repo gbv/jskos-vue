@@ -186,6 +186,13 @@
       v-bind="examples.detailedScheme"
       @select="handleClick" />
   </p>
+  <h3>Item Details (flat display - experimental)</h3>
+  <p>
+    <item-details
+      v-bind="examples.detailed"
+      :flat="true"
+      @select="handleClick" />
+  </p>
   <h2>
     ItemSuggest - DDC from API, with ItemDetails for selected
   </h2>

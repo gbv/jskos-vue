@@ -1,11 +1,17 @@
 <template>
-  <tabs
+  <component
+    :is="flat ? 'div' : 'tabs'"
     borders="bottom"
     size="sm"
     class="jskos-vue-itemDetails-tabs">
-    <tab :title="t('info')">
+    <component
+      :is="flat ? 'div' : 'tab'"
+      :title="t('info')">
       <!-- Identifier -->
       <ul class="jskos-vue-itemDetails-list">
+        <li v-if="flat">
+          <b>{{ t("identifier") }}:</b>
+        </li>
         <li
           v-for="(identifier, index) in [item.uri].concat(item.identifier).filter(identifier => identifier != null)"
           :key="index">
@@ -44,10 +50,15 @@
           {{ label }}
         </li>
       </ul>
-    </tab>
-    <tab :title="t('labels')">
+    </component>
+    <component
+      :is="flat ? 'div' : 'tab'"
+      :title="t('labels')">
       <!-- prefLabel -->
       <ul class="jskos-vue-itemDetails-list">
+        <li v-if="flat">
+          <b>{{ t("labels") }}:</b>
+        </li>
         <li
           v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'prefLabel')"
           :key="`${language}-${index}`"
@@ -69,12 +80,16 @@
           {{ label }}
         </li>
       </ul>
-    </tab>
+    </component>
     <!-- scopeNote -->
-    <tab
+    <component
+      :is="flat ? 'div' : 'tab'" 
       v-if="jskos.languageMapContent(item, 'scopeNote')"
       :title="t('scope')">
       <ul class="jskos-vue-itemDetails-list">
+        <li v-if="flat">
+          <b>{{ t("scope") }}:</b>
+        </li>
         <li
           v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'scopeNote')"
           :key="`${language}-${index}`"
@@ -82,12 +97,16 @@
           {{ label }}
         </li>
       </ul>
-    </tab>
+    </component>
     <!-- editorialNote -->
-    <tab
+    <component
+      :is="flat ? 'div' : 'tab'" 
       v-if="jskos.languageMapContent(item, 'editorialNote')"
       :title="t('editorial')">
       <ul class="jskos-vue-itemDetails-list">
+        <li v-if="flat">
+          <b>{{ t("editorial") }}:</b>
+        </li>
         <li
           v-for="({ language, label }, index) in iterateLanguageMapContent(item, 'editorialNote')"
           :key="`${language}-${index}`"
@@ -95,10 +114,10 @@
           {{ label }}
         </li>
       </ul>
-    </tab>
+    </component>
     <!-- Slot for additional tabs -->
     <slot name="additionalTabs" />
-  </tabs>
+  </component>
 </template>
 
 <script>
@@ -119,6 +138,7 @@ const locale = {
     altLabels: "Alternative Labels",
     definition: "Definition",
     info: "Info",
+    identifier: "Identifier",
     labels: "Labels",
     editorial: "Editorial",
     scope: "Scope",
@@ -132,6 +152,7 @@ const locale = {
     altLabels: "Alternative Bezeichnungen",
     definition: "Definition",
     info: "Info",
+    identifier: "Identifier",
     labels: "Bezeichnungen",
     editorial: "Editorial",
     scope: "Scope",
@@ -159,6 +180,11 @@ export default defineComponent({
     item: {
       type: Object,
       required: true,
+    },
+    // Whether details are displayed as tabs or flat
+    flat: {
+      type: Boolean,
+      default: false,
     },
   },
   setup(props) {

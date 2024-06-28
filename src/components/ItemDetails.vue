@@ -43,7 +43,8 @@
     <slot name="beforeTabs" />
     <item-details-tabs
       v-if="showTabs"
-      :item="item">
+      :item="item"
+      :flat="flat">
       <template #additionalTabs>
         <slot name="additionalTabs" />
       </template>
@@ -137,6 +138,11 @@ export default defineComponent({
     draggable: {
       type: Boolean,
       default: true,
+    },
+    // whether details are displayed as tabs or flat
+    flat: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ["select"],
