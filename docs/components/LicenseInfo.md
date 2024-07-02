@@ -17,6 +17,10 @@ const item = {
     },
     {
       uri: "http://example.com/license/",
+      prefLabel: { en: "Example License" },
+    },
+    {
+      uri: "http://example.com/license-no-label/",
     },
   ],
   publisher: [
@@ -43,6 +47,10 @@ const item = {
     },
     {
       uri: "http://example.com/license/",
+      prefLabel: { en: "Example License" },
+    },
+    {
+      uri: "http://example.com/license-no-label/",
     },
   ],
   publisher: [

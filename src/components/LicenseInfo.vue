@@ -11,7 +11,7 @@
         v-if="licenseBadges[license.uri]"
         :src="licenseBadges[license.uri]">
       <span v-else>
-        {{ license.uri }}
+        {{ jskos.prefLabel(license) }}
       </span>
     </auto-link>
   </div>
@@ -38,6 +38,7 @@ export default defineComponent({
     // TODO: Do this differently? Allow adding additional badges?
     const licenseBadges = {
       "http://creativecommons.org/publicdomain/zero/1.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/cc-zero.svg",
+      "https://creativecommons.org/publicdomain/mark/1.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/cc-zero.svg",
       "http://creativecommons.org/licenses/by/3.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by.svg",
       "http://creativecommons.org/licenses/by-nc-nd/3.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-nd.svg",
       "http://creativecommons.org/licenses/by-nc-nd/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-nd.svg",
@@ -58,6 +59,7 @@ export default defineComponent({
     return {
       licenseBadges,
       licenseAttribution,
+      jskos,
     }
   },
 })
