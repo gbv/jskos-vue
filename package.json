@@ -1,6 +1,6 @@
 {
   "name": "jskos-vue",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "files": [
     "dist",
     "src"
