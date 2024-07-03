@@ -86,23 +86,6 @@ export default defineComponent({
   setup(props, { emit }) {
     // reactive object of concept URIs to open status values
     const isOpen = reactive({})
-    const open = (concept) => {
-      isOpen[concept.uri] = true
-      // a certain concept's narrower concepts were opened
-      emit("open", concept)
-    }
-    const close = (concept) => {
-      delete isOpen[concept.uri]
-      // a certain concept's narrower concepts were closed
-      emit("close", concept)
-    }
-    const toggle = (concept) => {
-      if (isOpen[concept.uri]) {
-        close(concept)
-      } else {
-        open (concept)
-      }
-    }
     // recursively get all children (narrower) items for a concept, depending on open status
     const getChildrenItems = (item) => {
       let items = []
@@ -137,6 +120,33 @@ export default defineComponent({
       }
       return items
     })
+
+    const open = (concept) => {
+      isOpen[concept.uri] = true
+      // a certain concept's narrower concepts were opened
+      emit("open", concept)
+    }
+    const close = (concept) => {
+      // Prevent closing if selected concept is child
+      let current = props.modelValue?.uri, initial = current
+      while (current) {
+        const currentConcept = items.value.find(i => jskos.compare(i.concept, { uri: current }))?.concept
+        if (current !== initial && jskos.compare(currentConcept, concept)) {
+          return
+        }
+        current = (currentConcept?.ancestors?.[0] || currentConcept?.broader?.[0])?.uri
+      }
+      delete isOpen[concept.uri]
+      // a certain concept's narrower concepts were closed
+      emit("close", concept)
+    }
+    const toggle = (concept) => {
+      if (isOpen[concept.uri]) {
+        close(concept)
+      } else {
+        open (concept)
+      }
+    }
 
     return {
       items,
