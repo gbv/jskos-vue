@@ -1,4 +1,5 @@
 import { onMounted, onUnmounted } from "vue"
+import * as jskos from "jskos-tools"
 
 /**
  * Converts a date string to a localized date string.
@@ -6,8 +7,9 @@ import { onMounted, onUnmounted } from "vue"
  * Dates with the exact length of 10 (e.g. YYYY-MM-DD) will be printed as date-only.
  *
  * @param {string} dateString a date string (compatible with new Date())
+ * @param {string} lang a language string compatible with Date.prototype.toLocaleString (default: language preference via jskos-tools)
  */
-export function dateToString(dateString) {
+export function dateToString(dateString, lang = jskos.languagePreference.getLanguages()?.[0] || "en") {
   let date = new Date(dateString)
   if (date instanceof Date && !isNaN(date)) {
     if (dateString.length < 10) {
@@ -17,7 +19,7 @@ export function dateToString(dateString) {
     if (dateString.length > 10) {
       options = Object.assign({ hour: "2-digit", minute: "2-digit", second: "2-digit" }, options)
     }
-    return date.toLocaleString(undefined, options)
+    return date.toLocaleString(lang, options)
   } else {
     return dateString
   }
