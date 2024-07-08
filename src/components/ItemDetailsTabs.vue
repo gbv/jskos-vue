@@ -25,6 +25,19 @@
         <li v-if="types.length">
           <b>{{ t("type") }}:</b> {{ types.map(t => jskos.prefLabel(t)).join(", ") }}
         </li>
+        <li v-if="item.publisher?.length">
+          <b>{{ t("publisher") }}: </b>
+          <template 
+            v-for="(publisher, index) in item.publisher"
+            :key="`publisher-${index}`">
+            <template v-if="index > 0">
+              ·
+            </template>
+            <auto-link
+              :href="publisher.url || publisher.uri"
+              :text="jskos.prefLabel(publisher)" />
+          </template>
+        </li>
         <template v-for="prop in ['created', 'issued', 'modified']">
           <li
             v-if="item[prop]"
@@ -35,7 +48,6 @@
         <li v-if="item.languages">
           <b>{{ t("languages") }}:</b> {{ item.languages.join(", ") }}
         </li>
-        <!-- TODO: Publisher -->
       </ul>
       <ul
         v-if="jskos.languageMapContent(item, 'definition')"
@@ -144,6 +156,7 @@ const locale = {
     scope: "Scope",
     languages: "Languages",
     type: "Type",
+    publisher: "Publisher",
   },
   de: {
     created: "Erstellung",
@@ -158,6 +171,7 @@ const locale = {
     scope: "Scope",
     languages: "Sprachen",
     type: "Art",
+    publisher: "Herausgeber",
   },
 }
 // Determines current language from jskos.languagePreference and locale

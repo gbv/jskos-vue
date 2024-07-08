@@ -361,6 +361,20 @@ const examples = reactive({
         en: ["a defintion", "a second definition"],
         de: ["eine Definition"],
       },
+      publisher: [
+        {
+          prefLabel: {
+            de: "Verbundzentrale des GBV (VZG)",
+          },
+          url: "https://www.gbv.de",
+        },
+        {
+          prefLabel: {
+            de: "Test de",
+            en: "Test en",
+          },
+        },
+      ],
       narrower: [
         {
           uri: "https://example.com/DT1",
