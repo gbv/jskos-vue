@@ -21,6 +21,10 @@ Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo
 - `draggable` (boolean) - whether item elements are draggable
   - default: `true`
   - This will also set `itemListOptions.draggable` if it's not set separately.
+- `flat` (boolean) - whether details are displayed in a flat layout (opposed to tabs; experimental)
+  - default: `false`
+- `fields` (object) - configures which JSKOS fields are shown
+  - By default, all fields are shown, except for `publisher` for concepts.
 
 ## Slots
 - `before`: Content shown above the component (same as `beforeName`).

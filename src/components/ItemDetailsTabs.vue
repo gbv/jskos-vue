@@ -6,9 +6,12 @@
     class="jskos-vue-itemDetails-tabs">
     <component
       :is="flat ? 'div' : 'tab'"
+      v-if="['identifier', 'type', 'publisher', 'created', 'issued', 'modified', 'languages', 'definition'].filter(p => fields_[p]).length"
       :title="t('info')">
       <!-- Identifier -->
-      <ul class="jskos-vue-itemDetails-list">
+      <ul  
+        v-if="fields_.identifier"
+        class="jskos-vue-itemDetails-list">
         <li v-if="flat">
           <b>{{ t("identifier") }}:</b>
         </li>
@@ -22,10 +25,10 @@
         </li>
       </ul>
       <ul class="jskos-vue-itemDetails-list">
-        <li v-if="types.length">
+        <li v-if="fields_.type && types.length">
           <b>{{ t("type") }}:</b> {{ types.map(t => jskos.prefLabel(t)).join(", ") }}
         </li>
-        <li v-if="item.publisher?.length">
+        <li v-if="fields_.publisher && item.publisher?.length">
           <b>{{ t("publisher") }}: </b>
           <template 
             v-for="(publisher, index) in item.publisher"
@@ -38,19 +41,19 @@
               :text="jskos.prefLabel(publisher)" />
           </template>
         </li>
-        <template v-for="prop in ['created', 'issued', 'modified']">
+        <template v-for="prop in ['created', 'issued', 'modified'].filter(p => fields_[p])">
           <li
             v-if="item[prop]"
             :key="prop">
             <b>{{ t(prop) }}:</b> {{ utils.dateToString(item[prop]) }}
           </li>
         </template>
-        <li v-if="item.languages">
+        <li v-if="fields_.languages && item.languages">
           <b>{{ t("languages") }}:</b> {{ item.languages.join(", ") }}
         </li>
       </ul>
       <ul
-        v-if="jskos.languageMapContent(item, 'definition')"
+        v-if="fields_.definition && jskos.languageMapContent(item, 'definition')"
         class="jskos-vue-itemDetails-list">
         <li>
           <b>{{ t("definition") }}:</b>
@@ -65,9 +68,12 @@
     </component>
     <component
       :is="flat ? 'div' : 'tab'"
+      v-if="fields_.prefLabel || fields_.altLabel"
       :title="t('labels')">
       <!-- prefLabel -->
-      <ul class="jskos-vue-itemDetails-list">
+      <ul 
+        v-if="fields_.prefLabel"
+        class="jskos-vue-itemDetails-list">
         <li v-if="flat">
           <b>{{ t("labels") }}:</b>
         </li>
@@ -80,7 +86,7 @@
       </ul>
       <!-- altLabel -->
       <ul
-        v-if="jskos.languageMapContent(item, 'altLabel')"
+        v-if="fields_.altLabel && jskos.languageMapContent(item, 'altLabel')"
         class="jskos-vue-itemDetails-list">
         <li>
           <b>{{ t("altLabels") }}:</b>
@@ -96,7 +102,7 @@
     <!-- scopeNote -->
     <component
       :is="flat ? 'div' : 'tab'" 
-      v-if="jskos.languageMapContent(item, 'scopeNote')"
+      v-if="fields_.scopeNote && jskos.languageMapContent(item, 'scopeNote')"
       :title="t('scope')">
       <ul class="jskos-vue-itemDetails-list">
         <li v-if="flat">
@@ -113,7 +119,7 @@
     <!-- editorialNote -->
     <component
       :is="flat ? 'div' : 'tab'" 
-      v-if="jskos.languageMapContent(item, 'editorialNote')"
+      v-if="fields_.editorialNote && jskos.languageMapContent(item, 'editorialNote')"
       :title="t('editorial')">
       <ul class="jskos-vue-itemDetails-list">
         <li v-if="flat">
@@ -200,6 +206,11 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    // Configure which fields of the item are displayed
+    fields: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   setup(props) {
     const iterateLanguageMapContent = (item, prop) => {
@@ -246,6 +257,20 @@ export default defineComponent({
       }
       return types
     })
+    const fields_ = computed(() => Object.assign({
+      identifier: true,
+      type: true,
+      publisher: !jskos.isConcept(props.item),
+      created: true,
+      issued: true,
+      modified: true,
+      languages: true,
+      definition: true,
+      prefLabel: true,
+      altLabel: true,
+      scopeNote: true,
+      editorialNote: true,
+    }, props.fields))
     return {
       utils,
       jskos,
@@ -253,6 +278,7 @@ export default defineComponent({
       t,
       iterateLanguageMapContent,
       types,
+      fields_,
     }
   },
 })

@@ -44,7 +44,8 @@
     <item-details-tabs
       v-if="showTabs"
       :item="item"
-      :flat="flat">
+      :flat="flat"
+      :fields="fields">
       <template #additionalTabs>
         <slot name="additionalTabs" />
       </template>
@@ -143,6 +144,11 @@ export default defineComponent({
     flat: {
       type: Boolean,
       default: false,
+    },
+    // Configure which fields of the item are displayed
+    fields: {
+      type: Object,
+      default: () => ({}),
     },
   },
   emits: ["select"],
