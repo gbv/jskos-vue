@@ -5,13 +5,13 @@
       v-for="(license, index) in item.license || []"
       :key="index"
       :href="license.uri"
-      :title="`by ${licenseAttribution.label}`"
+      :title="`${getLicenseName(license)} by ${licenseAttribution.label}`"
       class="jskos-vue-itemDetails-licenseInfo-badge">
       <img
         v-if="licenseBadges[license.uri]"
         :src="licenseBadges[license.uri]">
       <span v-else>
-        {{ jskos.prefLabel(license) }}
+        {{ getLicenseName(license) }}
       </span>
     </auto-link>
   </div>
@@ -35,7 +35,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    // TODO: Do this differently? Allow adding additional badges?
     const licenseBadges = {
       "http://creativecommons.org/publicdomain/zero/1.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/cc-zero.svg",
       "https://creativecommons.org/publicdomain/mark/1.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/cc-zero.svg",
@@ -46,6 +45,18 @@ export default defineComponent({
       "http://creativecommons.org/licenses/by-sa/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-sa.svg",
       "http://opendatacommons.org/licenses/odbl/1.0/": "https://img.shields.io/badge/License-ODbL-lightgrey.svg",
       "http://www.wtfpl.net/": "https://img.shields.io/badge/License-WTFPL-lightgrey.svg",
+    }
+    const getLicenseName = (license) => {
+      const prefLabel = jskos.prefLabel(license, { fallbackToUri: false })
+      let notation = jskos.notation(license)
+      if (prefLabel && notation) {
+        notation = ` (${notation})`
+      }
+      let name = prefLabel + notation
+      if (!name) {
+        name = license.uri
+      }
+      return name
     }
     // TODO: Is it enough to show this as "title"?
     const licenseAttribution = computed(() => {
@@ -59,6 +70,7 @@ export default defineComponent({
     return {
       licenseBadges,
       licenseAttribution,
+      getLicenseName,
       jskos,
     }
   },

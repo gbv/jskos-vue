@@ -14,13 +14,19 @@ const item = {
   license: [
     {
       uri: "http://creativecommons.org/publicdomain/zero/1.0/",
+      notation: ["CC0"],
     },
     {
       uri: "http://example.com/license/",
       prefLabel: { en: "Example License" },
+      notation: ["EX"],
     },
     {
       uri: "http://example.com/license-no-label/",
+      notation: ["NOL"],
+    },
+    {
+      uri: "http://example.com/license-no-label-no-notation/",
     },
   ],
   publisher: [
