@@ -8,8 +8,8 @@
       :title="`${getLicenseName(license)} by ${licenseAttribution.label}`"
       class="jskos-vue-itemDetails-licenseInfo-badge">
       <img
-        v-if="licenseBadges[license.uri]"
-        :src="licenseBadges[license.uri]">
+        v-if="getLicenseBadge(license)"
+        :src="getLicenseBadge(license)">
       <span v-else>
         {{ getLicenseName(license) }}
       </span>
@@ -33,6 +33,10 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    shieldsIoOptIn: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     const licenseBadges = {
@@ -43,8 +47,17 @@ export default defineComponent({
       "http://creativecommons.org/licenses/by-nc-nd/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-nd.svg",
       "http://creativecommons.org/licenses/by-nc-sa/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg",
       "http://creativecommons.org/licenses/by-sa/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-sa.svg",
-      "http://opendatacommons.org/licenses/odbl/1.0/": "https://img.shields.io/badge/License-ODbL-lightgrey.svg",
-      "http://www.wtfpl.net/": "https://img.shields.io/badge/License-WTFPL-lightgrey.svg",
+    }
+    const getLicenseBadge = (license) => {
+      if (licenseBadges[license.uri]) {
+        return licenseBadges[license.uri]
+      }
+      const text = license.notation?.[0] || jskos.prefLabel(license, { fallbackToUri: false })
+      if (props.shieldsIoOptIn && text) {
+        // Create a dynamic shields.io badge with notation
+        return `https://img.shields.io/badge/${encodeURIComponent(text).replaceAll("_", "__").replaceAll("-", "--")}-000000?style=flat-square`
+      }
+      return null
     }
     const getLicenseName = (license) => {
       const prefLabel = jskos.prefLabel(license, { fallbackToUri: false })
@@ -68,8 +81,8 @@ export default defineComponent({
       }
     })
     return {
-      licenseBadges,
       licenseAttribution,
+      getLicenseBadge,
       getLicenseName,
       jskos,
     }
