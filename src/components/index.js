@@ -8,6 +8,7 @@ import Arrow from "./Arrow.vue"
 import AutoLink from "./AutoLink.vue"
 import ConceptTree from "./ConceptTree.vue"
 import ItemSuggest from "./ItemSuggest.vue"
+import Modal from "./Modal.vue"
 
 export {
   ItemName,
@@ -20,4 +21,5 @@ export {
   AutoLink,
   ConceptTree,
   ItemSuggest,
+  Modal,
 }
