@@ -63,6 +63,7 @@ const tabsModalShown = ref(false)
 <modal
   v-model="modalShown"
   ref="testModal">
+  <template v-slot:header><h1>Test Header</h1></template>
   <template v-slot:footer>Test Footer</template>
   <!-- Note that by default, there is no padding or margins for the content div. -->
   <div style="padding: 10px;">Test Content</div>
@@ -76,6 +77,7 @@ const tabsModalShown = ref(false)
   <modal
     v-model="modalShown"
     ref="testModal">
+    <template v-slot:header><h1>Test Header</h1></template>
     <template v-slot:footer>Test Footer</template>
     <!-- Note that by default, there is no padding or margins for the content div. -->
     <div style="padding: 10px;">Test Content</div>
@@ -100,6 +102,7 @@ const showTestModal = () => {
 <modal
   v-model="tabsModalShown"
   style="--jskos-vue-modal-minWidth: var(--jskos-vue-modal-maxWidth); --jskos-vue-modal-minHeight: var(--jskos-vue-modal-maxHeight);">
+  <template v-slot:header><h1>Test Header</h1></template>
   <template v-slot:footer>Test Footer</template>
   <tabs style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
     <tab title="Tab 1">
@@ -129,6 +132,7 @@ const showTestModal = () => {
   <modal
     v-model="tabsModalShown"
     style="--jskos-vue-modal-minWidth: var(--jskos-vue-modal-maxWidth); --jskos-vue-modal-minHeight: var(--jskos-vue-modal-maxHeight);">
+    <template v-slot:header><h1>Test Header</h1></template>
     <template v-slot:footer>Test Footer</template>
     <tabs style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
       <tab title="Tab 1">

@@ -10,7 +10,7 @@
         <div class="jskos-vue-modal-dialog">
           <header class="jskos-vue-modal-header">
             <slot name="header">
-              <h1>Test Header</h1>
+              <h1 />
             </slot>
             <button
               type="button"
