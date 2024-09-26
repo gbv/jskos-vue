@@ -13,9 +13,8 @@ jobs:
       matrix:
         node-version: [ 20.x ]
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
@@ -29,15 +28,15 @@ jobs:
       - name: Deploy
         continue-on-error: true
         id: deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/.vitepress/dist
           keep_files: true
           destination_dir: ${{ github.ref != 'refs/heads/main' && 'dev' || '' }}
       - name: Deploy Retry
-        if: steps.test.outcome == 'failure'
-        uses: peaceiris/actions-gh-pages@v3
+        if: steps.deploy.outcome == 'failure'
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/.vitepress/dist
