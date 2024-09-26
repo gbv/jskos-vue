@@ -7,6 +7,7 @@ export default defineConfig({
   lang: "en-US",
   title: "jskos-vue",
   description: "",
+  // TODO: Fix issues on our end with dark styles, then set this to `true`
   appearance: false,
 
   themeConfig: {
