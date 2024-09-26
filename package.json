@@ -40,23 +40,23 @@
     "test"
   ],
   "dependencies": {
-    "jskos-tools": "^1.0.36",
-    "jskos-vue-tabs": "^0.1.6",
-    "vue": "^3.4.27",
+    "jskos-tools": "^1.0.42",
+    "jskos-vue-tabs": "^0.1.8",
+    "vue": "^3.5.8",
     "vue-scrollto": "^2.20.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
-    "cocoda-sdk": "^3.4.8",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "cocoda-sdk": "^3.4.11",
     "eslint": "^8.57.0",
     "eslint-config-gbv": "^1.1.0",
     "eslint-plugin-vue": "^9.26.0",
-    "lint-staged": "^15.2.4",
-    "mocha": "^10.4.0",
+    "lint-staged": "^15.2.10",
+    "mocha": "^10.7.3",
     "mocha-eslint": "^7.0.0",
     "pre-commit": "^1.2.2",
-    "vite": "^5.2.11",
-    "vitepress": "^1.2.2",
+    "vite": "^5.4.8",
+    "vitepress": "^1.3.4",
     "yesno": "^0.4.0"
   },
   "author": "Stefan Peters <stefan.peters@gbv.de>",
