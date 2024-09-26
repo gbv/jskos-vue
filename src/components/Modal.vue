@@ -89,6 +89,14 @@ export default defineComponent({
 </script>
 
 <style>
+.jskos-vue-modal-header > h1 {
+  font-size: 1.5rem;
+  margin: 1rem 1rem;
+  flex: 1;
+}
+</style>
+
+<style scoped>
 .jskos-vue-modal {
   position: fixed;
   top: 0;
@@ -120,11 +128,6 @@ export default defineComponent({
   background-color: var(--jskos-vue-modal-bgColor);
   border-bottom: 1px solid #dee2e6;
   display: flex;
-}
-.jskos-vue-modal-header > h1 {
-  font-size: 1.5rem;
-  margin: 1rem 1rem;
-  flex: 1;
 }
 .jskos-vue-modal-header > button {
   padding: 1rem 1rem;

@@ -90,7 +90,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
 .jskos-vue-itemDetails-licenseInfo {
   display: inline-block;
 }

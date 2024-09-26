@@ -96,7 +96,7 @@ Fully working HTML example:
       <button @click="scroll">Scroll to 25</button>
       <item-list
         ref="itemList"
-        style="height: 100px; overflow: scroll; border: 1px solid black; margin-top: 20px;"
+        style="height: 100px; overflow-y: scroll; border: 1px solid black; margin-top: 20px;"
         :items="Array.from({ length: 50 }, (v, i) => ({ uri: `uri:${i}`, notation: [`${i}`], prefLabel: { en: `Test ${i}` }}))" />
     </div>
     <!-- Vue 3 production build -->

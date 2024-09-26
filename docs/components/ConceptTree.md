@@ -89,7 +89,7 @@ const alert = (...args) => window.alert(...args)
 <concept-tree
   v-if="state.concepts"
   v-model="state.selected"
-  style="height: 400px; overflow: auto; border: 2px solid #0001;"
+  style="height: 400px; overflow-y: auto; border: 2px solid #0001;"
   :concepts="state.concepts"
   @open="state.loadNarrower($event)">
   <template v-slot:beforeItem="{ item }">
@@ -168,7 +168,7 @@ const alert = (...args) => window.alert(...args)
   <concept-tree
     v-if="state.concepts"
     v-model="state.selected"
-    style="height: 400px; overflow: auto; border: 2px solid #0001;"
+    style="height: 400px; overflow-y: auto; border: 2px solid #0001;"
     :concepts="state.concepts"
     @open="state.loadNarrower($event)">
     <template v-slot:beforeItem="{ item }">

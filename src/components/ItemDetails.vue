@@ -175,11 +175,11 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
 .jskos-vue-itemDetails {
   position: relative;
-  font-size: 0.85rem;
-  line-height: 1.4;
+  font-size: var(--jskos-vue-fontSize-small);
+  line-height: var(--jskos-vue-itemDetails-lineHeight);
 }
 .jskos-vue-itemDetails-name {
   position: relative;

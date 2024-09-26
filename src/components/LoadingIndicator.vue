@@ -42,7 +42,7 @@ export default defineComponent ({
 </script>
 
 <!-- adjusted from: https://www.w3schools.com/howto/howto_css_loader.asp -->
-<style>
+<style scoped>
 .jskos-vue-loadingIndicator {
   border-radius: 50%;
   animation: jskos-vue-loadingIndicator-spin 2s linear infinite;

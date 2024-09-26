@@ -131,7 +131,7 @@
   </p>
   <item-list
     ref="longItemList"
-    style="height: 300px; overflow: scroll; border: 2px solid #0001;"
+    style="height: 300px; overflow-y: scroll; border: 2px solid #0001;"
     :items="examples.longConceptList"
     @select="handleClick" />
   <h2>Item Details</h2>
@@ -245,7 +245,7 @@
     v-if="examples.conceptTree.concepts"
     ref="conceptTree"
     v-model="examples.conceptTree.selected"
-    style="height: 400px; overflow: scroll; border: 2px solid #0001;"
+    style="height: 400px; overflow-y: scroll; border: 2px solid #0001;"
     :concepts="examples.conceptTree.concepts"
     @open="examples.conceptTree.loadNarrower($event)" />
   <h2>
@@ -254,7 +254,7 @@
   <concept-tree
     v-if="examples.conceptTree.concepts"
     v-model="examples.conceptTree.selected"
-    style="height: 400px; overflow: scroll; border: 2px solid #0001;"
+    style="height: 400px; overflow-y: scroll; border: 2px solid #0001;"
     :concepts="examples.conceptTree.concepts"
     :item-list-options="examples.conceptTree.itemListOptions"
     @open="examples.conceptTree.loadNarrower($event)"

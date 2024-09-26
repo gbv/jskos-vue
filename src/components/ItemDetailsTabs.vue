@@ -284,9 +284,11 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
 .jskos-vue-itemDetails-tabs {
   margin-top: 8px;
+  line-height: var(--jskos-vue-itemDetails-lineHeight);
+  font-size: var(--jskos-vue-fontSize-small);
 }
 .jskos-vue-itemDetails-list {
   list-style: none;

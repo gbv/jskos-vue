@@ -9,6 +9,7 @@
   --jskos-vue-arrow-hover-color: #666;
   /* ItemDetails */
   --jskos-vue-itemDetails-dropzone-bgCover: #eeeeee99;
+  --jskos-vue-itemDetails-lineHeight: 1.4;
   /* ItemList */
   --jskos-vue-itemList-hover-bgColor: var(--jskos-vue-highlight-bgColor);
   --jskos-vue-itemList-indicator-color: green;

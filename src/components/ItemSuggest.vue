@@ -327,7 +327,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
 .jskos-vue-itemSuggest {
   position: relative;
   height: 34px;
