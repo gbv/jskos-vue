@@ -290,15 +290,15 @@ export default defineComponent({
   line-height: var(--jskos-vue-itemDetails-lineHeight);
   font-size: var(--jskos-vue-fontSize-small);
 }
-.jskos-vue-itemDetails-list {
+.jskos-vue-itemDetails-tabs :deep(.jskos-vue-itemDetails-list) {
   list-style: none;
   margin: 0 0 10px 0;
   padding: 0;
 }
-.jskos-vue-itemDetails-list > li {
+.jskos-vue-itemDetails-tabs :deep(.jskos-vue-itemDetails-list > li) {
   margin-top: 0;
 }
-.jskos-vue-itemDetails-list > li:after {
+.jskos-vue-itemDetails-tabs :deep(.jskos-vue-itemDetails-list > li:after) {
   content: attr(lang);
   color: var(--jskos-vue-color-lightGrey);
   font-size: 80%;

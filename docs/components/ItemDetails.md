@@ -212,7 +212,10 @@ const alert = (...args) => window.alert(...args)
   @select="alert(`Clicked on item ${$event.item.uri}`)">
   <template v-slot:additionalTabs>
     <tab title="Test">
-      This tab was added via the "additionalTabs" slot.
+      <ul class="jskos-vue-itemDetails-list">
+        <li><b>This tab was added via the "additionalTabs" slot.</b></li>
+        <li>This is a list with class "jskos-vue-itemDetails-list" to test if it works inside slots.</li>
+      </ul>
     </tab>
     <div style="position: absolute; top: 0; right: 0;">
       🚀
@@ -379,7 +382,10 @@ const alert = (...args) => window.alert(...args)
     @select="alert(`Clicked on item ${$event.item.uri}`)">
     <template v-slot:additionalTabs>
       <tab title="Test">
-        This tab was added via the "additionalTabs" slot.
+        <ul class="jskos-vue-itemDetails-list">
+          <li><b>This tab was added via the "additionalTabs" slot.</b></li>
+          <li>This is a list with class "jskos-vue-itemDetails-list" to test if it works inside slots.</li>
+        </ul>
       </tab>
       <div style="position: absolute; top: 0; right: 0;">
         🚀
