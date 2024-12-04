@@ -5,7 +5,7 @@
       v-for="(license, index) in item.license || []"
       :key="index"
       :href="license.uri"
-      :title="`${getLicenseName(license)} by ${licenseAttribution.label}`"
+      :title="`${t('license')}: ${getLicenseName(license)} by ${licenseAttribution.label}`"
       class="jskos-vue-itemDetails-licenseInfo-badge">
       <img
         v-if="getLicenseBadge(license)"
@@ -22,6 +22,17 @@ import { defineComponent, computed } from "vue"
 import * as jskos from "jskos-tools"
 import AutoLink from "./AutoLink.vue"
 
+// Localization
+import { useLocale } from "../utils.js"
+const { t } = useLocale({
+  en: {
+    license: "License",
+  },
+  de: {
+    license: "Lizenz",
+  },
+})
+
 export default defineComponent({
   name: "LicenseInfo",
   components: {
@@ -32,10 +43,6 @@ export default defineComponent({
     item: {
       type: Object,
       required: true,
-    },
-    shieldsIoOptIn: {
-      type: Boolean,
-      default: false,
     },
   },
   setup(props) {
@@ -51,11 +58,6 @@ export default defineComponent({
     const getLicenseBadge = (license) => {
       if (licenseBadges[license.uri]) {
         return licenseBadges[license.uri]
-      }
-      const text = license.notation?.[0] || jskos.prefLabel(license, { fallbackToUri: false })
-      if (props.shieldsIoOptIn && text) {
-        // Create a dynamic shields.io badge with notation
-        return `https://img.shields.io/badge/${encodeURIComponent(text).replaceAll("_", "__").replaceAll("-", "--")}-000000?style=flat-square`
       }
       return null
     }
@@ -85,6 +87,7 @@ export default defineComponent({
       getLicenseBadge,
       getLicenseName,
       jskos,
+      t,
     }
   },
 })
@@ -98,9 +101,22 @@ export default defineComponent({
   padding-left: 5px;
 }
 .jskos-vue-itemDetails-licenseInfo-badge > img {
-  height: 1em;
+  height: 1.3em;
   vertical-align: middle;
   padding-bottom: 4px;
   display: inline-block;
+}
+.jskos-vue-itemDetails-licenseInfo-badge > span {
+  display: inline-block;
+  padding: 0.45em 0.5em 0.45em 0.5em;
+  font-size: 0.5em;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  background-color: black;
+  color: white;
+  /* Fix alignment with badges */
+  margin-top: -0.5em;
+  vertical-align: middle;
 }
 </style>
