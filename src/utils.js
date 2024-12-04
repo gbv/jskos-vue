@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted } from "vue"
+import { computed, onMounted, onUnmounted } from "vue"
 import * as jskos from "jskos-tools"
 
 /**
@@ -161,4 +161,19 @@ export const dragAndDrop = {
       isDraggingOver,
     }
   },
+}
+
+/**
+ * Composable to get an i18n-like "t" method for localizing strings via jskos-tools' "languagePreference".
+ * 
+ * @param {object} locale 
+ */
+export function useLocale(locale) {
+  // Determines current language from jskos.languagePreference and locale
+  const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => locale[lang]) || "en")
+  const t = (prop) => locale[currentLanguage.value][prop]
+  return {
+    t,
+    currentLanguage,
+  }
 }
