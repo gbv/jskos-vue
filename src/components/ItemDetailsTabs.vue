@@ -148,7 +148,7 @@ import "../shared.css"
 import "jskos-vue-tabs/dist/style.css"
 
 // Localization
-const locale = {
+const { t, currentLanguage } = utils.useLocale({
   en: {
     created: "Created",
     modified: "Modified",
@@ -179,10 +179,7 @@ const locale = {
     type: "Art",
     publisher: "Herausgeber",
   },
-}
-// Determines current language from jskos.languagePreference and locale
-const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => locale[lang]) || "en")
-const t = (prop) => locale[currentLanguage.value][prop]
+})
 
 /**
  * TODO!

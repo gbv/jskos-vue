@@ -59,26 +59,22 @@
  * - add drag and drop for concepts
  */
 
-import * as jskos from "jskos-tools"
-import { computed, defineComponent, nextTick, ref, watch } from "vue"
+import { defineComponent, nextTick, ref, watch } from "vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
-import { addClickHandlers, debounce } from "../utils"
+import { addClickHandlers, debounce, useLocale } from "../utils"
 
 import "../shared.css"
 
 // Localization
-const locale = {
+const { t } = useLocale({
   en: {
     placeholder: "Type to search...",
   },
   de: {
     placeholder: "Tippen zum Suchen...",
   },
-}
-// Determines current language from jskos.languagePreference and locale
-const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => locale[lang]) || "en")
-const t = (prop) => locale[currentLanguage.value][prop]
+})
 
 // HTML escape method
 // TODO: Move to utils?

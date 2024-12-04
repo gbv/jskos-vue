@@ -75,7 +75,7 @@ import "../shared.css"
 import "jskos-vue-tabs/dist/style.css"
 
 // Localization
-const locale = {
+const { t, currentLanguage } = utils.useLocale({
   en: {
     showAllAncestors: "show all ancestors",
     showLessAncestors: "show less ancesters",
@@ -88,10 +88,7 @@ const locale = {
     license: "Lizenz",
     dropzone: "Ziehe ein Item hierrein, um es auszuwählen.",
   },
-}
-// Determines current language from jskos.languagePreference and locale
-const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => locale[lang]) || "en")
-const t = (prop) => locale[currentLanguage.value][prop]
+})
 
 /**
  * TODO!
