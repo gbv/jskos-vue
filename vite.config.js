@@ -15,6 +15,7 @@ if (process.env.BUILD_MODE !== "app") {
     lib: {
       entry: resolve(__dirname, "src/index.js"),
       name: "JskosVue",
+      cssFileName: "style",
     },
     rollupOptions: {
       external: ["vue", "jskos-tools", "jskos-vue-tabs", "vue-scrollto", "cocoda-sdk"],
