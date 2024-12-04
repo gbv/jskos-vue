@@ -108,15 +108,15 @@ export default defineComponent({
 }
 .jskos-vue-itemDetails-licenseInfo-badge > span {
   display: inline-block;
-  padding: 0.45em 0.5em 0.45em 0.5em;
-  font-size: 0.5em;
+  padding: 0.3em 0.5em 0.3em 0.5em;
+  font-size: 0.6em;
   line-height: 1;
   text-align: center;
   white-space: nowrap;
   background-color: black;
   color: white;
   /* Fix alignment with badges */
-  margin-top: -0.5em;
+  margin-top: -0.45em;
   vertical-align: middle;
 }
 </style>
