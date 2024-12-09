@@ -412,6 +412,7 @@ Note: This works best when using a fixed width for ItemDetailsTabs (otherwise wr
   <item-details
     v-bind="state"
     :showTabs="false"
+    :fields="{ license: false }"
     style="flex: 1;"
     @select="alert(`Clicked on item ${$event.item.uri}`)" />
   <item-details-tabs
@@ -522,6 +523,7 @@ const alert = (...args) => window.alert(...args)
     <item-details
       v-bind="state"
       :showTabs="false"
+      :fields="{ license: false }"
       style="flex: 1;"
       @select="alert(`Clicked on item ${$event.item.uri}`)" />
     <item-details-tabs

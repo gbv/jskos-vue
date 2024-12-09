@@ -21,7 +21,7 @@
     </div>
     <!-- License -->
     <div
-      v-if="item.license && item.license.length">
+      v-if="fields.license !== false && item.license && item.license.length">
       {{ t("license") }}: <license-info :item="item" />
     </div>
     <!-- Ancestors -->
