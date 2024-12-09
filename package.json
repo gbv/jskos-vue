@@ -37,7 +37,7 @@
     ]
   },
   "dependencies": {
-    "jskos-tools": "^1.0.42",
+    "jskos-tools": "^1.0.43",
     "jskos-vue-tabs": "^0.1.8",
     "vue": "^3.5.13",
     "vue-scrollto": "^2.20.0"
@@ -51,7 +51,7 @@
     "lint-staged": "^15.2.10",
     "mocha": "^11.0.1",
     "mocha-eslint": "^7.0.0",
-    "vite": "^6.0.2",
+    "vite": "^6.0.3",
     "vitepress": "^1.5.0",
     "yesno": "^0.4.0"
   },
