@@ -8,7 +8,7 @@ Note that it was specifically developed with the needs of our [Cocoda Mapping To
 ## Requirements
 - [Vue 3](https://v3.vuejs.org)
 - One of the following:
-  - [Node.js](https://nodejs.org/) version >=18
+  - [Node.js](https://nodejs.org/) version >=20
   - A modern browser
 - [jskos-tools](https://github.com/gbv/jskos-tools)
   - Needed for ConceptTree, ItemDetails, ItemList, and ItemName.
