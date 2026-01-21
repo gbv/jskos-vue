@@ -1,6 +1,5 @@
 # jskos-vue
 [![Test and build](https://github.com/gbv/jskos-vue/actions/workflows/test-and-build.yml/badge.svg)](https://github.com/gbv/jskos-vue/actions/workflows/test-and-build.yml)
-[![GitHub package version](https://img.shields.io/github/package-json/v/gbv/jskos-vue.svg?label=version)](https://github.com/gbv/jskos-vue)
 [![NPM package name](https://img.shields.io/badge/npm-jskos--vue-blue.svg)](https://www.npmjs.com/package/jskos-vue)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 
@@ -63,7 +62,6 @@ npm run build
 The browser build files will be in `dist/`.
 
 ## Maintainers
-- [@stefandesu](https://github.com/stefandesu)
 - [@nichtich](https://github.com/nichtich)
 
 ## Publish
