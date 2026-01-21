@@ -1,4 +1,4 @@
-name: Release Package at npmjs and GitHub releases
+name: Release Package at npmjs
 
 on:
   push:
@@ -25,26 +25,3 @@ jobs:
         npm test
     - name: Publish to npm
       run: npm publish --provenance --access=public
-  github:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '24'
-        registry-url: 'https://registry.npmjs.org'
-    - name: Install, build, and pack
-      run: |
-        npm ci
-        npm run build
-        npm pack
-    - run: |
-        echo "ARTIFACT_NAME=$(ls *jskos-vue-*.tgz)" >> $GITHUB_ENV
-    - name: Create GitHub release
-      uses: softprops/action-gh-release@v2
-      with:
-        name: jskos-vue ${{ github.ref_name }}
-        body: TODO
-        draft: true
-        prerelease: false
-        files: ${{ env.ARTIFACT_NAME }}
