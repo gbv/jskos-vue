@@ -63,6 +63,7 @@ The browser build files will be in `dist/`.
 
 ## Maintainers
 - [@nichtich](https://github.com/nichtich)
+- [@rodolv-commons](https://github.com/rodolv-commons)
 
 ## Publish
 When a new release is ready (i.e. the features are finished, merged into `dev`, and all tests succeed), run the included release script (replace "patch" with "minor" or "major" if necessary):
