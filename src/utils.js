@@ -163,22 +163,36 @@ export const dragAndDrop = {
   },
 }
 
+// Localization
+export const messages = {
+  en: {
+    showAllAncestors: "show all ancestors",
+    showLessAncestors: "show less ancesters",
+    license: "License",
+    dropzone: "Drop an item here to select it.",
+  },
+  de: {
+    showAllAncestors: "zeige alle übergeordneten Konzepte",
+    showLessAncestors: "zeige weniger übergeordnete Konzepte",
+    license: "Lizenz",
+    dropzone: "Ziehe ein Item hierrein, um es auszuwählen.",
+  },
+}
+
 /**
  * Get method `t` to localize strings and the current locale `currentlLanguage`.
  * 
  * Returns global properties `$t` and `$i18n.locale`, if these exist, as injected
  * by {@link https://vue-i18n.intlify.dev/|Vue I18n}. Otherwise uses function
- * `languagePreference` from jskos-tools with translations provided as argument.
- *
- * @param {object} messages 
+ * `languagePreference` from jskos-tools with messages from this module.
  */
-export function useLocale(messages={}) {
+export function useLocale(msg=messages) {
   const { $t, $i18n } = getCurrentInstance()?.appContext.config.globalProperties || {}
   if ($t && $i18n?.locale) {
     return { t: $t, currentLanguage: $i18n.locale }
   } else {
-    const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => messages[lang]) || "en")
-    const t = id => (messages[currentLanguage.value] || [])[id] || id
+    const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => msg[lang]) || "en")
+    const t = id => (msg[currentLanguage.value] || [])[id] || id
     return { t, currentLanguage }
   }
 }

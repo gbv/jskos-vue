@@ -17,13 +17,21 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, computed } from "vue"
+<script setup>
+import { computed } from "vue"
 import * as jskos from "jskos-tools"
 import AutoLink from "./AutoLink.vue"
+import { useLocale } from "../utils.js"
+
+const props = defineProps({
+  // JSKOS item to be displayed
+  item: {
+    type: Object,
+    required: true,
+  },
+})
 
 // Localization
-import { useLocale } from "../utils.js"
 const { t } = useLocale({
   en: {
     license: "License",
@@ -33,63 +41,41 @@ const { t } = useLocale({
   },
 })
 
-export default defineComponent({
-  name: "LicenseInfo",
-  components: {
-    AutoLink,
-  },
-  props: {
-    // JSKOS item to be displayed
-    item: {
-      type: Object,
-      required: true,
-    },
-  },
-  setup(props) {
-    const licenseBadges = {
-      "http://creativecommons.org/publicdomain/zero/1.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/cc-zero.svg",
-      "https://creativecommons.org/publicdomain/mark/1.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/cc-zero.svg",
-      "http://creativecommons.org/licenses/by/3.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by.svg",
-      "http://creativecommons.org/licenses/by-nc-nd/3.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-nd.svg",
-      "http://creativecommons.org/licenses/by-nc-nd/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-nd.svg",
-      "http://creativecommons.org/licenses/by-nc-sa/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg",
-      "http://creativecommons.org/licenses/by-sa/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-sa.svg",
-    }
-    const getLicenseBadge = (license) => {
-      if (licenseBadges[license.uri]) {
-        return licenseBadges[license.uri]
-      }
-      return null
-    }
-    const getLicenseName = (license) => {
-      const prefLabel = jskos.prefLabel(license, { fallbackToUri: false })
-      let notation = jskos.notation(license)
-      if (prefLabel && notation) {
-        notation = ` (${notation})`
-      }
-      let name = prefLabel + notation
-      if (!name) {
-        name = license.uri
-      }
-      return name
-    }
-    // TODO: Is it enough to show this as "title"?
-    const licenseAttribution = computed(() => {
-      const organisation = (props.item.publisher || []).find(o => o.url) ?? props.item.publisher?.[0]
-      const url = organisation?.url ?? props.item.url
-      return {
-        url,
-        label: jskos.prefLabel(organisation) || "?",
-      }
-    })
-    return {
-      licenseAttribution,
-      getLicenseBadge,
-      getLicenseName,
-      jskos,
-      t,
-    }
-  },
+const licenseBadges = {
+  "http://creativecommons.org/publicdomain/zero/1.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/cc-zero.svg",
+  "https://creativecommons.org/publicdomain/mark/1.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/cc-zero.svg",
+  "http://creativecommons.org/licenses/by/3.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by.svg",
+  "http://creativecommons.org/licenses/by-nc-nd/3.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-nd.svg",
+  "http://creativecommons.org/licenses/by-nc-nd/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-nd.svg",
+  "http://creativecommons.org/licenses/by-nc-sa/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg",
+  "http://creativecommons.org/licenses/by-sa/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-sa.svg",
+}
+const getLicenseBadge = (license) => {
+  if (licenseBadges[license.uri]) {
+    return licenseBadges[license.uri]
+  }
+  return null
+}
+const getLicenseName = (license) => {
+  const prefLabel = jskos.prefLabel(license, { fallbackToUri: false })
+  let notation = jskos.notation(license)
+  if (prefLabel && notation) {
+    notation = ` (${notation})`
+  }
+  let name = prefLabel + notation
+  if (!name) {
+    name = license.uri
+  }
+  return name
+}
+// TODO: Is it enough to show this as "title"?
+const licenseAttribution = computed(() => {
+  const organisation = (props.item.publisher || []).find(o => o.url) ?? props.item.publisher?.[0]
+  const url = organisation?.url ?? props.item.url
+  return {
+    url,
+    label: jskos.prefLabel(organisation) || "?",
+  }
 })
 </script>
 

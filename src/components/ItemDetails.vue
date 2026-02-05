@@ -26,7 +26,7 @@
     </div>
     <!-- Ancestors -->
     <!-- TODO: Only show part of ancestors? -->
-    <item-list
+    <ItemList
       v-if="showAncestors"
       v-bind="itemListOptions_"
       :items="(item.ancestors || []).filter(Boolean).reverse()"
@@ -34,14 +34,14 @@
       class="jskos-vue-itemDetails-ancestors"
       @select="$emit('select', { item: $event.item })" />
     <!-- Broader -->
-    <item-list
+    <ItemList
       v-if="showBroader"
       v-bind="itemListOptions_"
       :items="(item.broader || []).filter(i => !jskos.isContainedIn(i, item.ancestors || []))"
       class="jskos-vue-itemDetails-broader"
       @select="$emit('select', { item: $event.item })" />
     <slot name="beforeTabs" />
-    <item-details-tabs
+    <ItemDetailsTabs
       v-if="showTabs"
       :item="item"
       :flat="flat"
@@ -49,10 +49,10 @@
       <template #additionalTabs>
         <slot name="additionalTabs" />
       </template>
-    </item-details-tabs>
+    </ItemDetailsTabs>
     <slot name="afterTabs" />
     <!-- Narrower -->
-    <item-list
+    <ItemList
       v-if="showNarrower"
       v-bind="itemListOptions_"
       :items="item.narrower || []"
@@ -62,116 +62,78 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from "vue"
 import * as jskos from "jskos-tools"
 import ItemName from "./ItemName.vue"
 import ItemList from "./ItemList.vue"
 import ItemDetailsTabs from "./ItemDetailsTabs.vue"
 import LicenseInfo from "./LicenseInfo.vue"
 import * as utils from "../utils.js"
-import { computed, defineComponent } from "vue"
-const { draggedItem, addDropzone } = utils.dragAndDrop
 import "../shared.css"
 import "jskos-vue-tabs/dist/style.css"
 
-// Localization
-export const messages = {
-  en: {
-    showAllAncestors: "show all ancestors",
-    showLessAncestors: "show less ancesters",
-    license: "License",
-    dropzone: "Drop an item here to select it.",
-  },
-  de: {
-    showAllAncestors: "zeige alle übergeordneten Konzepte",
-    showLessAncestors: "zeige weniger übergeordnete Konzepte",
-    license: "Lizenz",
-    dropzone: "Ziehe ein Item hierrein, um es auszuwählen.",
-  },
-}
+const { draggedItem, addDropzone } = utils.dragAndDrop
 
-const { t, currentLanguage } = utils.useLocale(messages)
+const { t } = utils.useLocale()
 
-/**
- * TODO!
- * Icons
- */
-export default defineComponent({
-  name: "ItemDetails",
-  components: {
-    ItemName,
-    ItemList,
-    LicenseInfo,
-    ItemDetailsTabs,
+const props = defineProps({
+  // JSKOS item to be displayed
+  item: {
+    type: Object,
+    required: true,
   },
-  props: {
-    // JSKOS item to be displayed
-    item: {
-      type: Object,
-      required: true,
-    },
-    // options to be passed along to ItemList component instances
-    itemListOptions: {
-      type: Object,
-      default: () => ({}),
-    },
-    showTabs: {
-      type: Boolean,
-      default: true,
-    },
-    showAncestors: {
-      type: Boolean,
-      default: true,
-    },
-    showBroader: {
-      type: Boolean,
-      default: true,
-    },
-    showNarrower: {
-      type: Boolean,
-      default: true,
-    },
-    dropzone: {
-      type: Boolean,
-      default: true,
-    },
-    draggable: {
-      type: Boolean,
-      default: true,
-    },
-    // whether details are displayed as tabs or flat
-    flat: {
-      type: Boolean,
-      default: false,
-    },
-    // Configure which fields of the item are displayed
-    fields: {
-      type: Object,
-      default: () => ({}),
-    },
+  // options to be passed along to ItemList component instances
+  itemListOptions: {
+    type: Object,
+    default: () => ({}),
   },
-  emits: ["select"],
-  setup(props, { emit }) {
-    // Drag and drop
-    const isDraggedConceptDifferent = computed(() => {
-      return !jskos.compare(props.item, draggedItem.value)
-    })
-    const dropzone = addDropzone(null, (item) => {
-      props.dropzone && isDraggedConceptDifferent.value && emit("select", { item })
-    })
-    const itemListOptions_ = computed(() => Object.assign({ draggable: props.draggable }, props.itemListOptions))
-    return {
-      utils,
-      jskos,
-      currentLanguage,
-      t,
-      draggedItem,
-      ...dropzone,
-      isDraggedConceptDifferent,
-      itemListOptions_,
-    }
+  showTabs: {
+    type: Boolean,
+    default: true,
+  },
+  showAncestors: {
+    type: Boolean,
+    default: true,
+  },
+  showBroader: {
+    type: Boolean,
+    default: true,
+  },
+  showNarrower: {
+    type: Boolean,
+    default: true,
+  },
+  dropzone: {
+    type: Boolean,
+    default: true,
+  },
+  draggable: {
+    type: Boolean,
+    default: true,
+  },
+  // whether details are displayed as tabs or flat
+  flat: {
+    type: Boolean,
+    default: false,
+  },
+  // Configure which fields of the item are displayed
+  fields: {
+    type: Object,
+    default: () => ({}),
   },
 })
+
+const emit = defineEmits(["select"])
+
+// Drag and drop
+const isDraggedConceptDifferent = computed(() => {
+  return !jskos.compare(props.item, draggedItem.value)
+})
+const { dragover, dragenter, dragleave, drop, isDraggingOver } = addDropzone(null, (item) => {
+  props.dropzone && isDraggedConceptDifferent.value && emit("select", { item })
+})
+const itemListOptions_ = computed(() => Object.assign({ draggable: props.draggable }, props.itemListOptions))
 </script>
 
 <style scoped>
