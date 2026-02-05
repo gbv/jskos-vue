@@ -37,4 +37,8 @@ if (process.env.BUILD_MODE !== "app") {
 export default defineConfig({
   plugins: [vue()],
   build,
+  test: {
+    globals: true,
+    environment: "happy-dom",
+  },
 })

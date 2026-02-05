@@ -44,14 +44,16 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.3",
+    "@vue/test-utils": "^2.4.6",
     "cocoda-sdk": "^3.4.12",
     "eslint": "^9.22",
     "eslint-config-gbv": "^2.7.0",
+    "happy-dom": "^20.5.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.0.0",
-    "vitest": "^3.0.5",
     "vite": "^7.3.1",
     "vitepress": "^1.5.0",
+    "vitest": "^3.0.5",
     "yesno": "^0.4.0"
   },
   "author": "Stefan Peters <stefan.peters@gbv.de>",
