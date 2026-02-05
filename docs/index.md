@@ -19,6 +19,8 @@ Note that it was specifically developed with the needs of our [Cocoda Mapping To
 
 For a Node.js project, it is recommended to use [Vite](https://vitejs.dev).
 
+The library also supports [Vue I18n], see [I18n](#i18n).
+
 ## Installation
 ```bash
 npm install jskos-vue
@@ -124,6 +126,14 @@ Fully working HTML example:
 ## Development
 
 Please refer to the [GitHub README](https://github.com/gbv/jskos-vue#development) for development instructions.
+
+## I18n
+
+The library comes with translated messages in English and German. The messages can be exported as object `messages` for all components and as property `messages` of each individual component, to be used with a library such as [Vue I18n].
+
+*This is not fully implemented yet*
+
+[Vue I18n]: https://vue-i18n.intlify.dev/
 
 ## Styling Notes
 

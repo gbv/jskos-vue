@@ -75,7 +75,7 @@ import "../shared.css"
 import "jskos-vue-tabs/dist/style.css"
 
 // Localization
-const { t, currentLanguage } = utils.useLocale({
+export const messages = {
   en: {
     showAllAncestors: "show all ancestors",
     showLessAncestors: "show less ancesters",
@@ -88,7 +88,9 @@ const { t, currentLanguage } = utils.useLocale({
     license: "Lizenz",
     dropzone: "Ziehe ein Item hierrein, um es auszuwählen.",
   },
-})
+}
+
+const { t, currentLanguage } = utils.useLocale(messages)
 
 /**
  * TODO!

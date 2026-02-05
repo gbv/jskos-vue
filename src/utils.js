@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted } from "vue"
+import { computed, onMounted, onUnmounted, getCurrentInstance } from "vue"
 import * as jskos from "jskos-tools"
 
 /**
@@ -164,16 +164,21 @@ export const dragAndDrop = {
 }
 
 /**
- * Composable to get an i18n-like "t" method for localizing strings via jskos-tools' "languagePreference".
+ * Get method `t` to localize strings and the current locale `currentlLanguage`.
  * 
- * @param {object} locale 
+ * Returns global properties `$t` and `$i18n.locale`, if these exist, as injected
+ * by {@link https://vue-i18n.intlify.dev/|Vue I18n}. Otherwise uses function
+ * `languagePreference` from jskos-tools with translations provided as argument.
+ *
+ * @param {object} messages 
  */
-export function useLocale(locale) {
-  // Determines current language from jskos.languagePreference and locale
-  const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => locale[lang]) || "en")
-  const t = (prop) => locale[currentLanguage.value][prop]
-  return {
-    t,
-    currentLanguage,
+export function useLocale(messages={}) {
+  const { $t, $i18n } = getCurrentInstance()?.appContext.config.globalProperties || {}
+  if ($t && $i18n?.locale) {
+    return { t: $t, currentLanguage: $i18n.locale }
+  } else {
+    const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => messages[lang]) || "en")
+    const t = id => (messages[currentLanguage.value] || [])[id] || id
+    return { t, currentLanguage }
   }
 }
