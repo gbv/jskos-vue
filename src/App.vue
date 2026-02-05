@@ -281,19 +281,52 @@
   <concept-tree
     v-if="examples.conceptTree.concepts"
     v-model="examples.conceptTree.selected"
-    style="border: 2px solid #0001;"
+    style="border: 2px solid #0001; margin-bottom: 40px;"
     :concepts="examples.conceptTree.concepts.slice(0, 6)"
     :hierarchy="false" />
+  <hr>  
+
+  <h2>ItemSelect DDC concepts from API (typeahead / suggest )</h2>
+  <h3>Tags</h3>
+  <p
+    v-if="examples.conceptTree.scheme"
+    style="padding-bottom: 20px;">
+    <item-select
+      v-if="examples.conceptTree.scheme"
+      v-model="examples.itemSelect.selected"
+      :search="utils.cdkRegistryToSuggestFunction(examples.conceptTree.scheme._registry, { scheme: examples.conceptTree.scheme })"
+      label="DDC with tag view"
+      placeholder="Search DDC concepts…"
+      selected-view="tags" />
+  </p>
+  <h3>Table</h3>
+  <item-select
+    v-if="examples.conceptTree.scheme"
+    v-model="examples.itemSelect.selected"
+    :search="utils.cdkRegistryToSuggestFunction(examples.conceptTree.scheme._registry, { scheme: examples.conceptTree.scheme })"
+    label="DDC with table view"
+    placeholder="Search DDC concepts…"
+    orderable
+    selected-view="table" />
+  <h3>List</h3>
+  <item-select
+    v-if="examples.conceptTree.scheme"
+    v-model="examples.itemSelect.selected"
+    :search="utils.cdkRegistryToSuggestFunction(examples.conceptTree.scheme._registry, { scheme: examples.conceptTree.scheme })"
+    label="DDC with list view"
+    placeholder="Search DDC concepts…"
+    selected-view="list" />
 </template>
 
 <script>
-import { defineComponent, reactive } from "vue"
+import { defineComponent, reactive, ref } from "vue"
 import * as jskos from "jskos-tools"
 import * as utils from "./utils"
 import { Tab } from "jskos-vue-tabs"
-
+import { cdk} from "cocoda-sdk"
 // Add ItemName plugin
 import ItemName from "./components/ItemName.vue"
+
 ItemName.addNotationPlugin((notation, { item }) => {
   // Add leading zeros for DDC items
   let fill = ""
@@ -323,7 +356,6 @@ Array.prototype.move = function(from, to) {
   return this
 }
 
-import { cdk} from "cocoda-sdk"
 const registry = cdk.initializeRegistry({
   provider: "ConceptApi",
   api: "https://coli-conc.gbv.de/api/",
@@ -536,6 +568,9 @@ const examples = reactive({
       }
     },
   },
+  itemSelect: {
+    selected: [],
+  },
 })
 
 export default defineComponent({
@@ -549,6 +584,14 @@ export default defineComponent({
     })
     jskos.languagePreference.store = state
     jskos.languagePreference.path = "languages"
+
+    const selectedLangs = ref([])
+
+    const LANGUAGE_OPTIONS = [
+      { uri: "urn:lang:en", prefLabel: { en: "English" }, __label: "English" },
+      { uri: "urn:lang:it", prefLabel: { it: "Italiano" }, __label: "Italiano" },
+      { uri: "urn:lang:de", prefLabel: { de: "Deutsch" }, __label: "Deutsch" },
+    ]
 
     // Initialize conceptTree example
     ;(async () => {
@@ -574,6 +617,8 @@ export default defineComponent({
       loadLongItemList,
       longItemListGetRandomUri,
       utils,
+      selectedLangs,
+      LANGUAGE_OPTIONS,
     }
   },
   methods: {
@@ -600,8 +645,9 @@ html {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   margin: 30px auto 0 auto;
-  max-width: 450px;
+  max-width: 900px;
   line-height: 1.4;
+  padding: 20px;
 }
 .item-list-styled {
   background: lightcoral;

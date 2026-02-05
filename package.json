@@ -40,6 +40,7 @@
     "jskos-tools": "^1.0.43",
     "jskos-vue-tabs": "^0.1.8",
     "vue": "^3.5.13",
+    "vue-multiselect": "^3.4.0",
     "vue-scrollto": "^2.20.0"
   },
   "devDependencies": {
