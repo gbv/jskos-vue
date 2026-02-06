@@ -51,6 +51,8 @@ ItemName.addNotationPlugin((notation, { item }) => {
 })
 ```
 
+Another use case is showing item identifiers in [CURIE syntax](https://www.w3.org/TR/curie/).
+
 ## Examples
 
 <script setup>

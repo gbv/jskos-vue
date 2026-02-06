@@ -66,6 +66,7 @@ Please always run tests and aim at high test coverage.
 
 ```bash
 npm test
+npm run coverage
 ```
 
 ## Release
