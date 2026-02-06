@@ -4,6 +4,8 @@ Helper function that converts a [cocoda-sdk] registry into a suggest function fo
 
 By default, it will use `suggest` (i.e. for concepts). With the parameter `options.voc`, it is possible to use `vocSuggest` for concept schemes instead.
 
+## Usage
+
 ```js
 import { utils } from "jskos-vue"
 const suggest = utils.cdkRegistryToSuggestFunction(registry, { voc = false, scheme })

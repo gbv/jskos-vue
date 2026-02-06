@@ -35,56 +35,60 @@
   </teleport>
 </template>
 
-<script>
-import { computed, defineComponent, onBeforeMount, ref } from "vue"
+<script setup>
+import { computed, onBeforeMount, ref } from "vue"
 import "../shared.css"
 
-export default defineComponent({
-  name: "Modal",
+defineOptions({
   inheritAttrs: false,
-  props: {
-    modelValue: {
-      type: Boolean,
-      required: false,
-      default: undefined,
-    },
+})
+
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    required: false,
+    default: undefined,
   },
-  emits: ["update:modelValue"],
-  setup(props, { emit }) {
-    onBeforeMount(() => {
-      // Check if #jskos-vue-modal-area already exists
-      const id = "jskos-vue-modal-area"
-      const existing = document.getElementById(id)
-      if (!existing) {
-        // Create element and append to body
-        const element = document.createElement("div")
-        element.id = id
-        document.body.appendChild(element)
-      }
-    })
-    const internalShown = ref(false)
-    const shown = computed({
-      get() {
-        if (props.modelValue === undefined) {
-          return internalShown.value
-        }
-        return props.modelValue
-      },
-      set(value) {
-        internalShown.value = value
-        emit("update:modelValue", value)
-      },
-    })
-    return {
-      shown,
-      show() {
-        shown.value = true
-      },
-      hide() {
-        shown.value = false
-      },
+})
+
+const emit = defineEmits(["update:modelValue"])
+
+onBeforeMount(() => {
+  // Check if #jskos-vue-modal-area already exists
+  const id = "jskos-vue-modal-area"
+  const existing = document.getElementById(id)
+  if (!existing) {
+    // Create element and append to body
+    const element = document.createElement("div")
+    element.id = id
+    document.body.appendChild(element)
+  }
+})
+
+const internalShown = ref(false)
+const shown = computed({
+  get() {
+    if (props.modelValue === undefined) {
+      return internalShown.value
     }
+    return props.modelValue
   },
+  set(value) {
+    internalShown.value = value
+    emit("update:modelValue", value)
+  },
+})
+
+const show = () => {
+  shown.value = true
+}
+const hide = () => {
+  shown.value = false
+}
+
+defineExpose({
+  show,
+  hide,
 })
 </script>
 

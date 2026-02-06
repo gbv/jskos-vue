@@ -5,6 +5,21 @@ jskos-vue is a library for [Vue 3](https://v3.vuejs.org) containing components a
 
 Note that it was specifically developed with the needs of our [Cocoda Mapping Tool](https://github.com/gbv/cocoda) and [BARTOC](https://github.com/gbv/bartoc.org) in mind. So if certain decisions seem odd to you, it is probably because it was needed in one of those projects. Nevertheless feel free to [contact us](https://github.com/gbv/jskos-vue/issues) with your questions, suggestions, and use-cases!
 
+## Overview
+This library provides the following Vue components (plus some helper components and utility functions):
+
+- [ItemName] - label or identifier of a JSKOS item
+- [ItemList] - list of JSKOS items
+- [ConceptTree] - hierarchical browsing of JSKOS concepts
+- [ItemSuggest] - input field to search and select an item
+- [ItemDetails] - full but condense details of a JSKOS item
+
+[ItemName]: components/ItemName.html
+[ItemList]: components/ItemList.html
+[ConceptTree]: components/ConceptTree.html
+[ItemSuggest]: components/ItemSuggest.html
+[ItemDetails]: components/ItemDetails.html
+
 ## Requirements
 - [Vue 3](https://v3.vuejs.org)
 - One of the following:
@@ -12,12 +27,18 @@ Note that it was specifically developed with the needs of our [Cocoda Mapping To
   - A modern browser
 - [jskos-tools](https://github.com/gbv/jskos-tools)
   - Needed for ConceptTree, ItemDetails, ItemList, and ItemName.
-- [jskos-vue-tabs](https://github.com/gbv/jskos-vue-tabs)
+- [jskos-vue-tabs]
   - Needed for ItemDetails.
 - [vue-scrollto](https://github.com/rigor789/vue-scrollto)
   - Needed for ItemSuggest, ConceptTree, ItemDetails, and ItemList.
 
-For a Node.js project, it is recommended to use [Vite](https://vitejs.dev).
+For a Node.js project, it is recommended to use [Vite](https://vitejs.dev). For access to JSKOS data via web APIs we recommend [cocoda-sdk] or [jskos-providers].
+
+The library also supports [Vue I18n], see [I18n](#i18n).
+
+[jskos-vue-tabs]: https://github.com/gbv/jskos-vue-tabs
+[cocoda-sdk]: https://github.com/gbv/cocoda-sdk#readme
+[jskos-providers]: https://github.com/gbv/jskos-providers#readme
 
 ## Installation
 ```bash
@@ -121,9 +142,13 @@ Fully working HTML example:
 </html>
 ```
 
-## Development
+## I18n
 
-Please refer to the [GitHub README](https://github.com/gbv/jskos-vue#development) for development instructions.
+The library comes with translated messages in English and German. The messages can be exported as object `messages` for all components and as property `messages` of each individual component, to be used with a library such as [Vue I18n].
+
+*This is not fully implemented yet*
+
+[Vue I18n]: https://vue-i18n.intlify.dev/
 
 ## Styling Notes
 
@@ -179,3 +204,30 @@ There are also some global CSS variables that are used by multiple components:
   - default: `#737373`
 
 Note that this list is likely going to grow and that defaults can change any time during 0.x.x releases.
+## Development
+
+Please refer to the [GitHub README](https://github.com/gbv/jskos-vue#development) for development instructions.
+
+## Related works
+
+The [TS4NFDI Terminology Service Suite](https://github.com/ts4nfdi/terminology-service-suite) (TSS) provides similar components based on React instead of Vue and TSS includes API calls where jskos-vue leaves this to [cocoda-sdk] or other methods. A very rough correspondence of components and widgets, ignoring conceptual differences:
+
+jskos-vue     | TSS 
+--------------|-------------------------
+[ItemName]    | [TitleWidget]
+[ItemList]    | *planned [EntityListWidget](https://github.com/ts4nfdi/terminology-service-suite/issues/318)*
+[ConceptTree] | [HierarchyWidget]
+/             | [GraphViewWidget]
+[ItemSuggest] | [AutocompleteWidget]
+[ItemDetails] | [EntityInfoWidget]
+/             | [EntityRelationsWidget]
+
+In addition [jskos-vue-tabs] is similar to TSS [TabWidget]. A mapping Widget is planned in [both jskos-vue](https://github.com/gbv/jskos-vue/issues/26) and in [in TSS](https://github.com/ts4nfdi/terminology-service-suite/issues/305).
+
+[EntityInfoWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_additional-entity-metadata-entityinfowidget--docs
+[EntityRelationsWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_additional-entity-metadata-entityrelationswidget--docs
+[HierarchyWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_hierarchy-and-graph-hierarchywidget--docs
+[GraphViewWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_hierarchy-and-graph-graphviewwidget--docs
+[AutocompleteWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/html_search-autocompletewidget--docs
+[TabWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_additional-entity-metadata-tabwidget--docs
+[TitleWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_entity-metadata-titlewidget--docs

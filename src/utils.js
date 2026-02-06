@@ -1,29 +1,5 @@
-import { computed, onMounted, onUnmounted } from "vue"
+import { computed, onMounted, onUnmounted, getCurrentInstance } from "vue"
 import * as jskos from "jskos-tools"
-
-/**
- * Converts a date string to a localized date string.
- * Incomplete dates (YYYY or YYYY-MM) will be returned non-localized.
- * Dates with the exact length of 10 (e.g. YYYY-MM-DD) will be printed as date-only.
- *
- * @param {string} dateString a date string (compatible with new Date())
- * @param {string} lang a language string compatible with Date.prototype.toLocaleString (default: language preference via jskos-tools)
- */
-export function dateToString(dateString, lang = jskos.languagePreference.getLanguages()?.[0] || "en") {
-  let date = new Date(dateString)
-  if (date instanceof Date && !isNaN(date)) {
-    if (dateString.length < 10) {
-      return dateString
-    }
-    let options = { year: "numeric", month: "short", day: "numeric" }
-    if (dateString.length > 10) {
-      options = Object.assign({ hour: "2-digit", minute: "2-digit", second: "2-digit" }, options)
-    }
-    return date.toLocaleString(lang, options)
-  } else {
-    return dateString
-  }
-}
 
 /**
  * Click handler mixin
@@ -163,17 +139,69 @@ export const dragAndDrop = {
   },
 }
 
+// Localization
+export const messages = {
+  en: {
+    showAllAncestors: "show all ancestors",
+    showLessAncestors: "show less ancesters",
+    license: "License",
+    dropzone: "Drop an item here to select it.",
+  },
+  de: {
+    showAllAncestors: "zeige alle übergeordneten Konzepte",
+    showLessAncestors: "zeige weniger übergeordnete Konzepte",
+    license: "Lizenz",
+    dropzone: "Ziehe ein Item hierrein, um es auszuwählen.",
+  },
+}
+
 /**
- * Composable to get an i18n-like "t" method for localizing strings via jskos-tools' "languagePreference".
+ * Get method `t` to localize strings and the current locale `currentlLanguage`.
  * 
- * @param {object} locale 
+ * Returns global properties `$t` and `$i18n.locale`, if these exist, as injected
+ * by {@link https://vue-i18n.intlify.dev/|Vue I18n}. Otherwise uses function
+ * `languagePreference` from jskos-tools with messages from this module.
  */
-export function useLocale(locale) {
-  // Determines current language from jskos.languagePreference and locale
-  const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => locale[lang]) || "en")
-  const t = (prop) => locale[currentLanguage.value][prop]
-  return {
-    t,
-    currentLanguage,
+export function useLocale(msg=messages) {
+  const { $t, $i18n } = getCurrentInstance()?.appContext.config.globalProperties || {}
+  if ($t && $i18n?.locale) {
+    return { t: $t, currentLanguage: $i18n.locale }
+  } else {
+    const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => msg[lang]) || "en")
+    const t = id => (msg[currentLanguage.value] || [])[id] || id
+    return { t, currentLanguage }
   }
 }
+
+/**
+ * Converts a date string to a localized date string.
+ * Incomplete dates (YYYY or YYYY-MM) will be returned non-localized.
+ * Dates with the exact length of 10 (e.g. YYYY-MM-DD) will be printed as date-only.
+ *
+ * Default language is taken from global property `$i18n.locale`, if set, or from
+ * `languagePreference` from jskos-tools otherwise and a fallback to `en`.
+ *
+ * @param {string} dateString a date string (compatible with new Date())
+ * @param {string} lang a language string compatible with Date.prototype.toLocaleString
+ */
+export function dateToString(dateString, lang) {
+  if (!lang) {
+    const { $i18n } = getCurrentInstance()?.appContext.config.globalProperties || {}
+    lang = $i18n?.locale || jskos.languagePreference.getLanguages()?.[0] || "en"
+  }
+  let date = new Date(dateString)
+  if (date instanceof Date && !isNaN(date)) {
+    if (dateString.length < 10) {
+      return dateString
+    }
+    let options = { year: "numeric", month: "short", day: "numeric" }
+    if (dateString.length > 10) {
+      options = Object.assign({ hour: "2-digit", minute: "2-digit", second: "2-digit" }, options)
+    }
+    return date.toLocaleString(lang, options)
+  } else {
+    return dateString
+  }
+}
+
+

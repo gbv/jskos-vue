@@ -25,11 +25,7 @@
 </template>
 
 <script>
-import { defineComponent, reactive, computed } from "vue"
-import * as jskos from "jskos-tools"
-import { dragAndDrop } from "../utils"
-const { dragstart, dragend } = dragAndDrop
-import "../shared.css"
+import { reactive } from "vue"
 
 const plugins = reactive({
   label: [],
@@ -48,77 +44,75 @@ const plugins = reactive({
   },
 })
 
-const component = defineComponent({
-  name: "ItemName",
-  props: {
-    // JSKOS item
-    item: {
-      type: Object,
-      required: true,
-    },
-    // whether to show the item's notation
-    showNotation: {
-      type: Boolean,
-      default: true,
-    },
-    // whether to show the item's label
-    showLabel: {
-      type: Boolean,
-      default: true,
-    },
-    // fallback label (only shown if both notation and label are empty)
-    fallbackLabel: {
-      type: String,
-      default: "???",
-    },
-    // change language of the label (by default uses jskos-tools' "languagePreference")
-    language: {
-      type: String,
-      default: "",
-    },
-    // whether the item is clickable
-    clickable: {
-      type: Boolean,
-      default: false,
-    },
-    // whether the item is draggable
-    draggable: {
-      type: Boolean,
-      default: true,
-    },
+export default {
+  addLabelPlugin(plugin) {
+    plugins.label.push(plugin)
   },
-  setup(props) {
-    const notation = computed(() =>
-      props.showNotation
-        ? plugins.processNotation(jskos.notation(props.item), props)
-        : "",
-    )
-    const label = computed(() =>
-      props.showLabel
-        ? plugins.processLabel(jskos.prefLabel(props.item, {
-          fallbackToUri: !notation.value,
-          language: props.language || jskos.languagePreference.selectLanguage(props.item.prefLabel),
-        }), props)
-        : "",
-    )
-    return {
-      notation,
-      label,
-      dragstart,
-      dragend,
-    }
+  addNotationPlugin(plugin) {
+    plugins.notation.push(plugin)
+  },
+}
+</script>
+
+<script setup>
+import { computed } from "vue"
+import * as jskos from "jskos-tools"
+import { dragAndDrop } from "../utils"
+import "../shared.css"
+
+const { dragstart, dragend } = dragAndDrop
+
+const props = defineProps({
+  // JSKOS item
+  item: {
+    type: Object,
+    required: true,
+  },
+  // whether to show the item's notation
+  showNotation: {
+    type: Boolean,
+    default: true,
+  },
+  // whether to show the item's label
+  showLabel: {
+    type: Boolean,
+    default: true,
+  },
+  // fallback label (only shown if both notation and label are empty)
+  fallbackLabel: {
+    type: String,
+    default: "???",
+  },
+  // change language of the label (by default uses jskos-tools' "languagePreference")
+  language: {
+    type: String,
+    default: "",
+  },
+  // whether the item is clickable
+  clickable: {
+    type: Boolean,
+    default: false,
+  },
+  // whether the item is draggable
+  draggable: {
+    type: Boolean,
+    default: true,
   },
 })
 
-// Add methods to component for adding plugins
-component.addLabelPlugin = (plugin) => {
-  plugins.label.push(plugin)
-}
-component.addNotationPlugin = (plugin) => {
-  plugins.notation.push(plugin)
-}
-
-export default component
+const notation = computed(() =>
+  props.showNotation
+    ? plugins.processNotation(jskos.notation(props.item), props)
+    : "",
+)
+const label = computed(() =>
+  props.showLabel
+    ? plugins.processLabel(jskos.prefLabel(props.item, {
+      fallbackToUri: !notation.value,
+      language: props.language || jskos.languagePreference.selectLanguage(props.item.prefLabel),
+    }), props)
+    : "",
+)
 </script>
 
 <style scoped>

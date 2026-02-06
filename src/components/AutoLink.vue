@@ -6,26 +6,21 @@
   <span v-else><slot>{{ text || href }}</slot></span>
 </template>
 
-<script>
+<script setup>
 /**
  * Represents an element that automatically converts a valid URL into a link.
  */
 
-import { defineComponent } from "vue"
-
-export default defineComponent({
-  name: "AutoLink",
-  props: {
+defineProps({
   // The string that is potentially a URL.
-    href: {
-      type: String,
-      default: "",
-    },
-    //  The text that is shown (defaults to URL).
-    text: {
-      type: String,
-      default: "",
-    },
+  href: {
+    type: String,
+    default: "",
+  },
+  //  The text that is shown (defaults to URL).
+  text: {
+    type: String,
+    default: "",
   },
 })
 </script>

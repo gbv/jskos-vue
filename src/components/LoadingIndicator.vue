@@ -9,36 +9,31 @@
     class="jskos-vue-loadingIndicator" />
 </template>
 
-<script>
-import { computed, defineComponent } from "vue"
+<script setup>
+import { computed } from "vue"
 import "../shared.css"
 
 /**
  * Component that displays a spinning loading indicator.
  */
-export default defineComponent ({
-  name: "LoadingIndicator",
-  props: {
-    /**
-     * The size of the loading indicator.
-     * `sm, md, lg, xl`
-     */
-    size: {
-      type: String,
-      default: "md",
-    },
-  },
-  setup(props) {
-    return {
-      sizePixels: computed(() => ({
-        sm: 9,
-        md: 15,
-        lg: 21,
-        xl: 27,
-      }[props.size])),
-    }
+
+const props = defineProps({
+  /**
+   * The size of the loading indicator.
+   * `sm, md, lg, xl`
+   */
+  size: {
+    type: String,
+    default: "md",
   },
 })
+
+const sizePixels = computed(() => ({
+  sm: 9,
+  md: 15,
+  lg: 21,
+  xl: 27,
+}[props.size]))
 </script>
 
 <!-- adjusted from: https://www.w3schools.com/howto/howto_css_loader.asp -->

@@ -1,4 +1,4 @@
-import assert from "node:assert"
+import { describe, it, expect } from "vitest"
 import { loadESLint } from "eslint"
 
 const DefaultESLint = await loadESLint()
@@ -11,12 +11,11 @@ const results = await eslint.lintFiles([
 describe("ESLint Errors", () => {
 
   results.forEach(result => {
-    it(result.filePath, (done) => {
-      assert(
-        result.errorCount === 0,
+    it(result.filePath, () => {
+      expect(
+        result.errorCount,
         "\n" + result.messages.map(m => `\t\t${m.line}:${m.column}\terror\t${m.message}\t${m.ruleId}`).join("\n"),
-      )
-      done()
+      ).toBe(0)
     })
   })
 
