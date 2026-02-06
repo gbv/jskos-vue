@@ -4,8 +4,8 @@
   import * as jskos from "jskos-tools"
   import { cdk } from "cocoda-sdk"
   import { reactive, onMounted } from "vue"
-  import { utils } from "jskos-vue"
-
+  import * as utils from "../../src/utils.js"
+  
   let registry
   const state = reactive({
     scheme: null,
