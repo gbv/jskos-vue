@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue App</title>
+    <!-- jskos-vue stylesheet and required libraries (adjust version for updates) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jskos-vue@0.3/dist/style.css">
+    <script type="importmap">
+    {
+      "imports": {
+        "vue": "https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.js",
+        "jskos-tools": "https://esm.sh/jskos-tools@1.1.2",
+        "vue-scrollto": "https://esm.sh/vue-scrollto@2.20.0",
+        "jskos-vue-tabs": "https://cdn.jsdelivr.net/npm/jskos-vue-tabs@0.1.8/dist/jskos-vue-tabs.js"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <button @click="scroll('uri:25')">Scroll to 25</button>
+      <item-list
+        ref="itemList"
+        style="height: 100px; overflow-y: scroll; border: 1px solid black; margin-top: 20px;"
+        :items="Array.from({ length: 50 }, (v, i) => ({ uri: `uri:${i}`, notation: [`${i}`], prefLabel: { en: `Test ${i}` }}))" />
+    </div>
+    <script type="module">
+      import * as Vue from "vue"
+      import * as JskosVue from "https://cdn.jsdelivr.net/npm/jskos-vue@0.3/dist/jskos-vue.js"
+      Vue.createApp({
+        methods: {
+          scroll(uri) {
+            this.$refs.itemList.scrollToUri(uri)
+          }
+        },
+      }).use(JskosVue).mount("#app")
+    </script>
+  </body>
+</html>

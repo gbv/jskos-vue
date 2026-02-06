@@ -101,45 +101,9 @@ export default defineComponent({
 The library can be used in the browser, for example via jsDelivr. [![](https://data.jsdelivr.com/v1/package/npm/jskos-vue/badge?style=rounded)](https://www.jsdelivr.com/package/npm/jskos-vue)
 
 Fully working HTML example:
+
 ```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vue App</title>
-    <!-- Our library's stylesheet here (adjust version if necessary) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jskos-vue@0.2/dist/style.css">
-  </head>
-  <body>
-    <div id="app">
-      <!-- You can use the components here -->
-      <button @click="scroll">Scroll to 25</button>
-      <item-list
-        ref="itemList"
-        style="height: 100px; overflow-y: scroll; border: 1px solid black; margin-top: 20px;"
-        :items="Array.from({ length: 50 }, (v, i) => ({ uri: `uri:${i}`, notation: [`${i}`], prefLabel: { en: `Test ${i}` }}))" />
-    </div>
-    <!-- Vue 3 production build -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-    <!-- Additional libraries (refer to "Requirements" above to see which are needed) -->
-    <script src="https://cdn.jsdelivr.net/npm/jskos-tools@1"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jskos-vue-tabs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-scrollto@2"></script>
-    <!-- Our library (adjust version if necessary) -->
-    <script src="https://cdn.jsdelivr.net/npm/jskos-vue@0.2/dist/jskos-vue.umd.min.js"></script>
-    <script>
-      // Here, we are creating an empty Vue app and include the library as a plugin.
-      Vue.createApp({
-        methods: {
-          scroll() {
-            this.$refs.itemList.scrollToUri("uri:25")
-          }
-        },
-      }).use(JskosVue).mount("#app")
-    </script>
-  </body>
-</html>
+<!-- @include: ../example/index.html -->
 ```
 
 ## I18n
