@@ -1,4 +1,4 @@
-import * as components from "./components"
+import * as components from "./components/index.js"
 
 // Add install method to individual components
 for (let component of Object.values(components)) {
@@ -22,4 +22,4 @@ export * from "./components"
 import "./shared.css"
 
 // Export utils as utils
-export * as utils from "./utils"
+export * as utils from "./utils.js"

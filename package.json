@@ -19,6 +19,7 @@
     "coverage": "vitest run --coverage",
     "dev": "vite --port 4310",
     "build": "vite build",
+    "app": "BUILD_MODE=app npm run build",
     "lint": "eslint",
     "fix": "eslint --fix",
     "lint-staged": "lint-staged",
