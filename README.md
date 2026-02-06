@@ -17,6 +17,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ## Maintainers
 
 - [@nichtich](https://github.com/nichtich)
+- [@rodolv-commons](https://github.com/rodolv-commons)
 
 ## License
 

@@ -9,6 +9,8 @@ import AutoLink from "./AutoLink.vue"
 import ConceptTree from "./ConceptTree.vue"
 import ItemSuggest from "./ItemSuggest.vue"
 import Modal from "./Modal.vue"
+import ItemSelect from "./ItemSelect.vue"
+import ItemSelected from "./ItemSelected.vue" 
 
 export {
   ItemName,
@@ -22,4 +24,6 @@ export {
   ConceptTree,
   ItemSuggest,
   Modal,
+  ItemSelect,
+  ItemSelected,
 }
