@@ -2,30 +2,6 @@ import { computed, onMounted, onUnmounted, getCurrentInstance } from "vue"
 import * as jskos from "jskos-tools"
 
 /**
- * Converts a date string to a localized date string.
- * Incomplete dates (YYYY or YYYY-MM) will be returned non-localized.
- * Dates with the exact length of 10 (e.g. YYYY-MM-DD) will be printed as date-only.
- *
- * @param {string} dateString a date string (compatible with new Date())
- * @param {string} lang a language string compatible with Date.prototype.toLocaleString (default: language preference via jskos-tools)
- */
-export function dateToString(dateString, lang = jskos.languagePreference.getLanguages()?.[0] || "en") {
-  let date = new Date(dateString)
-  if (date instanceof Date && !isNaN(date)) {
-    if (dateString.length < 10) {
-      return dateString
-    }
-    let options = { year: "numeric", month: "short", day: "numeric" }
-    if (dateString.length > 10) {
-      options = Object.assign({ hour: "2-digit", minute: "2-digit", second: "2-digit" }, options)
-    }
-    return date.toLocaleString(lang, options)
-  } else {
-    return dateString
-  }
-}
-
-/**
  * Click handler mixin
  *
  * Handles clicks in the application, e.g. to hide popovers when clicked outside.
@@ -196,3 +172,36 @@ export function useLocale(msg=messages) {
     return { t, currentLanguage }
   }
 }
+
+/**
+ * Converts a date string to a localized date string.
+ * Incomplete dates (YYYY or YYYY-MM) will be returned non-localized.
+ * Dates with the exact length of 10 (e.g. YYYY-MM-DD) will be printed as date-only.
+ *
+ * Default language is taken from global property `$i18n.locale`, if set, or from
+ * `languagePreference` from jskos-tools otherwise and a fallback to `en`.
+ *
+ * @param {string} dateString a date string (compatible with new Date())
+ * @param {string} lang a language string compatible with Date.prototype.toLocaleString
+ */
+export function dateToString(dateString, lang) {
+  if (!lang) {
+    const { $i18n } = getCurrentInstance()?.appContext.config.globalProperties || {}
+    lang = $i18n?.locale || jskos.languagePreference.getLanguages()?.[0] || "en"
+  }
+  let date = new Date(dateString)
+  if (date instanceof Date && !isNaN(date)) {
+    if (dateString.length < 10) {
+      return dateString
+    }
+    let options = { year: "numeric", month: "short", day: "numeric" }
+    if (dateString.length > 10) {
+      options = Object.assign({ hour: "2-digit", minute: "2-digit", second: "2-digit" }, options)
+    }
+    return date.toLocaleString(lang, options)
+  } else {
+    return dateString
+  }
+}
+
+
