@@ -316,6 +316,24 @@
     label="DDC with list view"
     placeholder="Search DDC concepts…"
     selected-view="list" />
+
+  <h2>ItemSelect DDC concepts from API (typeahead / suggest ) and conceptTree browsing UX</h2>
+  <h3>Table</h3>
+  <p
+    v-if="examples.conceptTree.scheme"
+    style="padding-bottom: 20px;">
+    <item-select
+      v-if="examples.conceptTree.scheme"
+      v-model="examples.itemSelect.selected"
+      :search="utils.cdkRegistryToSuggestFunction(examples.conceptTree.scheme._registry, { scheme: examples.conceptTree.scheme })"
+      label="DDC with tag view"
+      placeholder="Search DDC concepts…"
+      orderable
+      selected-view="table"
+      :show-tree="true"
+      :tree-concepts="examples.conceptTree.concepts"
+      :tree-load-narrower="examples.conceptTree.loadNarrower" />
+  </p>
 </template>
 
 <script>

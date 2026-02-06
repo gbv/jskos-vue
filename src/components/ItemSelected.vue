@@ -8,7 +8,7 @@
         v-for="(item, index) in items"
         :key="item?.uri || index"
         class="jskos-vue-itemSelected-chip">
-        {{ item?.__label || labelFrom(item) }}
+        {{ labelFrom(item) }}
         <button
           type="button"
           class="jskos-vue-itemSelected-chipRemove"
@@ -113,17 +113,31 @@ export default {
   },
   emits: ["remove", "clear", "move", "select"],
   methods: {
+    // Prefer: "notation + prefLabel", avoid URI unless absolutely necessary.
     labelFrom(item) {
+      const notation = Array.isArray(item?.notation) ? item.notation[0] : item?.notation
       const pl = item?.prefLabel || {}
-      return (
-        pl.en ||
-        pl.und ||
-        Object.values(pl)[0] ||
-        item?.notation?.[0] ||
-        item?.uri ||
-        ""
-      )
+
+      const label =
+      pl.en ||
+      pl.de ||
+      pl.it ||
+      pl.und ||
+      Object.values(pl)[0] ||
+      ""
+
+      // If label already starts with the notation (e.g. "594.35 ..."), don’t duplicate
+      if (notation && label && String(label).startsWith(String(notation))) {
+        return String(label)
+      }
+
+      if (notation && label) {
+        return `${notation} ${label}`
+      }
+
+      return label || notation || item?.uri || ""
     },
+
   },
 }
 </script>

@@ -34,6 +34,20 @@
       </template>
     </Multiselect>
 
+    <!-- Optional picker: ConceptTree (browse & pick) -->
+    <div
+      v-if="showTree && treeConcepts && treeConcepts.length"
+      class="jskos-vue-itemSelect-tree">
+      <div class="jskos-vue-itemSelect-subtitle">
+        Browse
+      </div>
+
+      <ConceptTree
+        :concepts="treeConcepts"
+        @select="onTreeSelect"
+        @open="onTreeOpen" />
+    </div>
+
     <!-- Selected rendering delegated to ItemSelected -->
     <ItemSelected
       :items="modelValueProxy"
@@ -48,10 +62,11 @@
 <script>
 import Multiselect from "vue-multiselect"
 import ItemSelected from "./ItemSelected.vue"
+import ConceptTree from "./ConceptTree.vue"
 
 export default {
   name: "ItemSelect",
-  components: { Multiselect, ItemSelected },
+  components: { Multiselect, ItemSelected, ConceptTree },
   props: {
     // Selected items (JSKOS-like objects, or languages, etc.)
     modelValue: { type: Array, default: () => [] },
@@ -63,6 +78,11 @@ export default {
     search: { type: Function, default: null },
     minChars: { type: Number, default: 1 },
 
+    // Optional ConceptTree picker
+    showTree: { type: Boolean, default: false },
+    treeConcepts: { type: Array, default: () => [] }, // top concepts
+    treeLoadNarrower: { type: Function, default: null },
+  
     label: { type: String, default: "" },
     placeholder: { type: String, default: "Search…" },
 
@@ -159,7 +179,6 @@ export default {
       return out
     },
 
-
     // Add selected item to v-model, 
     onPick(item) {
       const concept = this.normalize(item)
@@ -201,6 +220,20 @@ export default {
 
     clearItems() {
       this.$emit("update:modelValue", [])
+    },
+
+    // --- ConceptTree core ---
+    onTreeSelect(ev) {
+      // ConceptTree emits { item, row, ... }
+      if (ev?.item) {
+        this.onPick(ev.item)
+      }
+    },
+
+    onTreeOpen(concept) {
+      if (this.treeLoadNarrower) {
+        return this.treeLoadNarrower(concept)
+      }
     },
 
     // Convert OpenSearch Suggest to options
