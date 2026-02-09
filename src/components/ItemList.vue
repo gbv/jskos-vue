@@ -48,7 +48,6 @@ import { dragAndDrop } from "../utils"
 const { dragstart, dragend } = dragAndDrop
 import "../shared.css"
 
-
 const props = defineProps({
   items: {
     type: Array,

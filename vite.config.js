@@ -33,7 +33,6 @@ if (process.env.BUILD_MODE !== "app") {
   }
 }
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
   build,
