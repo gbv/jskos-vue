@@ -106,7 +106,14 @@ Fully working HTML example:
 <!-- @include: ../examples/browser.html -->
 ```
 
-## I18n
+## Localization
+
+Localization affects two independent aspects:
+
+- locale of user interface (messages)
+- language of items (labels, descriptions...)
+
+By default, both are controlled by jskos-tools.
 
 The library comes with translated messages in English and German. The messages can be exported as object `messages` for all components and as property `messages` of each individual component, to be used with a library such as [Vue I18n].
 

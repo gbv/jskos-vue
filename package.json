@@ -20,6 +20,7 @@
     "dev": "vite --port 4310",
     "build": "vite build",
     "app": "BUILD_MODE=app npm run build",
+    "examples": "http-server examples",
     "lint": "eslint",
     "fix": "eslint --fix",
     "lint-staged": "lint-staged",

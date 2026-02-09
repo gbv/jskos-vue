@@ -3,3 +3,4 @@ node_modules
 dist
 docs/.vitepress/cache
 coverage/
+examples/app/
