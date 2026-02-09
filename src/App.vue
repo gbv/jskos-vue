@@ -1,7 +1,7 @@
 <template>
   <h1>jskos-vue</h1>
   <p>
-    Change language:
+    Change content language preferrence:
     <span
       v-for="(language, index) in state.languages"
       :key="index">
@@ -13,56 +13,37 @@
     </span>
   </p>
   <p>
-    Loading indicator:
-    <loading-indicator size="sm" />
-    <loading-indicator size="md" />
-    <loading-indicator size="lg" />
-    <loading-indicator size="xl" />
-  </p>
-  <p>
-    Arrows:
-    <arrow direction="left" /> (left)
-    <arrow direction="right" /> (right)
-    <arrow
-      direction="up"
-      :clickable="true" /> (up + clickable)
-    <arrow
-      direction="down"
-      :clickable="true" /> (down + clickable)
+    LicenseInfo
+    <license-info :item="{ license: [ { uri: 'http://creativecommons.org/licenses/by-nc-nd/3.0/' } ] }" />
   </p>
   <p>
     Item (notation+label):
-    <item-name
-      :item="{ notation: ['IN'], prefLabel: { en: 'ItemName' } }" />
+    <item-name :item="fish" />
   </p>
   <p>
     Item (no label):
     <item-name
-      :item="{ notation: ['IN'], prefLabel: { en: 'ItemName' } }"
+      :item="fish"
       :show-label="false" />
   </p>
   <p>
     Item (no notation, not draggable):
     <item-name
-      :item="{ notation: ['IN'], prefLabel: { en: 'ItemName' } }"
+      :item="fish"
       :show-notation="false"
       :draggable="false" />
   </p>
   <p>
     Item (clickable):
     <item-name
-      :item="{ notation: ['IN'], prefLabel: { en: 'ItemName' } }"
+      :item="fish"
       :clickable="true"
       @click="handleClick({ item: { uri: 'uri:clickableItem' }})" />
   </p>
   <p>
-    Item (multiple languages):
-    <br>
+    Item (fixed language):
     <item-name
-      :item="{ notation: ['IN'], prefLabel: { en: 'ItemName', de: 'ItemName (de)' } }" />
-    <br>
-    <item-name
-      :item="{ notation: ['IN'], prefLabel: { en: 'ItemName', de: 'ItemName (de)' } }"
+      :item="fish"
       language="de" />
   </p>
   <p>
@@ -334,10 +315,28 @@
       :tree-concepts="examples.conceptTree.concepts"
       :tree-load-narrower="examples.conceptTree.loadNarrower" />
   </p>
+  <p>
+    Loading indicator:
+    <loading-indicator size="sm" />
+    <loading-indicator size="md" />
+    <loading-indicator size="lg" />
+    <loading-indicator size="xl" />
+  </p>
+  <p>
+    Arrows:
+    <arrow direction="left" /> (left)
+    <arrow direction="right" /> (right)
+    <arrow
+      direction="up"
+      :clickable="true" /> (up + clickable)
+    <arrow
+      direction="down"
+      :clickable="true" /> (down + clickable)
+  </p>
 </template>
 
-<script>
-import { defineComponent, reactive, ref } from "vue"
+<script setup>
+import { reactive } from "vue"
 import * as jskos from "jskos-tools"
 import * as utils from "./utils"
 import { Tab } from "jskos-vue-tabs"
@@ -378,6 +377,8 @@ const registry = cdk.initializeRegistry({
   provider: "ConceptApi",
   api: "https://coli-conc.gbv.de/api/",
 })
+
+const fish = { notation: ["F"], prefLabel: { en: "fish", de: "Fisch" } }
 
 const examples = reactive({
   detailed: {
@@ -591,63 +592,48 @@ const examples = reactive({
   },
 })
 
-export default defineComponent({
-  name: "App",
-  components: {
-    Tab,
-  },
-  setup() {
-    const state = reactive({
-      languages: ["en", "de", "fr"],
-    })
-    jskos.languagePreference.store = state
-    jskos.languagePreference.path = "languages"
 
-    const selectedLangs = ref([])
-
-    const LANGUAGE_OPTIONS = [
-      { uri: "urn:lang:en", prefLabel: { en: "English" }, __label: "English" },
-      { uri: "urn:lang:it", prefLabel: { it: "Italiano" }, __label: "Italiano" },
-      { uri: "urn:lang:de", prefLabel: { de: "Deutsch" }, __label: "Deutsch" },
-    ]
-
-    // Initialize conceptTree example
-    ;(async () => {
-      await examples.conceptTree.loadScheme()
-      await examples.conceptTree.loadConcepts()
-    })()
-    // Initialize long ConceptList example
-    const loadLongItemList = async () => {
-      const url = "https://coli-conc.gbv.de/api/voc/concepts?uri=http://dewey.info/scheme/edition/e23/&limit=10000"
-      const response = await fetch(url)
-      const data = await response.json()
-      examples.longConceptList = data
-    }
-    const longItemListGetRandomUri = () => {
-      const index = Math.floor(Math.random() * examples.longConceptList.length)
-      console.log(examples.longConceptList[index].uri)
-      return examples.longConceptList[index] && examples.longConceptList[index].uri
-    }
-
-    return {
-      state,
-      examples,
-      loadLongItemList,
-      longItemListGetRandomUri,
-      utils,
-      selectedLangs,
-      LANGUAGE_OPTIONS,
-    }
-  },
-  methods: {
-    handleClick({ item, row }) {
-      alert(`Clicked on item with URI ${item.uri}. (row: ${row})`)
-    },
-    alert() {
-      alert(...arguments)
-    },
-  },
+const state = reactive({
+  languages: ["en", "de", "fr"],
 })
+jskos.languagePreference.store = state
+jskos.languagePreference.path = "languages"
+
+/*
+const selectedLangs = ref([])
+
+const LANGUAGE_OPTIONS = [
+  { uri: "urn:lang:en", prefLabel: { en: "English" }, __label: "English" },
+  { uri: "urn:lang:it", prefLabel: { it: "Italiano" }, __label: "Italiano" },
+  { uri: "urn:lang:de", prefLabel: { de: "Deutsch" }, __label: "Deutsch" },
+]
+*/
+
+// Initialize conceptTree example
+;(async () => {
+  await examples.conceptTree.loadScheme()
+  await examples.conceptTree.loadConcepts()
+})()
+// Initialize long ConceptList example
+const loadLongItemList = async () => {
+  const url = "https://coli-conc.gbv.de/api/voc/concepts?uri=http://dewey.info/scheme/edition/e23/&limit=10000"
+  const response = await fetch(url)
+  const data = await response.json()
+  examples.longConceptList = data
+}
+const longItemListGetRandomUri = () => {
+  const index = Math.floor(Math.random() * examples.longConceptList.length)
+  console.log(examples.longConceptList[index].uri)
+  return examples.longConceptList[index] && examples.longConceptList[index].uri
+}
+
+function handleClick({ item, row }) {
+  alert(`Clicked on item with URI ${item.uri}. (row: ${row})`)
+}
+
+function alert() {
+  alert(...arguments)
+}
 </script>
 
 <style>

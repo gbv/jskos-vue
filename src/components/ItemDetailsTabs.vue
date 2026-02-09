@@ -138,17 +138,17 @@
   </component>
 </template>
 
-<script>
+<script setup>
 import * as jskos from "jskos-tools"
-import { Tabs, Tab } from "jskos-vue-tabs"
+import { Tabs, Tab } from "jskos-vue-tabs" // eslint-disable-line no-unused-vars
 import AutoLink from "./AutoLink.vue"
 import * as utils from "../utils.js"
-import { computed, defineComponent } from "vue"
+import { computed } from "vue"
 import "../shared.css"
 import "jskos-vue-tabs/dist/style.css"
 
 // Localization
-const { t, currentLanguage } = utils.useLocale({
+const { t } = utils.useLocale({
   en: {
     created: "Created",
     modified: "Modified",
@@ -185,100 +185,85 @@ const { t, currentLanguage } = utils.useLocale({
  * TODO!
  * Icons
  */
-export default defineComponent({
-  name: "ItemDetailsTabs",
-  components: {
-    Tabs,
-    Tab,
-    AutoLink,
+const props = defineProps({
+  // JSKOS item to be displayed
+  item: {
+    type: Object,
+    required: true,
   },
-  props: {
-    // JSKOS item to be displayed
-    item: {
-      type: Object,
-      required: true,
-    },
-    // Whether details are displayed as tabs or flat
-    flat: {
-      type: Boolean,
-      default: false,
-    },
-    // Configure which fields of the item are displayed
-    fields: {
-      type: Object,
-      default: () => ({}),
-    },
+  // Whether details are displayed as tabs or flat
+  flat: {
+    type: Boolean,
+    default: false,
   },
-  setup(props) {
-    const iterateLanguageMapContent = (item, prop) => {
-      /** Explanation:
+  // Configure which fields of the item are displayed
+  fields: {
+    type: Object,
+    default: () => ({}),
+  },
+})
+
+const iterateLanguageMapContent = (item, prop) => {
+  /** Explanation:
           1. Get all language keys for altLabels (Object.keys)
           2. Create objects in the form { language, label } (map)
           3. Flatten the array (reduce)
           4. Filter `-` language (filter)
           5. Sort current language higher (sort)
        */
-      return Object.keys((item && item[prop]) || {})
-        .map(language => {
-          const map = item[prop][language]
-          return (Array.isArray(map) ? map : [map]).map(label => ({ language, label }))
-        })
-        .reduce((prev, cur) => prev.concat(cur), [])
-        .filter(item => item.language != "-")
-        .sort((a, b) => {
-          if (a.language === jskos.languagePreference.selectLanguage(item[prop]) && b.language !== jskos.languagePreference.selectLanguage(item[prop])) {
-            return -1
-          }
-          if (b.language === jskos.languagePreference.selectLanguage(item[prop]) && a.language !== jskos.languagePreference.selectLanguage(item[prop])) {
-            return 1
-          }
-          return 0
-        })
-    }
-    const types = computed(() => {
-      if (!props.item) {
-        return []
-      }
-      let types = []
-      let schemeTypes = (props.item && props.item.inScheme && props.item.inScheme[0] && props.item.inScheme[0].types) || []
-      for (let type of props.item.type || []) {
-        if (typeof type !== "object") {
-          type = { uri: type }
-        }
-        if (!type || ["http://www.w3.org/2004/02/skos/core#Concept", "http://www.w3.org/2004/02/skos/core#ConceptScheme"].includes(type.uri)) {
-          continue
-        }
-        // Try to find type in scheme types
-        type = schemeTypes.find(t => jskos.compare(t, type)) || type
-        types.push(type)
-      }
-      return types
+  return Object.keys((item && item[prop]) || {})
+    .map(language => {
+      const map = item[prop][language]
+      return (Array.isArray(map) ? map : [map]).map(label => ({ language, label }))
     })
-    const fields_ = computed(() => Object.assign({
-      identifier: true,
-      type: true,
-      publisher: !jskos.isConcept(props.item),
-      created: true,
-      issued: true,
-      modified: true,
-      languages: true,
-      definition: true,
-      prefLabel: true,
-      altLabel: true,
-      scopeNote: true,
-      editorialNote: true,
-    }, props.fields))
-    return {
-      utils,
-      jskos,
-      currentLanguage,
-      t,
-      iterateLanguageMapContent,
-      types,
-      fields_,
+    .reduce((prev, cur) => prev.concat(cur), [])
+    .filter(item => item.language != "-")
+    .sort((a, b) => {
+      if (a.language === jskos.languagePreference.selectLanguage(item[prop]) && b.language !== jskos.languagePreference.selectLanguage(item[prop])) {
+        return -1
+      }
+      if (b.language === jskos.languagePreference.selectLanguage(item[prop]) && a.language !== jskos.languagePreference.selectLanguage(item[prop])) {
+        return 1
+      }
+      return 0
+    })
+}
+
+const types = computed(() => {
+  if (!props.item) {
+    return []
+  }
+  let types = []
+  let schemeTypes = (props.item && props.item.inScheme && props.item.inScheme[0] && props.item.inScheme[0].types) || []
+  for (let type of props.item.type || []) {
+    if (typeof type !== "object") {
+      type = { uri: type }
     }
-  },
+    if (!type || ["http://www.w3.org/2004/02/skos/core#Concept", "http://www.w3.org/2004/02/skos/core#ConceptScheme"].includes(type.uri)) {
+      continue
+    }
+    // Try to find type in scheme types
+    type = schemeTypes.find(t => jskos.compare(t, type)) || type
+    types.push(type)
+  }
+  return types
 })
+
+const fields_ = computed(() => Object.assign({
+  identifier: true,
+  type: true,
+  publisher: !jskos.isConcept(props.item),
+  created: true,
+  issued: true,
+  modified: true,
+  languages: true,
+  definition: true,
+  prefLabel: true,
+  altLabel: true,
+  scopeNote: true,
+  editorialNote: true,
+}, props.fields))
+
 </script>
 
 <style scoped>
