@@ -47,125 +47,108 @@
   </item-list>
 </template>
 
-<script>
-import { computed, defineComponent, reactive } from "vue"
+<script setup>
+import { computed, reactive } from "vue"
 import * as jskos from "jskos-tools"
 import ItemList from "./ItemList.vue"
 import Arrow from "./Arrow.vue"
 import "../shared.css"
 
-export default defineComponent({
-  name: "ConceptTree",
-  components: {
-    ItemList,
-    Arrow,
+const props = defineProps({
+  // v-model value is the selected concept and is marked specifically
+  modelValue: {
+    type: Object,
+    default: null,
   },
-  props: {
-    // v-model value is the selected concept and is marked specifically
-    modelValue: {
-      type: Object,
-      default: null,
-    },
-    // array of concepts to be displayed
-    concepts: {
-      type: Array,
-      required: true,
-    },
-    // whether to display concept hierarchy (via narrower concepts)
-    hierarchy: {
-      type: Boolean,
-      default: true,
-    },
-    // options to be passed along to ItemList component
-    itemListOptions: {
-      type: Object,
-      default: () => ({}),
-    },
+  // array of concepts to be displayed
+  concepts: {
+    type: Array,
+    required: true,
   },
-  emits: ["select", "open", "close", "update:modelValue"],
-  setup(props, { emit }) {
-    // reactive object of concept URIs to open status values
-    const isOpen = reactive({})
-    // recursively get all children (narrower) items for a concept, depending on open status
-    const getChildrenItems = (item) => {
-      let items = []
-      let concept = item.concept
-      let depth = item.depth + 1
-      if (concept && isOpen[concept.uri]) {
-        for (let child of concept.narrower || []) {
-          let item = {
-            concept: child,
-            depth,
-            isSelected: jskos.compare(props.modelValue, child),
-          }
-          items.push(item)
-          items = items.concat(getChildrenItems(item))
-        }
-      }
-      return items
-    }
-    // convert list of concepts into items with concept, depth, and isSelected
-    const items = computed(() => {
-      let items = []
-      for (let concept of props.concepts) {
-        let item = {
-          concept,
-          depth: 0,
-          isSelected: jskos.compare(props.modelValue, concept),
-        }
-        items.push(item)
-        if (props.hierarchy) {
-          items = items.concat(getChildrenItems(item))
-        }
-      }
-      return items
-    })
+  // whether to display concept hierarchy (via narrower concepts)
+  hierarchy: {
+    type: Boolean,
+    default: true,
+  },
+  // options to be passed along to ItemList component
+  itemListOptions: {
+    type: Object,
+    default: () => ({}),
+  },
+})
 
-    const open = (concept) => {
-      isOpen[concept.uri] = true
-      // a certain concept's narrower concepts were opened
-      emit("open", concept)
-    }
-    const close = (concept) => {
-      // Prevent closing if selected concept is child
-      let current = props.modelValue?.uri, initial = current
-      while (current) {
-        const currentConcept = items.value.find(i => jskos.compare(i.concept, { uri: current }))?.concept
-        if (current !== initial && jskos.compare(currentConcept, concept)) {
-          return
-        }
-        current = (currentConcept?.ancestors?.[0] || currentConcept?.broader?.[0])?.uri
-      }
-      delete isOpen[concept.uri]
-      // a certain concept's narrower concepts were closed
-      emit("close", concept)
-    }
-    const toggle = (concept) => {
-      if (isOpen[concept.uri]) {
-        close(concept)
-      } else {
-        open (concept)
-      }
-    }
+const emit = defineEmits(["select", "open", "close", "update:modelValue"])
 
-    return {
-      items,
-      isOpen,
-      open,
-      close,
-      toggle,
-      jskos,
+// reactive object of concept URIs to open status values
+const isOpen = reactive({})
+// recursively get all children (narrower) items for a concept, depending on open status
+const getChildrenItems = (item) => {
+  let items = []
+  let concept = item.concept
+  let depth = item.depth + 1
+  if (concept && isOpen[concept.uri]) {
+    for (let child of concept.narrower || []) {
+      let item = {
+        concept: child,
+        depth,
+        isSelected: jskos.compare(props.modelValue, child),
+      }
+      items.push(item)
+      items = items.concat(getChildrenItems(item))
     }
+  }
+  return items
+}
+// convert list of concepts into items with concept, depth, and isSelected
+const items = computed(() => {
+  let items = []
+  for (let concept of props.concepts) {
+    let item = {
+      concept,
+      depth: 0,
+      isSelected: jskos.compare(props.modelValue, concept),
+    }
+    items.push(item)
+    if (props.hierarchy) {
+      items = items.concat(getChildrenItems(item))
+    }
+  }
+  return items
+})
+
+const open = (concept) => {
+  isOpen[concept.uri] = true
+  // a certain concept's narrower concepts were opened
+  emit("open", concept)
+}
+const close = (concept) => {
+  // Prevent closing if selected concept is child
+  let current = props.modelValue?.uri, initial = current
+  while (current) {
+    const currentConcept = items.value.find(i => jskos.compare(i.concept, { uri: current }))?.concept
+    if (current !== initial && jskos.compare(currentConcept, concept)) {
+      return
+    }
+    current = (currentConcept?.ancestors?.[0] || currentConcept?.broader?.[0])?.uri
+  }
+  delete isOpen[concept.uri]
+  // a certain concept's narrower concepts were closed
+  emit("close", concept)
+}
+const toggle = (concept) => {
+  if (isOpen[concept.uri]) {
+    close(concept)
+  } else {
+    open (concept)
+  }
+}
+
+defineExpose({
+  isUriInView(...args) {
+    return this.$refs.itemList.isUriInView(...args) 
   },
-  methods: {
-    // checks if a certain URI is in view
-    isUriInView(...args) {
-      return this.$refs.itemList.isUriInView(...args)
-    },
-    // scroll to a certain concept via URI
-    scrollToUri(...args) {
-      this.$refs.itemList.scrollToUri(...args)
-    },
+  scrollToUri(...args) {
+    return this.$refs.itemList.scrollToUri(...args) 
   },
 })
 </script>

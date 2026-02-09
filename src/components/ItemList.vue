@@ -39,8 +39,8 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue"
+<script setup>
+import { computed } from "vue"
 import ItemName from "./ItemName.vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
@@ -48,141 +48,131 @@ import { dragAndDrop } from "../utils"
 const { dragstart, dragend } = dragAndDrop
 import "../shared.css"
 
-export default defineComponent({
-  name: "ItemList",
-  components: {
-    ItemName,
-    LoadingIndicator,
+
+const props = defineProps({
+  items: {
+    type: Array,
+    required: true,
   },
-  props: {
-    // array of items
-    items: {
-      type: Array,
-      required: true,
-    },
-    // property for the JSKOS item inside each object in `items` (no property by default)
-    itemProperty: {
-      type: String,
-      default: null,
-    },
-    rowMode: {
-      type: Boolean,
-      default: true,
-    },
-    draggable: {
-      type: Boolean,
-      default: true,
-    },
-    // option to add small indent to items further down the list (e.g. for ancestor concepts)
-    indent: {
-      type: Boolean,
-      default: false,
-    },
-    // options to be passed along to ItemName component
-    itemNameOptions: {
-      type: Object,
-      default: () => ({}),
-    },
-    // show indicator to the right of each item in the list
-    // values can be either boolean or string color values
-    indicatorByUri: {
-      type: Object,
-      default: () => ({}),
-    },
-    highlightByUri: {
-      type: Object,
-      default: () => ({}),
-    },
+  // property for the JSKOS item inside each object in `items` (no property by default)
+  itemProperty: {
+    type: String,
+    default: null,
   },
-  emits: ["select"],
-  data() {
-    return {
-      dragstart,
-      dragend,
-    }
+  rowMode: {
+    type: Boolean,
+    default: true,
   },
-  computed: {
-    itemNameOptions_() {
-      return Object.assign({ draggable: this.draggable }, this.itemNameOptions || {})
-    },
+  draggable: {
+    type: Boolean,
+    default: true,
   },
-  methods: {
-    // style object for item
-    styleForItem(item, index) {
-      let style = {}
-      let color = this.indicatorByUri[item && item.uri]
-      if (!color) {
-        color = "transparent"
-      }
-      // only override color if it's not the default color (`true`)
-      if (color !== true) {
-        style["--jskos-vue-itemList-indicator-color"] = color
-      }
-      let background = this.highlightByUri[item && item.uri]
-      if (!background) {
-        background = "transparent"
-      } else {
-        style["background-color"] = background === true ? "var(--jskos-vue-conceptTree-selected-bgColor)" : background
-      }
-      // add indent if necessary
-      if (this.indent) {
-        style["padding-left"] = `${(index + 1) * 5}px`
-      }
-      return style
-    },
-    // returns the actual JSKOS item
-    getItem(item) {
-      if (this.itemProperty) {
-        return item[this.itemProperty]
-      }
-      return item
-    },
-    // checks if a certain URI is in view
-    isUriInView(uri, partial = 60) {
-      const container = this.$el
-      const element = container.querySelectorAll(`[data-uri='${uri}']`)[0]
-      if (!container || !element) {
-        return false
-      }
-      // Adapted from https://stackoverflow.com/a/49253390 and https://stackoverflow.com/a/43386795:
-      let cTop = container.scrollTop
-      let cBottom = cTop + container.clientHeight
-      let eTop = element.offsetTop - container.offsetTop
-      let eBottom = eTop + element.clientHeight
-      let isTotal = (eTop >= cTop && eBottom <= cBottom)
-      let isPartial
-      if (partial === true) {
-        isPartial = (eTop < cTop && eBottom > cTop) || (eBottom > cBottom && eTop < cBottom)
-      } else if(typeof partial === "number"){
-        if (eTop < cTop && eBottom > cTop) {
-          isPartial = ((eBottom - cTop) * 100) / element.clientHeight > partial
-        } else if (eBottom > cBottom && eTop < cBottom){ 
-          isPartial = ((cBottom - eTop) * 100) / element.clientHeight > partial
-        }
-      }
-      return !!(isTotal || partial && isPartial)
-    },
-    // scrolls to a certain URI in the list
-    scrollToUri(uri, onlyIfNotInView = false) {
-      if (onlyIfNotInView && this.isUriInView(uri)) {
-        return
-      }
-      const container = this.$el
-      const el = container.querySelectorAll(`[data-uri='${uri}']`)[0]
-      const options = {
-        container,
-        easing: "ease-in",
-        offset: -15,
-        cancelable: true,
-        x: false,
-        y: true,
-      }
-      if (el) {
-        VueScrollTo.scrollTo(el, 200, options)
-      }
-    },
+  // option to add small indent to items further down the list (e.g. for ancestor concepts)
+  indent: {
+    type: Boolean,
+    default: false,
+  },
+  // options to be passed along to ItemName component
+  itemNameOptions: {
+    type: Object,
+    default: () => ({}),
+  },
+  // show indicator to the right of each item in the list
+  // values can be either boolean or string color values
+  indicatorByUri: {
+    type: Object,
+    default: () => ({}),
+  },
+  highlightByUri: {
+    type: Object,
+    default: () => ({}),
   },
 })
+
+defineEmits(["select"])
+
+const itemNameOptions_ = computed(() => {
+  return Object.assign({ draggable: props.draggable }, props.itemNameOptions || {})
+})
+
+function styleForItem(item, index) {
+  let style = {}
+  let color = props.indicatorByUri[item && item.uri]
+  if (!color) {
+    color = "transparent"
+  }
+  // only override color if it's not the default color (`true`)
+  if (color !== true) {
+    style["--jskos-vue-itemList-indicator-color"] = color
+  }
+  let background = props.highlightByUri[item && item.uri]
+  if (!background) {
+    background = "transparent"
+  } else {
+    style["background-color"] = background === true ? "var(--jskos-vue-conceptTree-selected-bgColor)" : background
+  }
+  // add indent if necessary
+  if (props.indent) {
+    style["padding-left"] = `${(index + 1) * 5}px`
+  }
+  return style
+}
+
+// returns the actual JSKOS item
+function getItem(item) {
+  if (props.itemProperty) {
+    return item[props.itemProperty]
+  }
+  return item
+}
+
+// checks if a certain URI is in view
+function isUriInView(uri, partial = 60) {
+  const container = this.$el
+  const element = container.querySelectorAll(`[data-uri='${uri}']`)[0]
+  if (!container || !element) {
+    return false
+  }
+  // Adapted from https://stackoverflow.com/a/49253390 and https://stackoverflow.com/a/43386795:
+  let cTop = container.scrollTop
+  let cBottom = cTop + container.clientHeight
+  let eTop = element.offsetTop - container.offsetTop
+  let eBottom = eTop + element.clientHeight
+  let isTotal = (eTop >= cTop && eBottom <= cBottom)
+  let isPartial
+  if (partial === true) {
+    isPartial = (eTop < cTop && eBottom > cTop) || (eBottom > cBottom && eTop < cBottom)
+  } else if(typeof partial === "number"){
+    if (eTop < cTop && eBottom > cTop) {
+      isPartial = ((eBottom - cTop) * 100) / element.clientHeight > partial
+    } else if (eBottom > cBottom && eTop < cBottom){ 
+      isPartial = ((cBottom - eTop) * 100) / element.clientHeight > partial
+    }
+  }
+  return !!(isTotal || partial && isPartial)
+}
+
+// scrolls to a certain URI in the list
+function scrollToUri(uri, onlyIfNotInView = false) {
+  if (onlyIfNotInView && this.isUriInView(uri)) {
+    return
+  }
+  const container = this.$el
+  const el = container.querySelectorAll(`[data-uri='${uri}']`)[0]
+  const options = {
+    container,
+    easing: "ease-in",
+    offset: -15,
+    cancelable: true,
+    x: false,
+    y: true,
+  }
+  if (el) {
+    VueScrollTo.scrollTo(el, 200, options)
+  }
+}
+
+defineExpose({ isUriInView, scrollToUri })
 </script>
 
 <style scoped>

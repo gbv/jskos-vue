@@ -46,7 +46,7 @@ Component to display a concept tree.
 import ConceptTree from "../../src/components/ConceptTree.vue"
 import * as jskos from "jskos-tools"
 import { cdk } from "cocoda-sdk"
-import { reactive, onMounted } from "vue"
+import { reactive, onMounted, useTemplateRef } from "vue"
 
 let registry
 const state = reactive({
@@ -71,6 +71,8 @@ const state = reactive({
   selected: null,
 })
 
+const conceptTree = useTemplateRef("conceptTree")
+
 onMounted(async () => {
   registry = cdk.initializeRegistry({
     provider: "ConceptApi",
@@ -83,10 +85,16 @@ onMounted(async () => {
 const alert = (...args) => window.alert(...args)
 </script>
 
-<p>
-  Selected: {{ state.selected && state.selected.uri || "none" }}
+<p v-if="state.selected?.uri">
+  Selected: {{ state.selected.uri }}
+  <button @click="conceptTree.scrollToUri(state.selected.uri)">Scroll to selected</button>
 </p>
+<p v-else>
+  Please select a concept.
+</p>
+
 <concept-tree
+  ref="conceptTree"
   v-if="state.concepts"
   v-model="state.selected"
   style="height: 400px; overflow-y: auto; border: 2px solid #0001;"
