@@ -103,7 +103,7 @@ The library can be used in the browser, for example via jsDelivr. [![](https://d
 Fully working HTML example:
 
 ```html
-<!-- @include: ../example/index.html -->
+<!-- @include: ../examples/browser.html -->
 ```
 
 ## I18n
