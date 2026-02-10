@@ -1,11 +1,11 @@
 <template>
   <component
-    :is="flat ? 'div' : 'tabs'"
+    :is="flat ? 'div' : Tabs"
     borders="bottom"
     size="sm"
     class="jskos-vue-itemDetails-tabs">
     <component
-      :is="flat ? 'div' : 'tab'"
+      :is="flat ? 'div' : Tab"
       v-if="['identifier', 'type', 'publisher', 'created', 'issued', 'modified', 'languages', 'definition'].filter(p => fields_[p]).length"
       :title="t('info')">
       <!-- Identifier -->
@@ -67,7 +67,7 @@
       </ul>
     </component>
     <component
-      :is="flat ? 'div' : 'tab'"
+      :is="flat ? 'div' : Tab"
       v-if="fields_.prefLabel || fields_.altLabel"
       :title="t('labels')">
       <!-- prefLabel -->
@@ -101,7 +101,7 @@
     </component>
     <!-- scopeNote -->
     <component
-      :is="flat ? 'div' : 'tab'" 
+      :is="flat ? 'div' : Tab" 
       v-if="fields_.scopeNote && jskos.languageMapContent(item, 'scopeNote')"
       :title="t('scope')">
       <ul class="jskos-vue-itemDetails-list">
@@ -118,7 +118,7 @@
     </component>
     <!-- editorialNote -->
     <component
-      :is="flat ? 'div' : 'tab'" 
+      :is="flat ? 'div' : Tab" 
       v-if="fields_.editorialNote && jskos.languageMapContent(item, 'editorialNote')"
       :title="t('editorial')">
       <ul class="jskos-vue-itemDetails-list">
@@ -134,18 +134,23 @@
       </ul>
     </component>
     <!-- Slot for additional tabs -->
-    <slot name="additionalTabs" />
+    <slot
+      v-if="!flat"
+      name="additionalTabs" />
+    <slot
+      v-else
+      name="additionalFlat" />
   </component>
 </template>
 
 <script setup>
 import * as jskos from "jskos-tools"
-import { Tabs, Tab } from "jskos-vue-tabs" // eslint-disable-line no-unused-vars
-import AutoLink from "./AutoLink.vue"
+import { Tabs, Tab } from "jskos-vue-tabs"
 import * as utils from "../utils.js"
 import { computed } from "vue"
 import "../shared.css"
 import "jskos-vue-tabs/dist/style.css"
+import AutoLink from "./AutoLink.vue"
 
 // Localization
 const { t } = utils.useLocale({
