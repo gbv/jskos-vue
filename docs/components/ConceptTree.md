@@ -7,7 +7,7 @@ It supports:
 - selecting a concept (`v-model`)
 - expanding/collapsing nodes (`open` / `close`)
 - programmatic scrolling (`scrollToUri`)
-- programmatic navigation in the hierarchy (`navigateToUri`) *(best-effort; works best with cocoda/coli-conc concepts)*
+- programmatic navigation in the hierarchy (`navigateToUri`) 
 
 ---
 
