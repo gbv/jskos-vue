@@ -56,8 +56,7 @@
       :view="selectedView"
       :orderable="orderable"
       @remove="removeItem"
-      @move="moveItem"
-      @clear="clearItems" />
+      @move="moveItem" />
   </div>
 </template>
 
@@ -66,6 +65,8 @@ import { ref, computed, nextTick } from "vue"
 import Multiselect from "vue-multiselect"
 import ItemSelected from "./ItemSelected.vue"
 import ConceptTree from "./ConceptTree.vue"
+
+defineOptions({ name: "ItemSelect" })
 
 const props = defineProps({
   // Selected items (JSKOS-like objects, or languages, etc.)
@@ -122,35 +123,38 @@ function normalize(item) {
     return null
   }
 
+  const pl = item.prefLabel || {}
   const rawLabel =
-      item.__label ||
-      item.prefLabel?.und ||
-      item.prefLabel?.en ||
-      item.uri
+    item.__label ||
+    pl.und ||
+    pl.en ||
+    pl.de ||
+    pl.it ||
+    Object.values(pl)[0] ||
+    item.uri
 
-  // Prefer existing notation, otherwise derive from DDC URI
   const notation =
-      (Array.isArray(item.notation) && item.notation[0]) ||
-      notationFromUri(item.uri)
+    (Array.isArray(item.notation) && item.notation[0]) ||
+    notationFromUri(item.uri)
 
-  // If label already starts with the notation, remove it to avoid duplication in ItemName
+  const rawLabelStr = String(rawLabel)
   const cleanedLabel =
-      notation && rawLabel.startsWith(notation)
-        ? rawLabel.slice(notation.length).trim()
-        : rawLabel
+    notation && rawLabelStr.startsWith(String(notation))
+      ? rawLabelStr.slice(String(notation).length).trim()
+      : rawLabelStr
 
   return {
     ...item,
-    __label: rawLabel,
+    __label: rawLabelStr,
     notation: (Array.isArray(item.notation) && item.notation.length)
       ? item.notation
       : (notation ? [notation] : undefined),
-    // Keep existing prefLabel keys if present, but ensure a usable label
     prefLabel: item.prefLabel
       ? { ...item.prefLabel, und: cleanedLabel }
       : { und: cleanedLabel },
   }
 }
+
     
 // Dedupe items by `uri` while keeping the original insertion order.
 // We run `normalize()` so every returned item has a consistent shape
@@ -202,7 +206,7 @@ async function syncTreeTo(concept) {
 }
 
 // Add selected item to v-model,
-function onPick(item) {
+async function onPick(item) {
   const concept = normalize(item)
   if (!concept) {
     return
@@ -217,7 +221,7 @@ function onPick(item) {
   picked.value = null
 
   // Reveal in the tree (open path + scroll)
-  syncTreeTo(concept)
+  await syncTreeTo(concept)
 }
 
 function moveItem({ from, to }) {
@@ -243,14 +247,10 @@ function removeItem(item) {
   )
 }
 
-function clearItems() {
-  emit("update:modelValue", [])
-}
-
 // --- ConceptTree core ---
 function onTreeSelect(ev) {
-  // ConceptTree emits { item, row, ... }
   if (ev?.item) {
+    treeSelected.value = ev.item
     onPick(ev.item)
   }
 }
