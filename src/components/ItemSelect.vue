@@ -43,7 +43,9 @@
       </div>
 
       <ConceptTree
+        ref="conceptTree"
         :concepts="treeConcepts"
+        :model-value="treeSelected"
         @select="onTreeSelect"
         @open="onTreeOpen" />
     </div>
@@ -59,231 +61,251 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, nextTick } from "vue"
 import Multiselect from "vue-multiselect"
 import ItemSelected from "./ItemSelected.vue"
 import ConceptTree from "./ConceptTree.vue"
 
-export default {
-  name: "ItemSelect",
-  components: { Multiselect, ItemSelected, ConceptTree },
-  props: {
-    // Selected items (JSKOS-like objects, or languages, etc.)
-    modelValue: { type: Array, default: () => [] },
+const props = defineProps({
+  // Selected items (JSKOS-like objects, or languages, etc.)
+  modelValue: { type: Array, default: () => [] },
 
-    // Local options (for small sets like languages)
-    options: { type: Array, default: () => [] },
+  // Local options (for small sets like languages)
+  options: { type: Array, default: () => [] },
 
-    // Remote search returning OpenSearch Suggest: [q, labels[], desc[], uris[]]
-    search: { type: Function, default: null },
-    minChars: { type: Number, default: 1 },
+  // Remote search returning OpenSearch Suggest: [q, labels[], desc[], uris[]]
+  search: { type: Function, default: null },
+  minChars: { type: Number, default: 1 },
 
-    // Optional ConceptTree picker
-    showTree: { type: Boolean, default: false },
-    treeConcepts: { type: Array, default: () => [] }, // top concepts
-    treeLoadNarrower: { type: Function, default: null },
-  
-    label: { type: String, default: "" },
-    placeholder: { type: String, default: "Search…" },
+  // Optional ConceptTree picker
+  showTree: { type: Boolean, default: false },
+  treeConcepts: { type: Array, default: () => [] }, // top concepts
+  treeLoadNarrower: { type: Function, default: null },
 
-    // tags | list | table (rendered by ItemSelected)
-    selectedView: { type: String, default: "tags" },
-    orderable: { type: Boolean, default: false },
-  },
-  emits: ["update:modelValue", "select"],
-  data() {
-    return {
-      picked: null,
-      loading: false,
-      pending: null,
-      remoteOptions: [],
-    }
-  },
-  computed: {
-    modelValueProxy() {
-      return this.dedupeByUri(this.modelValue || [])
-    },
-    computedOptions() {
-      const list = this.search ? this.remoteOptions : (this.options || [])
-      return list.map(this.normalize).filter(Boolean)
-    },
-  },
-  methods: {
-    // Extract DDC notation from URI if possible, TODO what about other schemes, i.e. ILC? Limitation: DDC only
-    notationFromUri(uri) {
-      const m = (uri || "").match(/\/class\/([^/]+)\//)
-      return m ? decodeURIComponent(m[1]) : null
-    },
+  label: { type: String, default: "" },
+  placeholder: { type: String, default: "Search…" },
 
-    // Ensure every item has __label, and add notation when missing (DDC)
-    normalize(item) {
-      if (!item?.uri) {
-        return null
-      }
+  // tags | list | table (rendered by ItemSelected)
+  selectedView: { type: String, default: "tags" },
+  orderable: { type: Boolean, default: false },
+})
 
-      const rawLabel =
+const picked = ref(null)
+const loading = ref(false)
+const pending = ref(null)
+const remoteOptions = ref([])
+const treeSelected = ref(null) // highlighted/active concept in ConceptTree
+const conceptTree = ref(null)
+
+const modelValueProxy = computed(() => {
+  return dedupeByUri(props.modelValue || [])
+})
+
+const computedOptions = computed(() => {
+  const list = props.search ? remoteOptions.value : (props.options || [])
+  return list.map(normalize).filter(Boolean)
+})
+
+const emit = defineEmits(["update:modelValue", "select"])
+
+
+// Extract DDC notation from URI if possible, TODO what about other schemes, i.e. ILC? Limitation: DDC only
+function notationFromUri(uri) {
+  const m = (uri || "").match(/\/class\/([^/]+)\//)
+  return m ? decodeURIComponent(m[1]) : null
+}
+    
+// Ensure every item has __label, and add notation when missing (DDC)
+function normalize(item) {
+  if (!item?.uri) {
+    return null
+  }
+
+  const rawLabel =
       item.__label ||
       item.prefLabel?.und ||
       item.prefLabel?.en ||
       item.uri
 
-      // Prefer existing notation, otherwise derive from DDC URI
-      const notation =
+  // Prefer existing notation, otherwise derive from DDC URI
+  const notation =
       (Array.isArray(item.notation) && item.notation[0]) ||
-      this.notationFromUri(item.uri)
+      notationFromUri(item.uri)
 
-      // If label already starts with the notation, remove it to avoid duplication in ItemName
-      const cleanedLabel =
+  // If label already starts with the notation, remove it to avoid duplication in ItemName
+  const cleanedLabel =
       notation && rawLabel.startsWith(notation)
         ? rawLabel.slice(notation.length).trim()
         : rawLabel
 
-      return {
-        ...item,
-        __label: rawLabel,
-        notation: (Array.isArray(item.notation) && item.notation.length)
-          ? item.notation
-          : (notation ? [notation] : undefined),
-        // Keep existing prefLabel keys if present, but ensure a usable label
-        prefLabel: item.prefLabel
-          ? { ...item.prefLabel, und: cleanedLabel }
-          : { und: cleanedLabel },
-      }
-    },
-    // Dedupe items by `uri` while keeping the original insertion order.
-    // We run `normalize()` so every returned item has a consistent shape
-    // (e.g. ensures `__label` exists, drops invalid items).
-    dedupeByUri(items) {
-      const seen = new Set()
-      const out = []
+  return {
+    ...item,
+    __label: rawLabel,
+    notation: (Array.isArray(item.notation) && item.notation.length)
+      ? item.notation
+      : (notation ? [notation] : undefined),
+    // Keep existing prefLabel keys if present, but ensure a usable label
+    prefLabel: item.prefLabel
+      ? { ...item.prefLabel, und: cleanedLabel }
+      : { und: cleanedLabel },
+  }
+}
+    
+// Dedupe items by `uri` while keeping the original insertion order.
+// We run `normalize()` so every returned item has a consistent shape
+// (e.g. ensures `__label` exists, drops invalid items).
+function dedupeByUri(items) {
+  const seen = new Set()
+  const out = []
 
-      for (const it of items || []) {
-        // Normalize first: ensures shape + label, may return null if invalid.
-        const n = this.normalize(it)
+  for (const it of items || []) {
+    // Normalize first: ensures shape + label, may return null if invalid.
+    const n = normalize(it)
 
-        // Skip if normalization failed or if there's no URI.
-        if (!n?.uri) {
-          continue
-        }
+    // Skip if normalization failed or if there's no URI.
+    if (!n?.uri) {
+      continue
+    }
 
-        // Skip duplicates: if we already saw this URI, don't add it again.
-        if (seen.has(n.uri)) {
-          continue
-        }
+    // Skip duplicates: if we already saw this URI, don't add it again.
+    if (seen.has(n.uri)) {
+      continue
+    }
 
-        // First time we see this URI: remember it and keep the item.
-        seen.add(n.uri)
-        out.push(n)
-      }
+    // First time we see this URI: remember it and keep the item.
+    seen.add(n.uri)
+    out.push(n)
+  }
 
-      return out
-    },
+  return out
+}
 
-    // Add selected item to v-model, 
-    onPick(item) {
-      const concept = this.normalize(item)
-      if (!concept) {
-        return
-      }
+async function syncTreeTo(concept) {
+  // Only if ConceptTree is shown and mounted
+  if (!props.showTree || !conceptTree.value) {
+    return
+  }
 
-      // Add to modelValue, deduping by URI
-      const next = this.dedupeByUri([...(this.modelValueProxy || []), concept])
-      this.$emit("update:modelValue", next)
-      this.$emit("select", concept)
+  // Highlight this concept in the tree
+  treeSelected.value = concept
 
-      // Reset input so it behaves like "add tag"
-      this.picked = null
-    },
+  // Wait for DOM update, then ask ConceptTree to reveal it
+  await nextTick()
 
-    moveItem({ from, to }) {
-      const items = [...(this.modelValueProxy || [])]
-      if (from < 0 || from >= items.length) {
-        return
-      }
-      if (to < 0 || to >= items.length) {
-        return
-      }
-      const [x] = items.splice(from, 1)
-      items.splice(to, 0, x)
-      this.$emit("update:modelValue", items)
-    },
+  // IMPORTANT: select=false because ItemSelect manages selection (array),
+  // ConceptTree's modelValue is just for highlight/scroll here.
+  await conceptTree.value.navigateToUri(concept, {
+    select: false,
+    onlyIfNotInView: true,
+  })
+}
 
-    removeItem(item) {
-      if (!item?.uri) {
-        return
-      }
-      this.$emit(
-        "update:modelValue",
-        (this.modelValueProxy || []).filter((i) => i?.uri !== item.uri),
-      )
-    },
+// Add selected item to v-model,
+function onPick(item) {
+  const concept = normalize(item)
+  if (!concept) {
+    return
+  }
 
-    clearItems() {
-      this.$emit("update:modelValue", [])
-    },
+  // Add to modelValue, deduping by URI
+  const next = dedupeByUri([...(modelValueProxy.value || []), concept])
+  emit("update:modelValue", next)
+  emit("select", concept)
 
-    // --- ConceptTree core ---
-    onTreeSelect(ev) {
-      // ConceptTree emits { item, row, ... }
-      if (ev?.item) {
-        this.onPick(ev.item)
-      }
-    },
+  // Reset input so it behaves like "add tag"
+  picked.value = null
 
-    onTreeOpen(concept) {
-      if (this.treeLoadNarrower) {
-        return this.treeLoadNarrower(concept)
-      }
-    },
+  // Reveal in the tree (open path + scroll)
+  syncTreeTo(concept)
+}
 
-    // Convert OpenSearch Suggest to options
-    openSearchToOptions(os) {
-      const labels = os?.[1] || []
-      const uris = os?.[3] || []
-      return uris
-        .map((uri, i) => this.normalize({ uri, __label: labels[i] || uri }))
-        .filter(Boolean)
-    },
+function moveItem({ from, to }) {
+  const items = [...(modelValueProxy.value || [])]
+  if (from < 0 || from >= items.length) {
+    return
+  }
+  if (to < 0 || to >= items.length) {
+    return
+  }
+  const [x] = items.splice(from, 1)
+  items.splice(to, 0, x)
+  emit("update:modelValue", items)
+}
 
-    // Remote search (only if search prop is provided)
-    async onSearchChange(query) {
-      if (!this.search) {
-        return
-      }
+function removeItem(item) {
+  if (!item?.uri) {
+    return
+  }
+  emit(
+    "update:modelValue",
+    (modelValueProxy.value || []).filter((i) => i?.uri !== item.uri),
+  )
+}
 
-      // Abort if query is too short
-      const q = (query ?? "").trim()
-      if (q.length < this.minChars) {
-        this.remoteOptions = []
-        return
-      }
+function clearItems() {
+  emit("update:modelValue", [])
+}
 
-      // Start new search
-      const p = (this.pending = this.search(q))
-      this.loading = true
+// --- ConceptTree core ---
+function onTreeSelect(ev) {
+  // ConceptTree emits { item, row, ... }
+  if (ev?.item) {
+    onPick(ev.item)
+  }
+}
 
-      try {
-        const result = await p
-        // Ignore if a newer request started while we were waiting
-        if (this.pending !== p) {
-          return
-        }
+function onTreeOpen(concept) {
+  if (props.treeLoadNarrower) {
+    return props.treeLoadNarrower(concept)
+  }
+}
 
-        this.remoteOptions = this.openSearchToOptions(result)
-      } catch (err) {
-        // If this request is still the latest, clear options on error
-        if (this.pending === p) {
-          this.remoteOptions = []
-        }
-      } finally {
-        if (this.pending === p) {
-          this.loading = false
-          this.pending = null
-        }
-      }
-    },
+// Convert OpenSearch Suggest to options
+function openSearchToOptions(os) {
+  const labels = os?.[1] || []
+  const uris = os?.[3] || []
+  return uris
+    .map((uri, i) => normalize({ uri, __label: labels[i] || uri }))
+    .filter(Boolean)
+}
 
-  },
+// Remote search (only if search prop is provided)
+async function onSearchChange(query) {
+  if (!props.search) {
+    return
+  }
+
+  // Abort if query is too short
+  const q = (query ?? "").trim()
+  if (q.length < props.minChars) {
+    remoteOptions.value = []
+    return
+  }
+
+  // Start new search
+  const p = (pending.value = props.search(q))
+  loading.value = true
+
+  try {
+    const result = await p
+    // Ignore if a newer request started while we were waiting
+    if (pending.value !== p) {
+      return
+    }
+
+    remoteOptions.value = openSearchToOptions(result)
+  } catch (err) {
+    // If this request is still the latest, clear options on error
+    if (pending.value === p) {
+      remoteOptions.value = []
+    }
+  } finally {
+    if (pending.value === p) {
+      loading.value = false
+      pending.value = null
+    }
+  }
 }
 </script>
 

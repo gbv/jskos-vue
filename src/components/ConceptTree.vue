@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { computed, reactive } from "vue"
+import { computed, reactive, nextTick } from "vue"
 import * as jskos from "jskos-tools"
 import ItemList from "./ItemList.vue"
 import Arrow from "./Arrow.vue"
@@ -149,6 +149,105 @@ defineExpose({
   },
   scrollToUri(...args) {
     return this.$refs.itemList.scrollToUri(...args) 
+  },
+  /**
+     * Navigate to a concept URI in the hierarchy:
+     * - If already rendered: scroll to it (and optionally select it)
+     * - Else: best-effort open/load the path from top concepts down to the target (DDC/coli-conc works well)
+     
+     *   if the URI is already rendered → scroll + (optionally) select
+     *   otherwise (hierarchy mode) → tries to open/load the path from top concepts down to the target, 
+     *   using _getNarrower() + parent pointers (ancestors[0] / broader[0]) when available
+     */
+  async navigateToUri(uriOrConcept, { select = true, onlyIfNotInView = true } = {}) {
+    const uri = typeof uriOrConcept === "string" ? uriOrConcept : uriOrConcept?.uri
+    if (!uri) {
+      return false
+    }
+
+    // 1) Fast path: concept already rendered
+    const rendered = (this.items || []).find(i => this.jskos.compare(i.concept, { uri }))?.concept
+    if (rendered) {
+      if (select) {
+        this.$emit("update:modelValue", rendered)
+      }
+      await nextTick()
+      this.scrollToUri(uri, onlyIfNotInView)
+      return true
+    }
+
+    // Without hierarchy we cannot "open a path"
+    if (!this.hierarchy) {
+      return false
+    }
+
+    // 2) Build parent chain (target -> parent -> ...), then reverse to (root -> ... -> target)
+    // We try to use a registry if present on the top concepts (coli-conc / cocoda-sdk decorated concepts).
+    const top0 = (this.concepts || [])[0]
+    const registry = top0?._registry || top0?.inScheme?.[0]?._registry
+
+    let chain = [{ uri }] // will become [root, ..., target]
+    if (registry?.getConcepts) {
+      try {
+        const fetchOne = async (u) => (await registry.getConcepts({ concepts: [{ uri: u }] }))[0]
+        let current = await fetchOne(uri)
+        const seen = new Set([uri])
+
+        while (current) {
+          const parentUri = (current.ancestors?.[0] || current.broader?.[0])?.uri
+          if (!parentUri || seen.has(parentUri)) {
+            break
+          }
+          seen.add(parentUri)
+          chain.push({ uri: parentUri })
+          current = await fetchOne(parentUri)
+        }
+        chain.reverse()
+      } catch (_) {
+        // If we can't build a chain, we can't reliably open the hierarchy.
+        return false
+      }
+    } else {
+      return false
+    }
+
+    // 3) Walk from root to target, opening and loading narrower on each step
+    let current = (this.concepts || []).find(c => this.jskos.compare(c, chain[0]))
+    if (!current) {
+      return false
+    }
+
+    for (let i = 1; i < chain.length; i++) {
+      // Mark current as open
+      this.isOpen[current.uri] = true
+
+      // Load children if needed (common pattern: narrower = [null] until loaded)
+      const needsLoad =
+          !Array.isArray(current.narrower) ||
+          (current.narrower && current.narrower.includes(null))
+
+      if (needsLoad && typeof current._getNarrower === "function") {
+        try {
+          current.narrower = this.jskos.sortConcepts(await current._getNarrower())
+        } catch (_) {
+          // ignore; we'll fail gracefully below if child isn't found
+        }
+      }
+
+      const next = (current.narrower || []).find(ch => this.jskos.compare(ch, chain[i]))
+      if (!next) {
+        return false
+      }
+      current = next
+    }
+
+    // 4) Select + scroll
+    if (select) {
+      this.$emit("update:modelValue", current)
+    }
+    await nextTick()
+    this.scrollToUri(uri, onlyIfNotInView)
+    return true
   },
 })
 </script>

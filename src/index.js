@@ -1,18 +1,31 @@
 import * as components from "./components/index.js"
 
-// Add install method to individual components
-for (let component of Object.values(components)) {
+// Add install() to each component export (Vue 3: app.component)
+for (const [exportName, mod] of Object.entries(components)) {
+  const component = mod?.default ?? mod
+  if (!component || typeof component !== "object") {
+    continue
+  }
+
+  const name = component.name || component.__name || exportName
+  if (!name) {
+    continue
+  }
+
   if (!component.install) {
-    component.install = (vue) => {
-      vue.component(component.name, component)
+    component.install = (app) => {
+      app.component(name, component)
     }
   }
 }
 
-// Install method so that it can be used as a plugin.
-export const install = (vue) => {
-  for (let key in components) {
-    vue.use(components[key])
+// Main plugin install: installs all components
+export const install = (app) => {
+  for (const mod of Object.values(components)) {
+    const c = mod?.default ?? mod
+    if (c?.install) {
+      app.use(c)
+    }
   }
 }
 

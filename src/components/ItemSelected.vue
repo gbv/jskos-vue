@@ -8,24 +8,22 @@
         v-for="(item, index) in items"
         :key="item?.uri || index"
         class="jskos-vue-itemSelected-chip">
-        {{ labelFrom(item) }}
+
+        <ItemName
+          :item="item"
+          v-bind="tagItemNameProps"
+          @click="emit('select', { item })" />
+
         <button
           type="button"
           class="jskos-vue-itemSelected-chipRemove"
           aria-label="Remove"
-          @click="$emit('remove', item)" />
+          @click="emit('remove', item)" />
       </span>
-
-      <button
-        v-if="showClear && items.length"
-        type="button"
-        class="jskos-vue-itemSelected-clear"
-        @click="$emit('clear')">
-        Clear
-      </button>
     </div>
 
-    <!-- TABLE VIEW -->
+
+    <!-- TABLE -->
     <div
       v-else-if="view === 'table'"
       class="jskos-vue-itemSelected-table">
@@ -34,12 +32,10 @@
         :key="item?.uri || index"
         class="jskos-vue-itemSelected-row">
         <div class="jskos-vue-itemSelected-cell">
-          <item-name
+          <ItemName
             :item="item"
-            :clickable="clickable"
-            :draggable="false"
-            v-bind="itemNameOptions"
-            @click="$emit('select', { item })" />
+            v-bind="itemNameProps"
+            @click="emit('select', { item })" />
         </div>
 
         <div class="jskos-vue-itemSelected-actions">
@@ -51,7 +47,7 @@
               :disabled="index === 0"
               aria-label="Move up"
               title="Move up"
-              @click="$emit('move', { from: index, to: index - 1 })">
+              @click="emit('move', { from: index, to: index - 1 })">
               ▲
             </button>
 
@@ -62,7 +58,7 @@
               :disabled="index === items.length - 1"
               aria-label="Move down"
               title="Move down"
-              @click="$emit('move', { from: index, to: index + 1 })">
+              @click="emit('move', { from: index, to: index + 1 })">
               ▼
             </button>
 
@@ -71,7 +67,7 @@
               class="jskos-vue-itemSelected-actionBtn"
               aria-label="Remove"
               title="Remove"
-              @click="$emit('remove', item)">
+              @click="emit('remove', item)">
               ×
             </button>
           </div>
@@ -79,14 +75,13 @@
       </div>
     </div>
 
-    <!-- LIST VIEW (minimal) -->
+    <!-- LIST (minimal) -->
     <ItemList
       v-else-if="view === 'list'"
       class="jskos-vue-itemSelected-list"
       :items="items"
       :row-mode="false"
       :item-name-options="{
-        // ItemName props
         clickable: false,
         draggable: false,
         showNotation: true,
@@ -95,51 +90,41 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from "vue"
 import ItemList from "./ItemList.vue"
 import ItemName from "./ItemName.vue"
 
-export default {
-  name: "ItemSelected",
-  components: { ItemName, ItemList },
-  props: {
-    items: { type: Array, default: () => [] },
-    view: { type: String, default: "tags" }, // "tags" | "table" | "list"
-    labelField: { type: String, default: "__label" },
-    orderable: { type: Boolean, default: false },
-    showClear: { type: Boolean, default: true },
-    clickable: { type: Boolean, default: true },
-    itemNameOptions: { type: Object, default: () => ({}) },
-  },
-  emits: ["remove", "clear", "move", "select"],
-  methods: {
-    // Prefer: "notation + prefLabel", avoid URI unless absolutely necessary.
-    labelFrom(item) {
-      const notation = Array.isArray(item?.notation) ? item.notation[0] : item?.notation
-      const pl = item?.prefLabel || {}
+defineOptions({ name: "ItemSelected" })
 
-      const label =
-      pl.en ||
-      pl.de ||
-      pl.it ||
-      pl.und ||
-      Object.values(pl)[0] ||
-      ""
+const props = defineProps({
+  items: { type: Array, default: () => [] },
+  view: { type: String, default: "tags" }, // "tags" | "table" | "list"
+  labelField: { type: String, default: "__label" },
+  orderable: { type: Boolean, default: false },
+  clickable: { type: Boolean, default: true },
+  itemNameOptions: { type: Object, default: () => ({}) },
+})
 
-      // If label already starts with the notation (e.g. "594.35 ..."), don’t duplicate
-      if (notation && label && String(label).startsWith(String(notation))) {
-        return String(label)
-      }
+const emit = defineEmits(["remove", "move", "select"])
 
-      if (notation && label) {
-        return `${notation} ${label}`
-      }
+const itemNameProps = computed(() => ({
+  ...props.itemNameOptions,
+  clickable: props.clickable,
+  draggable: false,
+}))
 
-      return label || notation || item?.uri || ""
-    },
+const tagItemNameProps = computed(() => ({
+  ...props.itemNameOptions,
+  // tags should never drag
+  draggable: false,
+  // allow click-to-select if you want it; otherwise set false
+  clickable: props.clickable,
+  // tags usually show both
+  showNotation: true,
+  showLabel: true,
+}))
 
-  },
-}
 </script>
 
 <style>
@@ -167,18 +152,6 @@ export default {
   gap: 0.6rem;
   align-items: baseline;
   min-width: 0;
-}
-
-.jskos-vue-itemSelected-notation {
-  font-weight: 700;
-  flex: 0 0 auto;
-}
-
-.jskos-vue-itemSelected-label {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .jskos-vue-itemSelected-actions {
@@ -214,7 +187,7 @@ export default {
   cursor: default;
 }
 
-/* TAGS (minimal) */
+/* TAGS */
 .jskos-vue-itemSelected-tags {
   display: flex;
   flex-wrap: wrap;
@@ -244,6 +217,7 @@ export default {
   background: transparent;
   border: none;
 }
+
 .jskos-vue-itemSelected-chipRemove::after {
   content: "x";
   font-size: 18px;
