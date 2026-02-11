@@ -16,6 +16,9 @@
   /* ConceptTree */
   --jskos-vue-conceptTree-selected-bgColor: var(--jskos-vue-highlight-bgColor);
   --jskos-vue-conceptTree-hover-bgColor: var(--jskos-vue-highlight-bgColor);
+  /* ItemSelected */
+  --jskos-vue-itemSelected-tags-bgColor: var(--jskos-vue-highlight-bgColor);
+  --jskos-vue-itemSelected-tags-color: inherit;
   /* ItemSuggest */
   --jskos-vue-itemSuggest-results-bgColor: var(--jskos-vue-bgColor);
   --jskos-vue-itemSuggest-results-shadowColor: rgba(0, 0, 0, 0.2);

@@ -39,9 +39,6 @@ Component to **select multiple items** (JSKOS concepts, schemes, languages, …)
 
 ### UI
 
-- `label` *(string)* — optional label above the input  
-  default: `""`
-  
 - `placeholder` *(string)* — placeholder shown in the typeahead input  
   default: `"Search…"`
   
@@ -155,49 +152,49 @@ You can override these classes in your app CSS.
 </script>
 
 <h2>ItemSelect with languages</h2>
+<label>Languages</label>
 <item-select
     v-model="languageSelected"
     :options="languageOptions"
-    label="Languages"
     placeholder="Pick a language…"
     selected-view="tags" />
 
 <h2>ItemSelect DDC concepts from API (typeahead / suggest )</h2>
 <h3>Tags</h3>
+<label>DDC with tag view</label>
 <item-select
   v-if="state.scheme"
   v-model="state.itemSelect.selected"
   :search="suggest"
-  label="DDC with tag view"
   placeholder="Search DDC concepts…"
   selected-view="tags" />
 
 <h3>Table</h3>
+<label>DDC with table view</label>
 <item-select
   v-if="state.scheme"
   v-model="state.itemSelect.selected"
   :search="suggest"
-  label="DDC with table view"
   placeholder="Search DDC concepts…"
   orderable
   selected-view="table" />  
 
 <h3>List</h3>
+<label>DDC with list view</label>
 <item-select
   v-if="state.scheme"
   v-model="state.itemSelect.selected"
   :search="suggest"
-  label="DDC with list view"
   placeholder="Search DDC concepts…"
   selected-view="list" />
 
 <h2>ItemSelect DDC concepts from API (typeahead / suggest ) and conceptTree browsing UX</h2>
 <h3>Table</h3>
+<label>DDC with table view</label>
 <item-select
   v-if="state.scheme"
   v-model="state.itemSelect.selected"
   :search="suggest"
-  label="DDC with table view"
   placeholder="Search DDC concepts…"
   orderable
   selected-view="table"

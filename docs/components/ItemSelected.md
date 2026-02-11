@@ -1,42 +1,29 @@
 # ItemSelected
 
-`ItemSelected` is a small rendering component for an **already selected** list of items (usually JSKOS concepts, schemes, languages, etc.).  
-It is used by [`ItemSelect`](./ItemSelect) to display the current selection, but it can also be used standalone.
+A list of JSKOS items where items can be reordered and removed from.
 
 It supports three views:
 
-- **`tags`**: compact chips with remove buttons
-- **`table`**: rows with optional ordering controls (up/down) and remove buttons
-- **`list`**: minimal list rendering via [`ItemList`](./ItemList)
+- **`list`**: list rendering via [`ItemList`](./ItemList)
+- **`tags`**: inline list of compact tags
+- **`table`**: rows with ordering controls (up/down)
 
-Internally it uses [`ItemName`](./ItemName) for displaying items (notation/label rendering, language preference, fallbacks, etc.).
-
-
+Uses [`ItemName`](./ItemName) to display items.
 
 ## Props
 
-- `items` *(array)* — items to render  
-  default: `[]`
+- `items` (array) - items to render
+  - default: `[]`
   
-- `view` *(string)* — display mode: `"tags" | "table" | "list"`  
-  default: `"tags"`
+- `view` (string) - display mode: `"tags" | "table" | "list"`  
+  - default: `"tags"`
   
-- `orderable` *(boolean)* — show move up/down buttons (only affects `table` view)  
-  default: `false`
-  
-- `clickable` *(boolean)* — whether the displayed items are clickable (emits `select`)  
-  default: `true`
-  
-- `itemNameOptions` *(object)* — props forwarded to [`ItemName`](./ItemName) (merged with the component’s own defaults)  
-  default: `{}`
-  
-
-> Notes:
-> 
-> - `draggable` is forced to `false` in all views.
-> - In **tags** view, `showNotation` and `showLabel` are enabled by default (you can still override via `itemNameOptions`).
-
-
+- `orderable` (boolean) - show move up/down buttons in `table` view
+  - default: `false`
+ 
+- `itemNameOptions` (object) - props forwarded to [`ItemName`](./ItemName)
+  - default: `{ draggable: false }`
+  - Field `draggable` is set to `false`, unless explicitly enabled
 
 ## Events
 
@@ -49,25 +36,21 @@ Internally it uses [`ItemName`](./ItemName) for displaying items (notation/label
   Payload: `{ from: number, to: number }`
   
 - `select`  
-  Emitted when the user clicks on an item label (if `clickable`).  
+  Emitted when the user clicks on an item
   Payload: `{ item }`
-  
 
+## CSS Variables
 
+- `--jskos-vue-itemSelected-tags-bgColor` - background color of tags. Set to `--jskos-vue-highlight-bgColor` by default.
+- `--jskos-vue-itemSelected-tags-color` - text color of tags. Set to `inherit` by default.
 
-## Slots
-
-This component does not expose custom slots (it focuses on consistent “selected items” rendering).
-
-
-
-## Examples
-
-### Tags view (chips)
+## Example
 
 <script setup>
 import { ref } from "vue"
 import ItemSelected from "../../src/components/ItemSelected.vue"
+const view = ref("tags")
+const orderable = ref(true)
 const selected = ref([
   { uri: "urn:lang:en", prefLabel: { en: "English" } },
   { uri: "urn:lang:de", prefLabel: { en: "German" } },
@@ -79,12 +62,21 @@ function remove(item) {
 function alertSelect({ item }) {
   window.alert(`Clicked on ${item.uri}`)
 }
-
 </script>
+
+<p>
+  Change layout:
+  <button v-for="v in ['tags','table','list']" :key="v" @click="view=v">{{v}}</button>
+  <label>
+    <input type="checkbox" v-model="orderable"> orderable
+  </label>
+</p>
+
 
 <item-selected
  :items="selected"
- view="tags"
+ :view="view"
+ :orderable="orderable"
  @remove="remove"
  @select="alertSelect" />
 

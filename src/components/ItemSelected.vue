@@ -7,21 +7,20 @@
       <span
         v-for="(item, index) in items"
         :key="item?.uri || index"
-        class="jskos-vue-itemSelected-chip">
+        class="jskos-vue-itemSelected-tag">
 
         <ItemName
           :item="item"
-          v-bind="tagItemNameProps"
+          v-bind="ourItemNameOptions"
           @click="emit('select', { item })" />
 
         <button
           type="button"
-          class="jskos-vue-itemSelected-chipRemove"
+          class="jskos-vue-itemSelected-tagRemove"
           aria-label="Remove"
           @click="emit('remove', item)" />
       </span>
     </div>
-
 
     <!-- TABLE -->
     <div
@@ -48,7 +47,7 @@
               aria-label="Move up"
               title="Move up"
               @click="emit('move', { from: index, to: index - 1 })">
-              ▲
+              <Arrow direction="up" />
             </button>
 
             <button
@@ -59,7 +58,7 @@
               aria-label="Move down"
               title="Move down"
               @click="emit('move', { from: index, to: index + 1 })">
-              ▼
+              <Arrow direction="down" />
             </button>
 
             <button
@@ -81,17 +80,13 @@
       class="jskos-vue-itemSelected-list"
       :items="items"
       :row-mode="false"
-      :item-name-options="{
-        clickable: false,
-        draggable: false,
-        showNotation: true,
-        showLabel: true,
-      }" />
+      :item-name-options="ourItemNameOptions" />
   </div>
 </template>
 
 <script setup>
 import { computed } from "vue"
+import Arrow from "./Arrow.vue"
 import ItemList from "./ItemList.vue"
 import ItemName from "./ItemName.vue"
 
@@ -102,29 +97,15 @@ const props = defineProps({
   view: { type: String, default: "tags" }, // "tags" | "table" | "list"
   labelField: { type: String, default: "__label" },
   orderable: { type: Boolean, default: false },
-  clickable: { type: Boolean, default: true },
   itemNameOptions: { type: Object, default: () => ({}) },
 })
 
 const emit = defineEmits(["remove", "move", "select"])
 
-const itemNameProps = computed(() => ({
+const ourItemNameOptions = computed(() => ({
   ...props.itemNameOptions,
-  clickable: props.clickable,
   draggable: false,
 }))
-
-const tagItemNameProps = computed(() => ({
-  ...props.itemNameOptions,
-  // tags should never drag
-  draggable: false,
-  // allow click-to-select if you want it; otherwise set false
-  clickable: props.clickable,
-  // tags usually show both
-  showNotation: true,
-  showLabel: true,
-}))
-
 </script>
 
 <style>
@@ -156,15 +137,12 @@ const tagItemNameProps = computed(() => ({
 
 .jskos-vue-itemSelected-actions {
   flex: 0 0 auto;
-  padding: 0.35rem;
   display: flex;
   align-items: stretch;
 }
 
 .jskos-vue-itemSelected-actionGroup {
   display: flex;
-  border: 1px solid rgba(2, 6, 23, 0.12);
-  border-radius: 10px;
   overflow: hidden;
   background: #fff;
 }
@@ -172,19 +150,19 @@ const tagItemNameProps = computed(() => ({
 .jskos-vue-itemSelected-actionBtn {
   width: 44px;
   border: 0;
+  border-left: 1px solid rgba(2, 6, 23, 0.12);
+  border-radius: 0;
   background: transparent;
   cursor: pointer;
   font-size: 16px;
   line-height: 1;
 }
 
-.jskos-vue-itemSelected-actionBtn + .jskos-vue-itemSelected-actionBtn {
-  border-left: 1px solid rgba(2, 6, 23, 0.12);
-}
-
 .jskos-vue-itemSelected-actionBtn:disabled {
-  opacity: 0.35;
   cursor: default;
+}
+.jskos-vue-itemSelected-actionBtn:disabled * {
+  opacity: 0.35;
 }
 
 /* TAGS */
@@ -194,19 +172,16 @@ const tagItemNameProps = computed(() => ({
   gap: 0.4rem;
 }
 
-.jskos-vue-itemSelected-chip {
+.jskos-vue-itemSelected-tag {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
   padding: 0.22rem 0.55rem;
-  border: 1px solid rgba(30, 41, 59, 0.12);
-  background: #10B981;
-  color: white;
-  font-size: large;
-  font-weight: bold;
+  background: var(--jskos-vue-itemSelected-tags-bgColor);
+  color: var(--jskos-vue-itemSelected-tags-color);
 }
 
-.jskos-vue-itemSelected-chipRemove {
+.jskos-vue-itemSelected-tagRemove {
   width: 24px;
   height: 24px;
   cursor: pointer;
@@ -218,7 +193,7 @@ const tagItemNameProps = computed(() => ({
   border: none;
 }
 
-.jskos-vue-itemSelected-chipRemove::after {
+.jskos-vue-itemSelected-tagRemove::after {
   content: "x";
   font-size: 18px;
   line-height: 1;
@@ -230,7 +205,6 @@ const tagItemNameProps = computed(() => ({
   background: #10B981;
   color: white;
   font-size: large;
-  font-weight: bold;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
 }

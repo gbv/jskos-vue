@@ -13,12 +13,16 @@ This library provides the following Vue components (plus some helper components 
 - [ConceptTree] - hierarchical browsing of JSKOS concepts
 - [ItemSuggest] - input field to search and select an item
 - [ItemDetails] - full but condense details of a JSKOS item
+- [ItemSelected] - editable list of JSKOS items
+- [ItemSelect] - form to select multiple JSKOS items
 
 [ItemName]: components/ItemName.html
 [ItemList]: components/ItemList.html
 [ConceptTree]: components/ConceptTree.html
 [ItemSuggest]: components/ItemSuggest.html
 [ItemDetails]: components/ItemDetails.html
+[ItemSelect]: components/ItemSelect.html
+[ItemSelected]: components/ItemSelected.html
 
 ## Requirements
 - [Vue 3](https://v3.vuejs.org)

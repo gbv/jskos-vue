@@ -1,9 +1,5 @@
 <template>
   <div class="jskos-vue-itemSelect">
-    <label
-      v-if="label"
-      class="jskos-vue-itemSelect-label">{{ label }}</label>
-
     <!-- Input: pick ONE item, then add to selected and reset -->
     <Multiselect
       v-model="picked"
@@ -84,7 +80,6 @@ const props = defineProps({
   treeConcepts: { type: Array, default: () => [] }, // top concepts
   treeLoadNarrower: { type: Function, default: null },
 
-  label: { type: String, default: "" },
   placeholder: { type: String, default: "Search…" },
 
   // tags | list | table (rendered by ItemSelected)
@@ -316,10 +311,6 @@ async function onSearchChange(query) {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-
-.jskos-vue-itemSelect-label {
-  opacity: 0.8;
 }
 
 .jskos-vue-itemSelect-noResult {
