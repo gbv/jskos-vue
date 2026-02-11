@@ -57,9 +57,11 @@
     "http-server": "^14.1.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.0.0",
+    "petite-vue-i18n": "^11.2.8",
     "vite": "^7.3.1",
     "vitepress": "^1.6.4",
     "vitest": "^4.0.18",
+    "vue-i18n": "^11.2.8",
     "yesno": "^0.4.0"
   },
   "author": "Stefan Peters <stefan.peters@gbv.de>",

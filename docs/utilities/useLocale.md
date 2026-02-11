@@ -1,13 +1,12 @@
 # useLocale
 
-Get method `t` to localize strings and the current locale `currentlLanguage`.
+Get method `t` to localize strings and, a `currentLanguage` to get the current locale.
 
 Returns global properties `$t` and `$i18n.locale` as defined by [Vue I18n] or
 any other library. If not both of these exist, the function uses
-`languagePreference` from [jskos-tools] with messages provided as argument.
+`languagePreference` from [jskos-tools].
 
-If neither global properties no an argument is available, this falls back to
-build in messages as exported as part of `utils`.
+Passed messages are only used as fallback for global messages.
 
 [jskos-tools]: https://github.com/gbv/jskos-tools
 [Vue I18n]: https://vue-i18n.intlify.dev/
@@ -22,6 +21,8 @@ const { t, currentLanguage } = utils.useLocale({
 })
 
 t('greet')
+
+console.log(currentLanguage.value)
 ```
 
 ## Parameters

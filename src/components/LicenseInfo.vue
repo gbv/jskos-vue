@@ -5,13 +5,13 @@
       v-for="(license, index) in item.license || []"
       :key="index"
       :href="license.uri"
-      :title="`${t('license')}: ${getLicenseName(license)} by ${licenseAttribution.label}`"
+      :title="title(license)"
       class="jskos-vue-itemDetails-licenseInfo-badge">
       <img
-        v-if="getLicenseBadge(license)"
-        :src="getLicenseBadge(license)">
+        v-if="licenseBadge(license)"
+        :src="licenseBadge(license)">
       <span v-else>
-        {{ getLicenseName(license) }}
+        {{ licenseName(license) }}
       </span>
     </auto-link>
   </div>
@@ -32,13 +32,9 @@ const props = defineProps({
 })
 
 // Localization
-const { t } = useLocale({
-  en: {
-    license: "License",
-  },
-  de: {
-    license: "Lizenz",
-  },
+const { t, currentLanguage } = useLocale({
+  en: { license: "License" },
+  de: { license: "Lizenz" },
 })
 
 const licenseBadges = {
@@ -50,14 +46,16 @@ const licenseBadges = {
   "http://creativecommons.org/licenses/by-nc-sa/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg",
   "http://creativecommons.org/licenses/by-sa/4.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-sa.svg",
 }
-const getLicenseBadge = (license) => {
+
+const licenseBadge = license => {
   if (licenseBadges[license.uri]) {
     return licenseBadges[license.uri]
   }
   return null
 }
-const getLicenseName = (license) => {
-  const prefLabel = jskos.prefLabel(license, { fallbackToUri: false })
+
+const licenseName = license => {
+  const prefLabel = jskos.prefLabel(license, { fallbackToUri: false, language: currentLanguage.value })
   let notation = jskos.notation(license)
   if (prefLabel && notation) {
     notation = ` (${notation})`
@@ -68,18 +66,23 @@ const getLicenseName = (license) => {
   }
   return name
 }
-// TODO: Is it enough to show this as "title"?
-const licenseAttribution = computed(() => {
+
+const attribution = computed(() => {
   const organisation = (props.item.publisher || []).find(o => o.url) ?? props.item.publisher?.[0]
   const url = organisation?.url ?? props.item.url
   return {
     url,
-    label: jskos.prefLabel(organisation) || "?",
+    label: jskos.prefLabel(organisation),
   }
 })
+
+const title = license => {
+  const str = `${t("license")}: ${licenseName(license)}`
+  return attribution.value?.label ? `${str} by ${attribution.value.label}` : str
+}
 </script>
 
-<style scoped>
+<style>
 .jskos-vue-itemDetails-licenseInfo {
   display: inline-block;
 }

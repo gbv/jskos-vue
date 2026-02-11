@@ -138,18 +138,16 @@ export const dragAndDrop = {
   },
 }
 
-// Localization
+// Localization: TODO: move to component
 export const messages = {
   en: {
     showAllAncestors: "show all ancestors",
     showLessAncestors: "show less ancesters",
-    license: "License",
     dropzone: "Drop an item here to select it.",
   },
   de: {
     showAllAncestors: "zeige alle übergeordneten Konzepte",
     showLessAncestors: "zeige weniger übergeordnete Konzepte",
-    license: "Lizenz",
     dropzone: "Ziehe ein Item hierrein, um es auszuwählen.",
   },
 }
@@ -157,17 +155,24 @@ export const messages = {
 /**
  * Get method `t` to localize strings and the current locale `currentlLanguage`.
  * 
- * Returns global properties `$t` and `$i18n.locale`, if these exist, as injected
- * by {@link https://vue-i18n.intlify.dev/|Vue I18n}. Otherwise uses function
- * `languagePreference` from jskos-tools with messages from this module.
+ * Returns global properties `$t` and a method to get `$i18n.locale`, if these exist,
+ * as injected by {@link https://vue-i18n.intlify.dev/|Vue I18n}. Otherwise uses
+ * function`languagePreference` from jskos-tools with messages from this module.
+ * 
+ * Passed messages are used as fallback for global messages.
  */
-export function useLocale(msg=messages) {
+export function useLocale(messages={}) {
   const { $t, $i18n } = getCurrentInstance()?.appContext.config.globalProperties || {}
+    
   if ($t && $i18n?.locale) {
-    return { t: $t, currentLanguage: $i18n.locale }
+    const t = key => $t(key,
+      ((messages[$i18n.locale] || [])[key] || key),
+      { missingWarn: false, fallbackWarn: false })
+    const currentLanguage = computed(() => $i18n.locale)
+    return { t, currentLanguage } // TODO: also support content language preferrence
   } else {
-    const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => msg[lang]) || "en")
-    const t = id => (msg[currentLanguage.value] || [])[id] || id
+    const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => messages[lang]) || "en")
+    const t = id => (messages[currentLanguage.value] || [])[id] || id
     return { t, currentLanguage }
   }
 }

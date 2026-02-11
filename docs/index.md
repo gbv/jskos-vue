@@ -30,7 +30,8 @@ This library provides the following Vue components (plus some helper components 
   - [Node.js](https://nodejs.org/) version >=20
   - A modern browser
 - [jskos-tools](https://github.com/gbv/jskos-tools)
-  - Needed for ConceptTree, ItemDetails, ItemList, and ItemName.
+  - Needed for ConceptTree, ItemDetails, ItemList, ItemName.
+  - Used for [localization](#localization) of content
 - [jskos-vue-tabs]
   - Needed for ItemDetails.
 - [vue-scrollto](https://github.com/rigor789/vue-scrollto)
@@ -112,16 +113,11 @@ Fully working HTML example:
 
 ## Localization
 
-Localization affects two independent aspects:
+The library comes with translated messages in English and German. Additional messages can be provided with library [Vue I18n] or its subset petite-vue-i18n. See test file `tests/i18n.test.js` for usage. 
 
-- locale of user interface (messages)
-- language of items (labels, descriptions...)
+If Vue I18n is not used, localization is controlled by [jskos-tools] language preferences (function `getLanguages` and `selectLanguage`) but there is no way to override or extend translation messages.
 
-By default, both are controlled by jskos-tools.
-
-The library comes with translated messages in English and German. The messages can be exported as object `messages` for all components and as property `messages` of each individual component, to be used with a library such as [Vue I18n].
-
-*This is not fully implemented yet*
+Localization of JSKOS itemt content (e.g. labels) is always controlled by jskos-tools language preferences.
 
 [Vue I18n]: https://vue-i18n.intlify.dev/
 
