@@ -11,6 +11,7 @@ import ItemSuggest from "./ItemSuggest.vue"
 import Modal from "./Modal.vue"
 import ItemSelect from "./ItemSelect.vue"
 import ItemSelected from "./ItemSelected.vue" 
+import RemoveIcon from "./RemoveIcon.vue"
 
 export {
   ItemName,
@@ -26,4 +27,5 @@ export {
   Modal,
   ItemSelect,
   ItemSelected,
+  RemoveIcon,
 }

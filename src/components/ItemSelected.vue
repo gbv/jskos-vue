@@ -11,14 +11,14 @@
 
         <ItemName
           :item="item"
-          v-bind="ourItemNameOptions"
+          v-bind="tagItemNameProps"
           @click="emit('select', { item })" />
-
-        <button
-          type="button"
-          class="jskos-vue-itemSelected-tagRemove"
+        
+        <RemoveIcon
           aria-label="Remove"
-          @click="emit('remove', item)" />
+          title="Remove"
+          @click.stop="removeItem(item)" />
+
       </span>
     </div>
 
@@ -46,7 +46,7 @@
               :disabled="index === 0"
               aria-label="Move up"
               title="Move up"
-              @click="emit('move', { from: index, to: index - 1 })">
+              @click="moveItem(index, index - 1)">
               <Arrow direction="up" />
             </button>
 
@@ -57,18 +57,16 @@
               :disabled="index === items.length - 1"
               aria-label="Move down"
               title="Move down"
-              @click="emit('move', { from: index, to: index + 1 })">
+              @click="moveItem(index, index + 1)">
               <Arrow direction="down" />
             </button>
 
-            <button
-              type="button"
+            <RemoveIcon
               class="jskos-vue-itemSelected-actionBtn"
               aria-label="Remove"
               title="Remove"
-              @click="emit('remove', item)">
-              ×
-            </button>
+              color="black"
+              @click.stop="removeItem(item)" />
           </div>
         </div>
       </div>
@@ -78,9 +76,21 @@
     <ItemList
       v-else-if="view === 'list'"
       class="jskos-vue-itemSelected-list"
-      :items="items"
+      :items="itemsModel"
       :row-mode="false"
-      :item-name-options="ourItemNameOptions" />
+      :item-name-options="listItemNameOptions"
+      @select="onListSelect">
+      <template
+        v-if="removableEffective"
+        #afterItem="{ item }">
+        <RemoveIcon
+          class="jskos-vue-itemSelected-listRemove"
+          aria-label="Remove"
+          color="black"
+          title="Remove"
+          @click.stop="removeItem(item)" />
+      </template>
+    </ItemList>
   </div>
 </template>
 
@@ -92,20 +102,91 @@ import ItemName from "./ItemName.vue"
 
 defineOptions({ name: "ItemSelected" })
 
+// items is the model (v-model:items)
+const itemsModel = defineModel("items", { type: Array, default: () => [] })
+
 const props = defineProps({
-  items: { type: Array, default: () => [] },
   view: { type: String, default: "tags" }, // "tags" | "table" | "list"
   labelField: { type: String, default: "__label" },
   orderable: { type: Boolean, default: false },
   itemNameOptions: { type: Object, default: () => ({}) },
+  removeable: { type: Boolean, default: false },
+  removable: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(["remove", "move", "select"])
+const emit = defineEmits(["select", "change"])
 
-const ourItemNameOptions = computed(() => ({
+const removableEffective = computed(() => props.removable || props.removeable)
+
+const itemNameProps = computed(() => ({
   ...props.itemNameOptions,
+  clickable: true,
   draggable: false,
 }))
+
+const tagItemNameProps = computed(() => ({
+  ...props.itemNameOptions,
+  draggable: false,
+  clickable: true,
+  showNotation: true,
+  showLabel: true,
+}))
+
+const listItemNameOptions = computed(() => ({
+  ...props.itemNameOptions,
+  clickable: false,
+  draggable: false,
+  showNotation: true,
+  showLabel: true,
+}))
+
+
+function indexOfItem(target) {
+  if (!target) {
+    return -1
+  }
+  const uri = target?.uri
+  if (uri) {
+    return itemsModel.value.findIndex(i => i?.uri === uri)
+  }
+  return itemsModel.value.indexOf(target)
+}
+
+
+function removeItem(item) {
+  const idx = indexOfItem(item)
+  if (idx === -1) {
+    return
+  }
+
+  const removed = itemsModel.value[idx]
+  itemsModel.value.splice(idx, 1) // in-place
+
+  emit("change", { type: "remove", item: removed, index: idx, items: itemsModel.value })
+}
+
+function moveItem(from, to) {
+  if (from < 0 || from >= itemsModel.value.length) {
+    return
+  }
+  if (to < 0 || to >= itemsModel.value.length) {
+    return
+  }
+  if (from === to) {
+    return
+  }
+
+  itemsModel.value.splice(to, 0, itemsModel.value.splice(from, 1)[0]) // in-place
+
+  emit("change", { type: "move", from, to, items: itemsModel.value })
+}
+
+function onListSelect(ev) {
+  if (ev?.item) {
+    emit("select", { item: ev.item })
+  }
+}
+
 </script>
 
 <style>
@@ -181,31 +262,15 @@ const ourItemNameOptions = computed(() => ({
   color: var(--jskos-vue-itemSelected-tags-color);
 }
 
-.jskos-vue-itemSelected-tagRemove {
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  background: transparent;
-  border: none;
+/* LIST */
+.jskos-vue-itemSelected-list {
+  border: 1px solid rgba(2, 6, 23, 0.12);
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 12px;
 }
-
-.jskos-vue-itemSelected-tagRemove::after {
-  content: "x";
-  font-size: 18px;
-  line-height: 1;
-  color: white;
-}
-
-.jskos-vue-itemSelected-clear {
-  border: 1px solid rgba(30, 41, 59, 0.18);
-  background: #10B981;
-  color: white;
-  font-size: large;
-  padding: 0.25rem 0.5rem;
-  cursor: pointer;
+.jskos-vue-itemSelected-listRemove {
+  opacity: 0.75;
+  margin-left: 6px;
 }
 </style>

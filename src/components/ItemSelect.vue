@@ -48,16 +48,16 @@
 
     <!-- Selected rendering delegated to ItemSelected -->
     <ItemSelected
-      :items="modelValueProxy"
+      v-model:items="selectedItems"
       :view="selectedView"
       :orderable="orderable"
-      @remove="removeItem"
-      @move="moveItem" />
+      :removeable="true"
+      @change="onSelectedChange" />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from "vue"
+import { ref, computed, nextTick, watch } from "vue"
 import Multiselect from "vue-multiselect"
 import ItemSelected from "./ItemSelected.vue"
 import ConceptTree from "./ConceptTree.vue"
@@ -85,7 +85,9 @@ const props = defineProps({
   // tags | list | table (rendered by ItemSelected)
   selectedView: { type: String, default: "tags" },
   orderable: { type: Boolean, default: false },
+
 })
+const emit = defineEmits(["update:modelValue", "select"])
 
 const picked = ref(null)
 const loading = ref(false)
@@ -94,17 +96,24 @@ const remoteOptions = ref([])
 const treeSelected = ref(null) // highlighted/active concept in ConceptTree
 const conceptTree = ref(null)
 
-const modelValueProxy = computed(() => {
-  return dedupeByUri(props.modelValue || [])
-})
+// array passed to ItemSelected 
+const selectedItems = ref([])
+
+// Keep selectedItems synced with incoming v-model (normalize + dedupe)
+// Use splice so the array identity stays stable.
+watch(
+  () => props.modelValue,
+  (val) => {
+    const next = dedupeByUri(val || [])
+    selectedItems.value.splice(0, selectedItems.value.length, ...next)
+  },
+  { immediate: true },
+)
 
 const computedOptions = computed(() => {
   const list = props.search ? remoteOptions.value : (props.options || [])
   return list.map(normalize).filter(Boolean)
 })
-
-const emit = defineEmits(["update:modelValue", "select"])
-
 
 // Extract DDC notation from URI if possible, TODO what about other schemes, i.e. ILC? Limitation: DDC only
 function notationFromUri(uri) {
@@ -207,9 +216,14 @@ async function onPick(item) {
     return
   }
 
-  // Add to modelValue, deduping by URI
-  const next = dedupeByUri([...(modelValueProxy.value || []), concept])
-  emit("update:modelValue", next)
+  // Add to selectedItems
+  const exists = selectedItems.value.some((i) => i?.uri === concept.uri)
+  if (!exists) {
+    selectedItems.value.push(concept)
+  }
+
+  // Emit outward v-model update (keep it normalized/deduped)
+  emit("update:modelValue", dedupeByUri(selectedItems.value))
   emit("select", concept)
 
   // Reset input so it behaves like "add tag"
@@ -219,30 +233,7 @@ async function onPick(item) {
   await syncTreeTo(concept)
 }
 
-function moveItem({ from, to }) {
-  const items = [...(modelValueProxy.value || [])]
-  if (from < 0 || from >= items.length) {
-    return
-  }
-  if (to < 0 || to >= items.length) {
-    return
-  }
-  const [x] = items.splice(from, 1)
-  items.splice(to, 0, x)
-  emit("update:modelValue", items)
-}
 
-function removeItem(item) {
-  if (!item?.uri) {
-    return
-  }
-  emit(
-    "update:modelValue",
-    (modelValueProxy.value || []).filter((i) => i?.uri !== item.uri),
-  )
-}
-
-// --- ConceptTree core ---
 function onTreeSelect(ev) {
   if (ev?.item) {
     treeSelected.value = ev.item
@@ -301,6 +292,10 @@ async function onSearchChange(query) {
       pending.value = null
     }
   }
+}
+// Receive changes from ItemSelected (remove + move), forward them as v-model updates
+function onSelectedChange() {
+  emit("update:modelValue", dedupeByUri(selectedItems.value))
 }
 </script>
 
