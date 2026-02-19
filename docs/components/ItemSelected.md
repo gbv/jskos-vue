@@ -10,6 +10,9 @@ It supports three views:
 
 Uses [`ItemName`](./ItemName) to display items.
 
+## Model
+
+`ItemSelected` uses **`v-model:items`** as its data source.
 ## Props
 
 - `items` (array) - items to render
@@ -25,19 +28,28 @@ Uses [`ItemName`](./ItemName) to display items.
   - default: `{ draggable: false }`
   - Field `draggable` is set to `false`, unless explicitly enabled
 
+
+  ### List removal toggle
+
+- `removable` (boolean) — if `true`, show a remove icon in `view="list"` (like Cocoda)  
+  default: `false`
+  
+- `removeable` (boolean) — legacy spelling, treated like `removable`  
+  default: `false`
+  
+
 ## Events
 
-- `remove`  
-  Emitted when the user clicks the remove button on an item.  
-  Payload: the removed `item`.
-  
-- `move`  
-  Emitted when the user clicks *Move up* / *Move down* (only if `orderable` is enabled and `view="table"`).  
-  Payload: `{ from: number, to: number }`
-  
 - `select`  
   Emitted when the user clicks on an item
   Payload: `{ item }`
+
+- `change`  
+  Emitted when the selection changes via this component (remove or move).  
+  Payload:
+  
+  - remove: `{ type: "remove", item, index, items }`
+  - move: `{ type: "move", from, to, items }`
 
 ## CSS Variables
 
@@ -51,32 +63,70 @@ import { ref } from "vue"
 import ItemSelected from "../../src/components/ItemSelected.vue"
 const view = ref("tags")
 const orderable = ref(true)
+const removable = ref(true)
 const selected = ref([
   { uri: "urn:lang:en", prefLabel: { en: "English" } },
   { uri: "urn:lang:de", prefLabel: { en: "German" } },
   { uri: "urn:lang:it", prefLabel: { en: "Italian" } },
 ])
-function remove(item) {
-  selected.value = selected.value.filter(i => i.uri !== item.uri)
-}
-function alertSelect({ item }) {
+function onSelect({ item }) {
   window.alert(`Clicked on ${item.uri}`)
+}
+function onChange(ev) {
+  console.log("change", ev)
 }
 </script>
 
 <p>
-  Change layout:
-  <button v-for="v in ['tags','table','list']" :key="v" @click="view=v">{{v}}</button>
-  <label>
-    <input type="checkbox" v-model="orderable"> orderable
+  View:
+  <button v-for="v in ['tags','table','list']" :key="v" @click="view=v">{{ v }}</button>
+  <label style="margin-left: 10px;">
+    <input type="checkbox" v-model="orderable"> orderable (table only)
+  </label>
+  <label style="margin-left: 10px;">
+    <input type="checkbox" v-model="removable"> removable (list only)
   </label>
 </p>
 
-
 <item-selected
- :items="selected"
+ v-model:items="selected"
  :view="view"
  :orderable="orderable"
- @remove="remove"
- @select="alertSelect" />
+ :removable="removable"
+ @select="onSelect"
+ @change="onChange" />
 
+```vue
+<template>
+  <ItemSelected
+    v-model:items="selected"
+    :view="view"
+    :orderable="orderable"
+    :removable="removable"
+    @select="onSelect"
+    @change="onChange" />
+</template>
+
+<script setup>
+import { ref } from "vue"
+import { ItemSelected } from "jskos-vue"
+
+const view = ref("tags")
+const orderable = ref(true)
+const removable = ref(true)
+
+const selected = ref([
+  { uri: "urn:lang:en", prefLabel: { en: "English" }, notation: ["EN"] },
+  { uri: "urn:lang:de", prefLabel: { en: "German" }, notation: ["DE"] },
+  { uri: "urn:lang:it", prefLabel: { en: "Italian" }, notation: ["IT"] },
+])
+
+function onSelect({ item }) {
+  window.alert(`Clicked on ${item.uri}`)
+}
+
+function onChange(ev) {
+  console.log("change", ev)
+}
+</script>
+```
