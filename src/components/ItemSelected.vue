@@ -99,6 +99,7 @@ import { computed } from "vue"
 import Arrow from "./Arrow.vue"
 import ItemList from "./ItemList.vue"
 import ItemName from "./ItemName.vue"
+import RemoveIcon from "./RemoveIcon.vue"
 
 defineOptions({ name: "ItemSelected" })
 
