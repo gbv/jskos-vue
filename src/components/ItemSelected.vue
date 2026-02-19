@@ -2,7 +2,7 @@
   <div class="jskos-vue-itemSelected">
     <!-- TAGS -->
     <div
-      v-if="view === 'tags'"
+      v-if="view === 'tags' && itemsModel.length"
       class="jskos-vue-itemSelected-tags">
       <span
         v-for="(item, index) in items"
@@ -24,7 +24,7 @@
 
     <!-- TABLE -->
     <div
-      v-else-if="view === 'table'"
+      v-else-if="view === 'table' && itemsModel.length"
       class="jskos-vue-itemSelected-table">
       <div
         v-for="(item, index) in items"
@@ -74,7 +74,7 @@
 
     <!-- LIST (minimal) -->
     <ItemList
-      v-else-if="view === 'list'"
+      v-else-if="view === 'list' && itemsModel.length"
       class="jskos-vue-itemSelected-list"
       :items="itemsModel"
       :row-mode="false"
