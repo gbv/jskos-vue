@@ -2,7 +2,7 @@
 [![Test and build](https://github.com/gbv/jskos-vue/actions/workflows/test-and-build.yml/badge.svg)](https://github.com/gbv/jskos-vue/actions/workflows/test-and-build.yml)
 [![NPM package name](https://img.shields.io/badge/npm-jskos--vue-blue.svg)](https://www.npmjs.com/package/jskos-vue)
 
-> A suite of components and plugins for Vue 3 related to [JSKOS](https://gbv.github.io/jskos/jskos.html).
+> Vue 3 components and plugins for interaction with [JSKOS](https://gbv.github.io/jskos/jskos.html) data.
 
 ## Documentation
 

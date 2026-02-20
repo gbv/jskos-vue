@@ -8,6 +8,7 @@ export default defineConfig({
 
   base: process.env.BASE || "/",
   lang: "en-US",
+
   // TODO: Fix issues on our end with dark styles, then set this to `true`
   appearance: false,
 
