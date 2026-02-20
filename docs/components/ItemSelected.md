@@ -10,14 +10,11 @@ It supports three views:
 
 Uses [`ItemName`](./ItemName) to display items.
 
-## Model
+## Props and models
+ 
+- `modelValue` (array) selected items.
+   Use watch option `{ deep: true }` to get change events.
 
-`ItemSelected` uses **`v-model:items`** as its data source.
-## Props
-
-- `items` (array) - items to render
-  - default: `[]`
-  
 - `view` (string) - display mode: `"tags" | "table" | "list"`  
   - default: `"tags"`
   
@@ -27,9 +24,6 @@ Uses [`ItemName`](./ItemName) to display items.
 - `itemNameOptions` (object) - props forwarded to [`ItemName`](./ItemName)
   - default: `{ draggable: false }`
   - Field `draggable` is set to `false`, unless explicitly enabled
-
-
-  ### List removal toggle
 
 - `removable` (boolean) — if `true`, show a remove icon in `view="list"` (like Cocoda)  
   default: `false`
@@ -43,13 +37,6 @@ Uses [`ItemName`](./ItemName) to display items.
 - `select`  
   Emitted when the user clicks on an item
   Payload: `{ item }`
-
-- `change`  
-  Emitted when the selection changes via this component (remove or move).  
-  Payload:
-  
-  - remove: `{ type: "remove", item, index, items }`
-  - move: `{ type: "move", from, to, items }`
 
 ## CSS Variables
 
@@ -89,7 +76,7 @@ function onChange(ev) {
 </p>
 
 <item-selected
- v-model:items="selected"
+ v-model="selected"
  :view="view"
  :orderable="orderable"
  :removable="removable"
@@ -99,7 +86,7 @@ function onChange(ev) {
 ```vue
 <template>
   <ItemSelected
-    v-model:items="selected"
+    v-model="selected"
     :view="view"
     :orderable="orderable"
     :removable="removable"

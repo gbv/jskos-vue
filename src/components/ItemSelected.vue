@@ -2,7 +2,7 @@
   <div class="jskos-vue-itemSelected">
     <!-- TAGS -->
     <div
-      v-if="view === 'tags' && itemsModel.length"
+      v-if="view === 'tags' && items.length"
       class="jskos-vue-itemSelected-tags">
       <span
         v-for="(item, index) in items"
@@ -21,7 +21,7 @@
 
     <!-- TABLE -->
     <div
-      v-else-if="view === 'table' && itemsModel.length"
+      v-else-if="view === 'table' && items.length"
       class="jskos-vue-itemSelected-table">
       <div
         v-for="(item, index) in items"
@@ -68,9 +68,9 @@
 
     <!-- LIST (minimal) -->
     <ItemList
-      v-else-if="view === 'list' && itemsModel.length"
+      v-else-if="view === 'list' && items.length"
       class="jskos-vue-itemSelected-list"
-      :items="itemsModel"
+      :items="items"
       :row-mode="false"
       :item-name-options="listItemNameOptions"
       @select="onListSelect">
@@ -94,8 +94,7 @@ import RemoveIcon from "./RemoveIcon.vue"
 
 defineOptions({ name: "ItemSelected" })
 
-// items is the model (v-model:items)
-const itemsModel = defineModel("items", { type: Array, default: () => [] })
+const items = defineModel({ type: Array, default: () => [] })
 
 const props = defineProps({
   view: { type: String, default: "tags" }, // "tags" | "table" | "list"
@@ -106,7 +105,7 @@ const props = defineProps({
   removable: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(["select", "change"])
+const emit = defineEmits(["select"])
 
 const removableEffective = computed(() => props.removable || props.removeable)
 
@@ -139,9 +138,9 @@ function indexOfItem(target) {
   }
   const uri = target?.uri
   if (uri) {
-    return itemsModel.value.findIndex(i => i?.uri === uri)
+    return items.value.findIndex(i => i?.uri === uri)
   }
-  return itemsModel.value.indexOf(target)
+  return items.value.indexOf(target)
 }
 
 
@@ -150,27 +149,21 @@ function removeItem(item) {
   if (idx === -1) {
     return
   }
-
-  const removed = itemsModel.value[idx]
-  itemsModel.value.splice(idx, 1) // in-place
-
-  emit("change", { type: "remove", item: removed, index: idx, items: itemsModel.value })
+  items.value.splice(idx, 1) // in-place
 }
 
 function moveItem(from, to) {
-  if (from < 0 || from >= itemsModel.value.length) {
+  if (from < 0 || from >= items.value.length) {
     return
   }
-  if (to < 0 || to >= itemsModel.value.length) {
+  if (to < 0 || to >= items.value.length) {
     return
   }
   if (from === to) {
     return
   }
 
-  itemsModel.value.splice(to, 0, itemsModel.value.splice(from, 1)[0]) // in-place
-
-  emit("change", { type: "move", from, to, items: itemsModel.value })
+  items.value.splice(to, 0, items.value.splice(from, 1)[0]) // in-place
 }
 
 function onListSelect(ev) {

@@ -48,11 +48,10 @@
 
     <!-- Selected rendering delegated to ItemSelected -->
     <ItemSelected
-      v-model:items="selectedItems"
+      v-model="selectedItems"
       :view="selectedView"
       :orderable="orderable"
-      :removeable="true"
-      @change="onSelectedChange" />
+      :removeable="true" />
   </div>
 </template>
 
@@ -294,9 +293,11 @@ async function onSearchChange(query) {
   }
 }
 // Receive changes from ItemSelected (remove + move), forward them as v-model updates
-function onSelectedChange() {
-  emit("update:modelValue", dedupeByUri(selectedItems.value))
-}
+watch(selectedItems, () => {
+  emit("update:modelValue", selectedItems.value)
+  // TODO: make call dedupeByUri here to avoid recursion 
+  // dedupeByUri(selectedItems.value))
+}, { deep: true })
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>

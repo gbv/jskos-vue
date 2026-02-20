@@ -6,7 +6,7 @@ import ItemSelected from "../src/components/ItemSelected.vue"
 const stubs = {
   ItemName: {
     name: "ItemName",
-    props: ["item"],
+    props: ["modelValue"],
     emits: ["click"],
     template: `
       <span class="stub-itemName" @click="$emit('click')">
@@ -31,7 +31,7 @@ const stubs = {
   },
   ItemList: {
     name: "ItemList",
-    props: ["items"],
+    props: ["modelValue"],
     emits: ["select"],
     template: `
       <div class="stub-itemList">
@@ -100,7 +100,7 @@ test("ItemSelected: table view orderable moves items in-place and emits change",
     { uri: "urn:b" },
     { uri: "urn:c" },
   ])
-  const w = mountSelected({ items, view: "table", orderable: true })
+  const w = mountSelected({ "v-model": items, view: "table", orderable: true })
 
   // click "Move down" on first row
   const down = w.findAll("button[title=\"Move down\"]")
@@ -121,7 +121,7 @@ test("ItemSelected: table view orderable moves items in-place and emits change",
 
 test("ItemSelected: list view supports removable + emits select via ItemList", async () => {
   const items = reactive([{ uri: "urn:x" }, { uri: "urn:y" }])
-  const w = mountSelected({ items, view: "list", removable: true })
+  const w = mountSelected({ modelValue: items, view: "list", removable: true })
 
   // remove icons rendered via afterItem slot
   expect(w.findAll(".jskos-vue-removeIcon").length).toBe(2)
