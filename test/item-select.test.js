@@ -25,13 +25,13 @@ vi.mock("vue-multiselect", () => ({
   },
 }))
 
-// --- Mock ItemSelected: can emit update:items + change
+// --- Mock ItemSelected: DEFAULT v-model (modelValue / update:modelValue)
 vi.mock("../src/components/ItemSelected.vue", () => ({
-  // __esModule: true,
+  __esModule: true,
   default: {
     name: "ItemSelected",
-    props: ["items", "view", "orderable", "removeable"],
-    emits: ["update:items", "change"],
+    props: ["modelValue", "view", "orderable", "removeable"],
+    emits: ["update:modelValue"],
     template: `
       <div class="itemselected-stub">
         <button class="remove-first" @click="removeFirst">remove-first</button>
@@ -39,9 +39,8 @@ vi.mock("../src/components/ItemSelected.vue", () => ({
     `,
     methods: {
       removeFirst() {
-        const next = (this.items || []).slice(1)
-        this.$emit("update:items", next)
-        this.$emit("change", { type: "remove" })
+        const next = (this.modelValue || []).slice(1)
+        this.$emit("update:modelValue", next)
       },
     },
   },
@@ -59,7 +58,7 @@ test("adds local option and emits update:modelValue + select", async () => {
   await flushPromises()
 
   expect(w.emitted("update:modelValue")).toBeTruthy()
-  const update = w.emitted("update:modelValue")[0][0]
+  const update = w.emitted("update:modelValue").at(-1)[0] // take last (more robust)
   expect(update).toHaveLength(1)
   expect(update[0].uri).toBe("urn:lang:en")
   expect(update[0].__label).toBe("English")
@@ -76,13 +75,12 @@ test("dedupes by uri", async () => {
   await w.find(".pick0").trigger("click")
   await flushPromises()
 
-  const last =
-    w.emitted("update:modelValue")[w.emitted("update:modelValue").length - 1][0]
+  const last = w.emitted("update:modelValue").at(-1)[0]
   expect(last).toHaveLength(1)
   expect(last[0].uri).toBe("urn:lang:en")
 })
 
-test("forwards ItemSelected changes to update:modelValue", async () => {
+test("forwards ItemSelected v-model changes to update:modelValue", async () => {
   const w = mount(ItemSelect, {
     props: {
       modelValue: [
@@ -96,8 +94,7 @@ test("forwards ItemSelected changes to update:modelValue", async () => {
   await w.find(".remove-first").trigger("click")
   await flushPromises()
 
-  const last =
-    w.emitted("update:modelValue")[w.emitted("update:modelValue").length - 1][0]
+  const last = w.emitted("update:modelValue").at(-1)[0]
   expect(last).toHaveLength(1)
   expect(last[0].uri).toBe("urn:lang:de")
 })

@@ -80,7 +80,7 @@ Selected items are deduplicated by `uri` while preserving insertion order.
 
 Internally, `ItemSelect` binds its selection to `ItemSelected` via:
 
-- `v-model:items="selectedItems"`
+- `v-model="selectedItems"`
 
 This allows `ItemSelected` to **remove** items (all views) and **reorder** items (table view when `orderable=true`).
 

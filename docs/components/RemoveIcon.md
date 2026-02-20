@@ -4,9 +4,9 @@ Small button component showing a “×” remove icon.
 
 ## Props
 
-- `ariaLabel` (string) — aria-label for the button
-  default: localized label `remove`
-- `title` (string) — tooltip title with supplementary information
+- `ariaLabel` (string) — aria-label for the button.
+  default: [localized label](#localized-labels) `remove`
+- `title` (string) — tooltip title with supplementary information.
   default: same as ariaLabel
 
 ## Events
@@ -17,11 +17,11 @@ Small button component showing a “×” remove icon.
 
 ## CSS
 
-- Class: `.jskos-vue-removeIcon`
+- Class `.jskos-vue-removeIcon`
 
 ## Localized labels
 
-- `remove` has localization `"Remove"` (en) and `"Entfernen"` (de)
+- `remove` has localization in English (`"Remove"`) and German (`"Entfernen"`)
 
 ## Examples
 
