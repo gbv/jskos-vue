@@ -14,10 +14,7 @@
           v-bind="tagItemNameProps"
           @click="emit('select', { item })" />
         
-        <RemoveIcon
-          aria-label="Remove"
-          title="Remove"
-          @click.stop="removeItem(item)" />
+        <RemoveIcon @click.stop="removeItem(item)" />
 
       </span>
     </div>
@@ -63,9 +60,6 @@
 
             <RemoveIcon
               class="jskos-vue-itemSelected-actionBtn"
-              aria-label="Remove"
-              title="Remove"
-              color="black"
               @click.stop="removeItem(item)" />
           </div>
         </div>
@@ -85,9 +79,6 @@
         #afterItem="{ item }">
         <RemoveIcon
           class="jskos-vue-itemSelected-listRemove"
-          aria-label="Remove"
-          color="black"
-          title="Remove"
           @click.stop="removeItem(item)" />
       </template>
     </ItemList>
@@ -272,6 +263,6 @@ function onListSelect(ev) {
 }
 .jskos-vue-itemSelected-listRemove {
   opacity: 0.75;
-  margin-left: 6px;
+  margin-left: 0.5em;
 }
 </style>

@@ -2,25 +2,29 @@ import { test, expect } from "vitest"
 import { mount } from "@vue/test-utils"
 import RemoveIcon from "../src/components/RemoveIcon.vue"
 
-test("RemoveIcon: renders defaults and emits click", async () => {
+test("RemoveIcon: emits click", async () => {
   const w = mount(RemoveIcon)
-
   const btn = w.get("button.jskos-vue-removeIcon")
 
-  // defaults
-  expect(btn.attributes("aria-label")).toBe("Remove")
-  expect(btn.attributes("title")).toBe("Remove")
-
-  // click emit
   await btn.trigger("click")
   expect(w.emitted("click")).toBeTruthy()
   expect(w.emitted("click").length).toBe(1)
 })
 
-test("RemoveIcon: applies color style", () => {
-  const w = mount(RemoveIcon, { props: { color: "black" } })
-  const btn = w.get("button.jskos-vue-removeIcon")
+const tests = [
+  [{}, {"aria-label": "Remove", title: "Remove"}],
+  [{title: "xxx"}, {"aria-label": "Remove", title: "xxx"}],
+  [{ariaLabel: "yyy"}, {"aria-label": "yyy", title: "yyy"}],
+  [{ariaLabel: "a", title: "b"}, {"aria-label": "a", title: "b"}],
+  [{title: ""}, {"aria-label": "Remove", title: ""}],
+]
 
-  // inline style should include the color
-  expect(btn.attributes("style") || "").toContain("color: black")
-})
+for (let [props, result] of tests) {
+  test(`RemoveIcon: ${JSON.stringify(props)}`, () => {
+    const w = mount(RemoveIcon, { props })
+    const btn = w.get("button.jskos-vue-removeIcon")
+    
+    expect(btn.attributes("aria-label")).toBe(result["aria-label"])
+    expect(btn.attributes("title")).toBe(result["title"])
+  })
+}

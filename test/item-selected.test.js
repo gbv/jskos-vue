@@ -16,7 +16,7 @@ const stubs = {
   },
   RemoveIcon: {
     name: "RemoveIcon",
-    props: ["ariaLabel", "title", "color"],
+    props: ["ariaLabel", "title"],
     emits: ["click"],
     template: `
       <button class="jskos-vue-removeIcon" @click="$emit('click', $event)">

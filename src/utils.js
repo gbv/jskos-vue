@@ -163,16 +163,19 @@ export const messages = {
  */
 export function useLocale(messages={}) {
   const { $t, $i18n } = getCurrentInstance()?.appContext.config.globalProperties || {}
-    
+
   if ($t && $i18n?.locale) {
     const t = key => $t(key,
       ((messages[$i18n.locale] || [])[key] || key),
-      { missingWarn: false, fallbackWarn: false })
+      { missingWarn: false, fallbackWarn: false },
+    )
     const currentLanguage = computed(() => $i18n.locale)
     return { t, currentLanguage } // TODO: also support content language preferrence
   } else {
-    const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => messages[lang]) || "en")
-    const t = id => (messages[currentLanguage.value] || [])[id] || id
+    const currentLanguage = computed(() => jskos.languagePreference.getLanguages().find(lang => messages[lang]) || $i18n?.locale || "en")
+    const t = id => {
+      return (messages[currentLanguage.value] || [])[id] || id 
+    }
     return { t, currentLanguage }
   }
 }
