@@ -1,5 +1,6 @@
 {
   "name": "jskos-vue",
+  "description": "Vue 3 components and plugins for interaction with JSKOS data",
   "version": "0.3.19",
   "files": [
     "dist",
@@ -66,7 +67,6 @@
   },
   "author": "Stefan Peters <stefan.peters@gbv.de>",
   "license": "MIT",
-  "description": "A suite of components and plugins for Vue 3 related to JSKOS",
   "repository": {
     "type": "git",
     "url": "https://github.com/gbv/jskos-vue.git"

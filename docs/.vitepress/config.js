@@ -3,10 +3,12 @@ import fs from "node:fs"
 const docsDir = "docs"
 
 export default defineConfig({
+  title: "jskos-vue",
+  description: "Vue 3 components and plugins for interaction with JSKOS data",
+
   base: process.env.BASE || "/",
   lang: "en-US",
-  title: "jskos-vue",
-  description: "",
+
   // TODO: Fix issues on our end with dark styles, then set this to `true`
   appearance: false,
 
