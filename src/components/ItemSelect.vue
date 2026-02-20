@@ -312,4 +312,36 @@ watch(selectedItems, () => {
 .jskos-vue-itemSelect-noResult {
   opacity: 0.75;
 }
+
+/* Make vue-multiselect dropdown look like ItemSuggest */
+.jskos-vue-itemSelect .multiselect__content-wrapper {
+  background-color: var(--jskos-vue-itemSuggest-results-bgColor);
+  box-shadow: 0 2px 4px 0 var(--jskos-vue-itemSuggest-results-shadowColor);
+  z-index: var(--jskos-vue-itemSuggest-results-zIndex);
+}
+
+/* Highlight (hover/keyboard) */
+.jskos-vue-itemSelect .multiselect__option--highlight {
+  background: var(--jskos-vue-itemSuggest-selected-bgColor);
+  color: var(--jskos-vue-itemSuggest-selected-color);
+}
+
+/* Selected option */
+.jskos-vue-itemSelect .multiselect__option--selected {
+  background: var(--jskos-vue-itemSuggest-selected-bgColor);
+  color: var(--jskos-vue-itemSuggest-selected-color);
+}
+
+/* Selected + highlighted (some themes combine both) */
+.jskos-vue-itemSelect .multiselect__option--selected.multiselect__option--highlight {
+  background: var(--jskos-vue-itemSuggest-selected-bgColor);
+  color: var(--jskos-vue-itemSuggest-selected-color);
+}
+
+.jskos-vue-itemSelect .multiselect__option--highlight:after,
+.jskos-vue-itemSelect .multiselect__option--selected:after {
+  background: var(--jskos-vue-itemSuggest-selected-bgColor);
+  color: var(--jskos-vue-itemSuggest-selected-color);
+}
+
 </style>
