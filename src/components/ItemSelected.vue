@@ -69,9 +69,7 @@
     <!-- LIST (minimal) -->
     <ItemList
       v-else-if="view === 'list' && items.length"
-      class="jskos-vue-itemSelected-list"
       :items="items"
-      :row-mode="false"
       :item-name-options="listItemNameOptions"
       @select="onListSelect">
       <template
@@ -248,12 +246,6 @@ function onListSelect(ev) {
 }
 
 /* LIST */
-.jskos-vue-itemSelected-list {
-  border: 1px solid rgba(2, 6, 23, 0.12);
-  border-radius: 10px;
-  overflow: hidden;
-  padding: 12px;
-}
 .jskos-vue-itemSelected-listRemove {
   opacity: 0.75;
   margin-left: 0.5em;

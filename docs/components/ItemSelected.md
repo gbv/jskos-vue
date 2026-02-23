@@ -71,7 +71,7 @@ function onChange(ev) {
     <input type="checkbox" v-model="orderable"> orderable (table only)
   </label>
   <label style="margin-left: 10px;">
-    <input type="checkbox" v-model="removable"> removable (list only)
+    <input type="checkbox" v-model="removable"> removable
   </label>
 </p>
 
