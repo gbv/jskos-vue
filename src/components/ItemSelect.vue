@@ -1,34 +1,11 @@
 <template>
   <div class="jskos-vue-itemSelect">
-    <!-- Input: pick ONE item, then add to selected and reset -->
-    <Multiselect
-      v-model="picked"
-      :options="computedOptions"
-      :multiple="false"
-      :close-on-select="true"
-      :clear-on-select="true"
-      :preserve-search="true"
-      :internal-search="!search"
-      :loading="loading"
+    <!-- Typeahead dropdown (coming from ItemSuggest) -->
+    <ItemSuggest
+      ref="itemSuggest"
+      :search="searchForSuggest"
       :placeholder="placeholder"
-      label="__label"
-      track-by="uri"
-      @search-change="onSearchChange"
-      @select="onPick">
-      <template #option="{ option }">
-        <span>{{ option.__label }}</span>
-      </template>
-
-      <template #noOptions>
-        <span class="jskos-vue-itemSelect-noResult">
-          {{ search ? "Start typing…" : "No options." }}
-        </span>
-      </template>
-
-      <template #noResult>
-        <span class="jskos-vue-itemSelect-noResult">No results.</span>
-      </template>
-    </Multiselect>
+      @select="onSuggestSelect" />
 
     <!-- Optional picker: ConceptTree (browse & pick) -->
     <div
@@ -45,33 +22,25 @@
         @select="onTreeSelect"
         @open="onTreeOpen" />
     </div>
-
-    <!-- Selected rendering delegated to ItemSelected -->
-    <ItemSelected
-      v-model="selectedItems"
-      :view="selectedView"
-      :orderable="orderable"
-      :removeable="true" />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, nextTick, watch } from "vue"
-import Multiselect from "vue-multiselect"
-import ItemSelected from "./ItemSelected.vue"
+import { ref, nextTick, computed } from "vue"
+import ItemSuggest from "./ItemSuggest.vue"
 import ConceptTree from "./ConceptTree.vue"
 
 defineOptions({ name: "ItemSelect" })
 
 const props = defineProps({
-  // Selected items (JSKOS-like objects, or languages, etc.)
-  modelValue: { type: Array, default: () => [] },
-
   // Local options (for small sets like languages)
   options: { type: Array, default: () => [] },
 
   // Remote search returning OpenSearch Suggest: [q, labels[], desc[], uris[]]
+  // (Same contract as ItemSuggest expects.)
   search: { type: Function, default: null },
+
+  // Minimum query length before searching
   minChars: { type: Number, default: 1 },
 
   // Optional ConceptTree picker
@@ -79,48 +48,28 @@ const props = defineProps({
   treeConcepts: { type: Array, default: () => [] }, // top concepts
   treeLoadNarrower: { type: Function, default: null },
 
+  // Optional: resolve a URI into a full item object if it wasn't in the suggestion cache
+  // resolve: async (uri) => concept/item
+  resolve: { type: Function, default: null },
+
   placeholder: { type: String, default: "Search…" },
-
-  // tags | list | table (rendered by ItemSelected)
-  selectedView: { type: String, default: "tags" },
-  orderable: { type: Boolean, default: false },
-
 })
-const emit = defineEmits(["update:modelValue", "select"])
 
-const picked = ref(null)
-const loading = ref(false)
-const pending = ref(null)
-const remoteOptions = ref([])
-const treeSelected = ref(null) // highlighted/active concept in ConceptTree
+const emit = defineEmits(["select"])
+
 const conceptTree = ref(null)
+const itemSuggest = ref(null)
+const treeSelected = ref(null) // highlighted/active concept in ConceptTree
 
-// array passed to ItemSelected 
-const selectedItems = ref([])
+// Cache last suggestion items by URI so we can emit full objects, not only { uri }
+const cacheByUri = ref(Object.create(null))
 
-// Keep selectedItems synced with incoming v-model (normalize + dedupe)
-// Use splice so the array identity stays stable.
-watch(
-  () => props.modelValue,
-  (val) => {
-    const next = dedupeByUri(val || [])
-    selectedItems.value.splice(0, selectedItems.value.length, ...next)
-  },
-  { immediate: true },
-)
-
-const computedOptions = computed(() => {
-  const list = props.search ? remoteOptions.value : (props.options || [])
-  return list.map(normalize).filter(Boolean)
-})
-
-// Extract DDC notation from URI if possible, TODO what about other schemes, i.e. ILC? Limitation: DDC only
+// --- helpers (same normalization as before) ---
 function notationFromUri(uri) {
   const m = (uri || "").match(/\/class\/([^/]+)\//)
   return m ? decodeURIComponent(m[1]) : null
 }
-    
-// Ensure every item has __label, and add notation when missing (DDC)
+
 function normalize(item) {
   if (!item?.uri) {
     return null
@@ -158,86 +107,133 @@ function normalize(item) {
   }
 }
 
-    
-// Dedupe items by `uri` while keeping the original insertion order.
-// We run `normalize()` so every returned item has a consistent shape
-// (e.g. ensures `__label` exists, drops invalid items).
-function dedupeByUri(items) {
-  const seen = new Set()
-  const out = []
-
-  for (const it of items || []) {
-    // Normalize first: ensures shape + label, may return null if invalid.
-    const n = normalize(it)
-
-    // Skip if normalization failed or if there's no URI.
-    if (!n?.uri) {
-      continue
-    }
-
-    // Skip duplicates: if we already saw this URI, don't add it again.
-    if (seen.has(n.uri)) {
-      continue
-    }
-
-    // First time we see this URI: remember it and keep the item.
-    seen.add(n.uri)
-    out.push(n)
+// Build an OpenSearch Suggest response from local options.
+// This makes ItemSuggest usable for languages etc.
+function localOptionsToSuggest(q) {
+  const query = (q || "").trim()
+  if (!query || query.length < props.minChars) {
+    return [query, [], [], []]
   }
 
-  return out
+  const qLower = query.toLowerCase()
+
+  const matches = (props.options || [])
+    .map(normalize)
+    .filter(Boolean)
+    .filter((it) => {
+      const label = it.__label || ""
+      return label.toLowerCase().includes(qLower) || it.uri.toLowerCase().includes(qLower)
+    })
+    .slice(0, 50)
+
+  // Cache them so on select(uri) we can return full objects.
+  const nextCache = Object.create(null)
+  for (const it of matches) {
+    nextCache[it.uri] = it
+  }
+  cacheByUri.value = nextCache
+
+  return [
+    query,
+    matches.map((it) => it.__label),
+    matches.map(() => ""), // no descriptions
+    matches.map((it) => it.uri),
+  ]
 }
 
-async function syncTreeTo(concept) {
-  // Only if ConceptTree is shown and mounted
-  if (!props.showTree || !conceptTree.value) {
-    return
+// Wrap remote search so we can also populate cacheByUri (labels+uris -> normalized objects)
+function remoteSearchWrapped(q) {
+  const query = (q || "").trim()
+  if (!query || query.length < props.minChars) {
+    const p = Promise.resolve([query, [], [], []])
+    p.cancel = () => {}
+    return p
   }
 
-  // Highlight this concept in the tree
+  const p0 = props.search(query)
+
+  const p = Promise.resolve(p0).then((os) => {
+    const labels = os?.[1] || []
+    const uris = os?.[3] || []
+
+    const nextCache = Object.create(null)
+    for (let i = 0; i < uris.length; i++) {
+      const uri = uris[i]
+      const label = labels[i] || uri
+      const it = normalize({ uri, __label: label })
+      if (it) {
+        nextCache[uri] = it
+      }
+    }
+    cacheByUri.value = nextCache
+
+    return os
+  })
+
+  // Preserve cancel if the underlying promise supports it
+  p.cancel = p0?.cancel
+  return p
+}
+
+// This is the function we pass to ItemSuggest.
+const searchForSuggest = computed(() => {
+  return props.search ? remoteSearchWrapped : localOptionsToSuggest
+})
+
+// --- tree sync ---
+async function syncTreeTo(concept) {
+  if (!props.showTree || !conceptTree.value || !concept?.uri) {
+    return
+  }
   treeSelected.value = concept
-
-  // Wait for DOM update, then ask ConceptTree to reveal it
   await nextTick()
-
-  // IMPORTANT: select=false because ItemSelect manages selection (array),
-  // ConceptTree's modelValue is just for highlight/scroll here.
   await conceptTree.value.navigateToUri(concept, {
     select: false,
     onlyIfNotInView: true,
   })
 }
 
-// Add selected item to v-model,
-async function onPick(item) {
-  const concept = normalize(item)
-  if (!concept) {
+// Resolve a selected URI to an item object (cache -> resolve() -> fallback {uri})
+async function itemFromUri(uri) {
+  const cached = cacheByUri.value?.[uri]
+  if (cached) {
+    return cached
+  }
+
+  if (props.resolve) {
+    try {
+      const full = await props.resolve(uri)
+      return normalize(full) || { uri }
+    } catch {
+      return { uri }
+    }
+  }
+
+  return { uri }
+}
+
+// --- event handlers ---
+async function onSuggestSelect(ev) {
+  const uri = ev?.uri
+  if (!uri) {
     return
   }
 
-  // Add to selectedItems
-  const exists = selectedItems.value.some((i) => i?.uri === concept.uri)
-  if (!exists) {
-    selectedItems.value.push(concept)
-  }
-
-  // Emit outward v-model update (keep it normalized/deduped)
-  emit("update:modelValue", dedupeByUri(selectedItems.value))
+  const concept = await itemFromUri(uri)
   emit("select", concept)
 
-  // Reset input so it behaves like "add tag"
-  picked.value = null
-
-  // Reveal in the tree (open path + scroll)
   await syncTreeTo(concept)
 }
 
-
-function onTreeSelect(ev) {
-  if (ev?.item) {
-    treeSelected.value = ev.item
-    onPick(ev.item)
+// ConceptTree emits { item, row, ... }
+async function onTreeSelect(ev) {
+  if (!ev?.item) {
+    return
   }
+
+  const concept = normalize(ev.item) || ev.item
+  treeSelected.value = concept
+  emit("select", concept)
 }
 
 function onTreeOpen(concept) {
@@ -246,61 +242,12 @@ function onTreeOpen(concept) {
   }
 }
 
-// Convert OpenSearch Suggest to options
-function openSearchToOptions(os) {
-  const labels = os?.[1] || []
-  const uris = os?.[3] || []
-  return uris
-    .map((uri, i) => normalize({ uri, __label: labels[i] || uri }))
-    .filter(Boolean)
-}
-
-// Remote search (only if search prop is provided)
-async function onSearchChange(query) {
-  if (!props.search) {
-    return
-  }
-
-  // Abort if query is too short
-  const q = (query ?? "").trim()
-  if (q.length < props.minChars) {
-    remoteOptions.value = []
-    return
-  }
-
-  // Start new search
-  const p = (pending.value = props.search(q))
-  loading.value = true
-
-  try {
-    const result = await p
-    // Ignore if a newer request started while we were waiting
-    if (pending.value !== p) {
-      return
-    }
-
-    remoteOptions.value = openSearchToOptions(result)
-  } catch (err) {
-    // If this request is still the latest, clear options on error
-    if (pending.value === p) {
-      remoteOptions.value = []
-    }
-  } finally {
-    if (pending.value === p) {
-      loading.value = false
-      pending.value = null
-    }
-  }
-}
-// Receive changes from ItemSelected (remove + move), forward them as v-model updates
-watch(selectedItems, () => {
-  emit("update:modelValue", selectedItems.value)
-  // TODO: make call dedupeByUri here to avoid recursion 
-  // dedupeByUri(selectedItems.value))
-}, { deep: true })
+defineExpose({
+  focus() {
+    itemSuggest.value?.focus?.()
+  },
+})
 </script>
-
-<style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
 <style>
 .jskos-vue-itemSelect {
@@ -308,40 +255,4 @@ watch(selectedItems, () => {
   flex-direction: column;
   gap: 0.5rem;
 }
-
-.jskos-vue-itemSelect-noResult {
-  opacity: 0.75;
-}
-
-/* Make vue-multiselect dropdown look like ItemSuggest */
-.jskos-vue-itemSelect .multiselect__content-wrapper {
-  background-color: var(--jskos-vue-itemSuggest-results-bgColor);
-  box-shadow: 0 2px 4px 0 var(--jskos-vue-itemSuggest-results-shadowColor);
-  z-index: var(--jskos-vue-itemSuggest-results-zIndex);
-}
-
-/* Highlight (hover/keyboard) */
-.jskos-vue-itemSelect .multiselect__option--highlight {
-  background: var(--jskos-vue-itemSuggest-selected-bgColor);
-  color: var(--jskos-vue-itemSuggest-selected-color);
-}
-
-/* Selected option */
-.jskos-vue-itemSelect .multiselect__option--selected {
-  background: var(--jskos-vue-itemSuggest-selected-bgColor);
-  color: var(--jskos-vue-itemSuggest-selected-color);
-}
-
-/* Selected + highlighted (some themes combine both) */
-.jskos-vue-itemSelect .multiselect__option--selected.multiselect__option--highlight {
-  background: var(--jskos-vue-itemSuggest-selected-bgColor);
-  color: var(--jskos-vue-itemSuggest-selected-color);
-}
-
-.jskos-vue-itemSelect .multiselect__option--highlight:after,
-.jskos-vue-itemSelect .multiselect__option--selected:after {
-  background: var(--jskos-vue-itemSuggest-selected-bgColor);
-  color: var(--jskos-vue-itemSuggest-selected-color);
-}
-
 </style>

@@ -267,54 +267,94 @@
     :hierarchy="false" />
   <hr>  
 
-  <h2>ItemSelect DDC concepts from API (typeahead / suggest )</h2>
+  <h2>ItemSelect DDC concepts from API (typeahead / suggest)</h2>
+
   <h3>Tags</h3>
+
   <p
     v-if="examples.conceptTree.scheme"
     style="padding-bottom: 20px;">
+    <label>DDC with tag view</label>
+
     <item-select
-      v-if="examples.conceptTree.scheme"
-      v-model="examples.itemSelect.selected"
-      :search="utils.cdkRegistryToSuggestFunction(examples.conceptTree.scheme._registry, { scheme: examples.conceptTree.scheme })"
-      label="DDC with tag view"
+      :search="utils.cdkRegistryToSuggestFunction(
+        examples.conceptTree.scheme._registry,
+        { scheme: examples.conceptTree.scheme }
+      )"
       placeholder="Search DDC concepts…"
-      selected-view="tags" />
+      @select="addSelected" />
+
+    <item-selected
+      v-model="examples.itemSelect.selected"
+      view="tags"
+      removable />
   </p>
   <h3>Table</h3>
-  <item-select
-    v-if="examples.conceptTree.scheme"
-    v-model="examples.itemSelect.selected"
-    :search="utils.cdkRegistryToSuggestFunction(examples.conceptTree.scheme._registry, { scheme: examples.conceptTree.scheme })"
-    label="DDC with table view"
-    placeholder="Search DDC concepts…"
-    orderable
-    selected-view="table" />
+
+  <p v-if="examples.conceptTree.scheme">
+    <label>DDC with table view</label>
+
+    <item-select
+      :search="utils.cdkRegistryToSuggestFunction(
+        examples.conceptTree.scheme._registry,
+        { scheme: examples.conceptTree.scheme }
+      )"
+      placeholder="Search DDC concepts…"
+      @select="addSelected" />
+
+    <item-selected
+      v-model="examples.itemSelect.selected"
+      view="table"
+      :orderable="true"
+      removable />
+  </p>
   <h3>List</h3>
-  <item-select
-    v-if="examples.conceptTree.scheme"
-    v-model="examples.itemSelect.selected"
-    :search="utils.cdkRegistryToSuggestFunction(examples.conceptTree.scheme._registry, { scheme: examples.conceptTree.scheme })"
-    label="DDC with list view"
-    placeholder="Search DDC concepts…"
-    selected-view="list" />
+
+  <p v-if="examples.conceptTree.scheme">
+    <label>DDC with list view</label>
+
+    <item-select
+      :search="utils.cdkRegistryToSuggestFunction(
+        examples.conceptTree.scheme._registry,
+        { scheme: examples.conceptTree.scheme }
+      )"
+      placeholder="Search DDC concepts…"
+      @select="addSelected" />
+
+    <item-selected
+      v-model="examples.itemSelect.selected"
+      view="list"
+      removable />
+  </p>
 
   <h2>ItemSelect DDC concepts from API (typeahead / suggest ) and conceptTree browsing UX</h2>
   <h3>Table</h3>
+
   <p
-    v-if="examples.conceptTree.scheme"
+    v-if="examples.conceptTree.scheme && examples.conceptTree.concepts"
     style="padding-bottom: 20px;">
+    <label>DDC with table view + browsing</label>
+
+    <!-- Select ONE item via typeahead and/or tree -->
     <item-select
-      v-if="examples.conceptTree.scheme"
-      v-model="examples.itemSelect.selected"
-      :search="utils.cdkRegistryToSuggestFunction(examples.conceptTree.scheme._registry, { scheme: examples.conceptTree.scheme })"
-      label="DDC with tag view"
+      :search="utils.cdkRegistryToSuggestFunction(
+        examples.conceptTree.scheme._registry,
+        { scheme: examples.conceptTree.scheme }
+      )"
       placeholder="Search DDC concepts…"
-      orderable
-      selected-view="table"
       :show-tree="true"
       :tree-concepts="examples.conceptTree.concepts"
-      :tree-load-narrower="examples.conceptTree.loadNarrower" />
+      :tree-load-narrower="examples.conceptTree.loadNarrower"
+      @select="addSelected" />
+
+    <!-- Render selected items separately -->
+    <item-selected
+      v-model="examples.itemSelect.selected"
+      view="table"
+      orderable
+      removeable />
   </p>
+
   <p>
     Loading indicator:
     <loading-indicator size="sm" />
@@ -371,6 +411,16 @@ ItemName.addNotationPlugin((notation, { item }) => {
 Array.prototype.move = function(from, to) {
   this.splice(to, 0, this.splice(from, 1)[0])
   return this
+}
+
+function addSelected(item) {
+  if (!item?.uri) {
+    return
+  }
+  const exists = examples.itemSelect.selected.some((i) => i?.uri === item.uri)
+  if (!exists) {
+    examples.itemSelect.selected.push(item)
+  }
 }
 
 const registry = cdk.initializeRegistry({
