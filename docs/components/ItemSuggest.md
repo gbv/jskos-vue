@@ -136,15 +136,15 @@ const searchPokemon = async (query) => {
 
 ### Search for concepts inside a concept scheme
 
-This example uses the [coli-conc API](https://coli-conc.gbv.de/api/) via [cocoda-sdk](https://github.com/gbv/cocoda-sdk) and the [cdkRegistryToSuggestFunction helper](../utilities/cdkRegistryToSuggestFunction) to search for concept inside German Dewey Decimal Classification (DDC, licensed by [OCLC](https://www.oclc.org/) under CC BY-NC-ND 3.0).
+This example uses the [coli-conc API](https://coli-conc.gbv.de/api/) via [cocoda-sdk](https://github.com/gbv/cocoda-sdk) to search for concept inside German Dewey Decimal Classification (DDC, licensed by [OCLC](https://www.oclc.org/) under CC BY-NC-ND 3.0).
 
 <item-suggest
-  :search="utils.cdkRegistryToSuggestFunction(registry, { scheme })" />
+  :search="search => registry.suggest({ search, scheme })" />
 
 ```vue
 <template>
   <item-suggest
-    :search="utils.cdkRegistryToSuggestFunction(registry, { scheme })" />
+    :search="search => registry.suggest({ search, scheme })" />
 </template>
 
 <script setup>
@@ -173,15 +173,13 @@ const scheme = {
 
 ### Search for schemes in BARTOC
 
-This example uses the [BARTOC API](https://bartoc.org) via [cocoda-sdk](https://github.com/gbv/cocoda-sdk) and the [cdkRegistryToSuggestFunction helper](../utilities/cdkRegistryToSuggestFunction) to search for vocabularies.
+This example uses the [BARTOC API](https://bartoc.org) via [cocoda-sdk](https://github.com/gbv/cocoda-sdk) to search for vocabularies.
 
-<item-suggest
-  :search="utils.cdkRegistryToSuggestFunction(bartocRegistry, { voc: true })" />
+<item-suggest :search="search => bartocRegistry.vocSuggest({ search })" />
 
 ```vue
 <template>
-  <item-suggest
-    :search="utils.cdkRegistryToSuggestFunction(bartocRegistry, { voc: true })" />
+  <item-suggest :search="search => bartocRegistry.vocSuggest({ search })" />
 </template>
 
 <script setup>

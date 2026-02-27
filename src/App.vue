@@ -190,7 +190,7 @@
     <item-suggest
       v-if="examples.conceptTree.scheme"
       ref="itemSuggest"
-      :search="utils.cdkRegistryToSuggestFunction(examples.conceptTree.scheme._registry, { scheme: examples.conceptTree.scheme })"
+      :search="search => examples.conceptTree.scheme._registry.suggest({ search, scheme: examples.conceptTree.scheme })"
       @select="examples.itemSuggest.setSelected($event, examples.conceptTree.scheme._registry)" />
   </p>
   <p>
@@ -277,10 +277,7 @@
     <label>DDC with tag view</label>
 
     <item-select
-      :search="utils.cdkRegistryToSuggestFunction(
-        examples.conceptTree.scheme._registry,
-        { scheme: examples.conceptTree.scheme }
-      )"
+      :search="search => examples.conceptTree.scheme._registry.suggest({ search, scheme: examples.conceptTree.scheme })"
       placeholder="Search DDC concepts…"
       @select="addSelected" />
 
@@ -295,10 +292,7 @@
     <label>DDC with table view</label>
 
     <item-select
-      :search="utils.cdkRegistryToSuggestFunction(
-        examples.conceptTree.scheme._registry,
-        { scheme: examples.conceptTree.scheme }
-      )"
+      :search="search => examples.conceptTree.scheme._registry.suggest({ search, scheme: examples.conceptTree.scheme })"
       placeholder="Search DDC concepts…"
       @select="addSelected" />
 
@@ -314,10 +308,7 @@
     <label>DDC with list view</label>
 
     <item-select
-      :search="utils.cdkRegistryToSuggestFunction(
-        examples.conceptTree.scheme._registry,
-        { scheme: examples.conceptTree.scheme }
-      )"
+      :search="search => examples.conceptTree.scheme._registry.suggest({ search, scheme: examples.conceptTree.scheme })"
       placeholder="Search DDC concepts…"
       @select="addSelected" />
 
@@ -337,10 +328,7 @@
 
     <!-- Select ONE item via typeahead and/or tree -->
     <item-select
-      :search="utils.cdkRegistryToSuggestFunction(
-        examples.conceptTree.scheme._registry,
-        { scheme: examples.conceptTree.scheme }
-      )"
+      :search="search => examples.conceptTree.scheme._registry.suggest({ search, scheme: examples.conceptTree.scheme })"
       placeholder="Search DDC concepts…"
       :show-tree="true"
       :tree-concepts="examples.conceptTree.concepts"
@@ -378,7 +366,6 @@
 <script setup>
 import { reactive } from "vue"
 import * as jskos from "jskos-tools"
-import * as utils from "./utils"
 import { Tab } from "jskos-vue-tabs"
 import { cdk} from "cocoda-sdk"
 // Add ItemName plugin

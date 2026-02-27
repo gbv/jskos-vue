@@ -30,7 +30,7 @@ If you want to show/edit a list, combine it with [`ItemSelected`](./ItemSelected
   
 - `treeLoadNarrower` *(function)* — called when a tree node is opened; should load `narrower`.  
   default: `null`
-  
+ 
 
 ### Optional resolving
 
@@ -101,7 +101,6 @@ import ItemSelected from "../../src/components/ItemSelected.vue"
 import { ref, reactive, onMounted } from "vue"
 import * as jskos from "jskos-tools"
 import { cdk } from "cocoda-sdk"
-import * as utils from "../../src/utils.js"
 // Local options (languages)
 const languageOptions = [
   { uri: "urn:lang:en", prefLabel: { en: "English" } },
@@ -125,7 +124,8 @@ onMounted(async () => {
   state.scheme = (await state.registry.getSchemes({ params: { uri: "http://bartoc.org/en/node/241" } }))[0]
   state.top = jskos.sortConcepts(await state.scheme._getTop())
 })
-const suggest = (q) => utils.cdkRegistryToSuggestFunction(state.scheme._registry, { scheme: state.scheme })(q)
+const suggest = async search => state.scheme._registry.suggest({ search, scheme:state.scheme })
+
 async function loadNarrower(concept) {
   if (concept.narrower && !concept.narrower.includes(null)) return
   concept.narrower = jskos.sortConcepts(await concept._getNarrower())
