@@ -25,11 +25,8 @@ If you want to show/edit a list, combine it with [`ItemSelected`](./ItemSelected
 
 ### ConceptTree integration
 
-- `showTree` *(boolean)* — show the `ConceptTree` browser below the input.  
-  default: `false`
-  
-- `treeConcepts` *(array)* — top concepts for the tree.  
-  default: `[]`
+- `treeConcepts` *(array)* — top concepts for the `ConceptTree` browser below the input.  
+  default: `[]` (no tree is shown for empty array)
   
 - `treeLoadNarrower` *(function)* — called when a tree node is opened; should load `narrower`.  
   default: `null`
@@ -74,7 +71,7 @@ a full object when available. If the URI is not in the cache and you provided `r
 
 ### Tree sync
 
-When `showTree=true`, after selecting via typeahead the tree is synced via
+After selecting via typeahead the tree is synced via
 `conceptTree.navigateToUri(concept, { select: false })` (best effort).
 
 ---
@@ -91,9 +88,8 @@ Via component ref (`ref="itemSelect"`):
 
 - `.jskos-vue-itemSelect`
 - `.jskos-vue-itemSelect-tree`
-- `.jskos-vue-itemSelect-subtitle`
 
-(The dropdown styling comes from `ItemSuggest`.)
+See `ItemSuggest` for styling of dropdown and `ConceptTree` for styling of tree.
 
 ---
 

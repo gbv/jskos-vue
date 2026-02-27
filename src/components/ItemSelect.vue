@@ -9,13 +9,17 @@
 
     <!-- Optional picker: ConceptTree (browse & pick) -->
     <div
-      v-if="showTree && treeConcepts && treeConcepts.length"
+      v-if="treeConcepts?.length"
       class="jskos-vue-itemSelect-tree">
-      <div class="jskos-vue-itemSelect-subtitle">
-        Browse
-      </div>
+      <button
+        type="button"
+        @click="treeCollapsed = !treeCollapsed">
+        <arrow :direction="treeCollapsed ? 'right' : 'down'" />
+        Hierarchy
+      </button>
 
       <ConceptTree
+        v-if="!treeCollapsed"
         ref="conceptTree"
         :concepts="treeConcepts"
         :model-value="treeSelected"
@@ -27,6 +31,7 @@
 
 <script setup>
 import { ref, nextTick, computed } from "vue"
+import Arrow from "./Arrow.vue"
 import ItemSuggest from "./ItemSuggest.vue"
 import ConceptTree from "./ConceptTree.vue"
 
@@ -44,8 +49,7 @@ const props = defineProps({
   minChars: { type: Number, default: 1 },
 
   // Optional ConceptTree picker
-  showTree: { type: Boolean, default: false },
-  treeConcepts: { type: Array, default: () => [] }, // top concepts
+  treeConcepts: { type: Array, default: () => [] },
   treeLoadNarrower: { type: Function, default: null },
 
   // Optional: resolve a URI into a full item object if it wasn't in the suggestion cache
@@ -60,6 +64,7 @@ const emit = defineEmits(["select"])
 const conceptTree = ref(null)
 const itemSuggest = ref(null)
 const treeSelected = ref(null) // highlighted/active concept in ConceptTree
+const treeCollapsed = ref(false)
 
 // Cache last suggestion items by URI so we can emit full objects, not only { uri }
 const cacheByUri = ref(Object.create(null))
@@ -182,7 +187,7 @@ const searchForSuggest = computed(() => {
 
 // --- tree sync ---
 async function syncTreeTo(concept) {
-  if (!props.showTree || !conceptTree.value || !concept?.uri) {
+  if (!conceptTree.value || !concept?.uri) {
     return
   }
   treeSelected.value = concept
@@ -254,5 +259,12 @@ defineExpose({
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+.jskos-vue-itemSelect-tree > button {
+  border: 0;
+  background: transparent;
+  font-size: 100%;
+  margin: 0;
+  padding: 0;
 }
 </style>

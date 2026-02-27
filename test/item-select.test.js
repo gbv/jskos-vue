@@ -42,7 +42,7 @@ test("emits select when an option is picked", async () => {
 
 })
 
-test("calls ConceptTree.navigateToUri after picking (showTree=true)", async () => {
+test("calls ConceptTree.navigateToUri after picking", async () => {
   const navigateSpy = vi.fn(async () => true)
 
   const ConceptTreeStub = {
@@ -57,7 +57,6 @@ test("calls ConceptTree.navigateToUri after picking (showTree=true)", async () =
   const w = mount(ItemSelect, {
     props: {
       options: languageOptions,
-      showTree: true,
       treeConcepts: [{ uri: "urn:top" }], // must be non-empty to render the tree
     },
     global: {
