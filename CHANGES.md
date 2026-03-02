@@ -1,3 +1,12 @@
+## 0.4.0
+
+- Add ItemSelect / ItemSelected / RemoveIcon components. (#4)
+- Add component tests. (#25)
+- Update Vue components to Composition API. (#22)
+- Support and document usage of jskos-vue with Vue I18n. (#24)
+- Docs and examples updated.
+- Update dependencies.
+
 ## 0.3.19
 
 - Update dependencies and release workflow
