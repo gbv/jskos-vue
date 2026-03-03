@@ -146,7 +146,6 @@ const resolveConcept = async (uri) => (await state.scheme._registry.getConcepts(
   :search="suggest"
   :resolve="resolveConcept"
   placeholder="Search DDC…"
-  :show-tree="true"
   :tree-concepts="state.top"
   :tree-load-narrower="loadNarrower"
   @select="(item) => addUnique(state.selected, item)" />

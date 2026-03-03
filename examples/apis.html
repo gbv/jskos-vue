@@ -42,7 +42,7 @@
 <body>
   <div id="app">
     <h2>Registry</h2>
-    <p>Where and how to look up terminology data from</p>
+    <p>Where and how to look up scheme data from</p>
     <form id="api-form">
       <label for="endpoint">Endpoint</label>
       <input id="endpoint" type="url" v-model.lazy="endpoint" placeholder="API endpoint URL" />
@@ -56,9 +56,19 @@
     </form>
     <div v-if="registry">
       <h2>Terminology</h2>
-      <div v-if="terminology">
-        <item-name :item="terminology" @click="terminology=null"/>
-        TODO:  ItemSelect via registry.suggest, registry.getTop, .getNarrower 
+      <div v-if="scheme">
+        <item-name :item="scheme" @click="scheme=null"></item-name>
+        <hr>
+        <item-details v-if="concept" :item="concept"></item-details>
+        <hr>
+        <!-- TODO: See <https://github.com/gbv/jskos-vue/issues/38> -->
+        <item-select placeholder="Search in scheme…"
+          :search="suggestConcept"
+          :resolve="resolveConcept"
+          :tree-concepts="topConcepts"
+          :tree-load-narrower="loadNarrower"
+          @select="concept = $event"
+          ></item-select>
       </div>
       <!-- TODO: if registry does not support vocSuggest: provide full list of schemes -->
       <item-suggest v-else :search="search => registry.vocSuggest({ search })" @select="updateTerminology" />
@@ -69,6 +79,7 @@
     addAllProviders()
     import { createApp } from "vue"
     import * as JskosVue from "jskos-vue"
+    import * as jskos from "jskos-tools"
 
     // TODO: move to cocoda-sdk library and add better names
     const apiTypes = Object.values(cdk.providers)
@@ -77,18 +88,20 @@
     createApp({
       data() {
         const params = new URLSearchParams(window.location.search)
-        const uri = params.get("terminology") || ""        
+        const uri = params.get("scheme") || ""        
         return {
           api: params.get("api") || "",
           endpoint: params.get("endpoint") || "",
           registry: null,
-          terminology: uri ? { uri } : null,
+          scheme: uri ? { uri } : null,
+          concept: null,
+          topConcepts: null,
           apiTypes
         }
       },
       mounted() { 
         this.updateRegistry()
-        if (this.terminology) {
+        if (this.scheme) {
           this.loadTerminology()
         }
       },
@@ -97,7 +110,7 @@
           const query = {}
           if (this.api) query.api = this.api
           if (this.endpoint) query.endpoint = this.endpoint
-          if (this.terminology?.uri) query.terminology = this.terminology.uri
+          if (this.scheme?.uri) query.scheme = this.scheme.uri
           return query
         },
         updateQuery() {
@@ -110,20 +123,30 @@
             ? cdk.initializeRegistry({ api: this.api, endpoint: this.endpoint }) : null
         },
         loadTerminology() {
-          if (this.terminology?.uri && this.registry) {
-            const app = this
-            this.registry.getSchemes({ params: { uri: this.terminology.uri } })
-              .then(res => {
-                console.log(res)
-                app.terminology = res[0] || app.terminology
-              })
+          if (this.scheme?.uri && this.registry) {
+            return this.registry.getSchemes({ params: { uri: this.scheme.uri } })
+              .then(res => this.scheme = res[0] || this.scheme)
           }
         },
-        updateTerminology(terminology) {
-          this.terminology = terminology
+        updateTerminology(scheme) {
+          this.scheme = scheme
           this.updateQuery()          
-          this.loadTerminology()
-        }
+          this.loadTerminology()?.then(() => this.loadTop())
+        },
+        async loadTop() {
+          this.topConcepts = jskos.sortConcepts(await this.scheme?._getTop())
+        },
+        async suggestConcept(search) {
+          return this.registry?.suggest({ search, scheme: this.scheme })
+        },
+        async resolveConcept(uri) {
+          return (await this.scheme?._registry?.getConcepts({ concepts: [{ uri }] }))[0]
+        },
+        async loadNarrower(concept) {
+          if (!concept.narrower || concept?.narrower.includes(null)) {
+            concept.narrower = jskos.sortConcepts(await concept._getNarrower())
+          }
+        },
       },
       watch: {
         api() { this.updateRegistry() },
