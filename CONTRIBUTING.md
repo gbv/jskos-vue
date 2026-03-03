@@ -6,11 +6,12 @@ To start contributing please make sure you have a [GitHub account](https://githu
 
 ## Development
 
-Please work on the `dev` branch during development (or better yet, develop in a feature branch and merge into `dev` when ready).
+Please work on the `dev` branch during development or better yet, work in a feature branch and merge into `dev` when ready.
 
 ```bash
 git clone https://github.com/gbv/jskos-vue.git
 cd jskos-vue
+git checkout dev
 npm install
 ```
 
@@ -38,8 +39,6 @@ import { reactive } from "vue"
 ```
 
 For the code block that shows users how to replicate the example, please replace `import { ItemDetails } from "../../src/components"` with `import { ItemDetails } from "jskos-vue"`. Also, the template part of the example needs to be enclosed in a `<template>` tag (only in the code block!) so that it is possible to copy-paste the example into a SFC `.vue` file.
-
-Note that VitePress is still in beta and there are sometimes weird issues still. For instance, at one point in our examples, it wasn't possible to use `@click` to define a click handler and we had to use `v-on:click` instead, even though in other files, `@click` works just fine. Just keep this in mind in case you ever encounter weird error messages.
 
 Documentation build:
 
@@ -91,4 +90,3 @@ This will:
 - Switch back to `dev`
 
 After running this, GitHub Actions will **automatically publish the new version to npm**. It will also create a new GitHub Release draft. Please **edit and publish the release draft manually**.
-

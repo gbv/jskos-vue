@@ -2,15 +2,38 @@ import { defineConfig } from "vitepress"
 import fs from "node:fs"
 const docsDir = "docs"
 
+const mdfiles = dir => fs.readdirSync(`./${docsDir}${dir}`)
+  .filter(file => file.endsWith(".md")).map(file => file.slice(0,-3))
+  .map(text => ({ text, link: `${dir}/${text}` }))
+
+const sidebar = [
+  {
+    text: "Introduction",
+    link: "/",
+    items: [
+     { text: "Usage", link: "/usage" },
+     { text: "Layout", link: "/layout" }
+    ]
+  },
+  {
+    text: "Components",
+    items: mdfiles("/components")
+  },
+  {
+    text: "Utilities",
+    items: mdfiles("/utilities")
+  },
+  {
+    text: "Contributing", link: "/contributing" 
+  }
+]
+
 export default defineConfig({
   title: "jskos-vue",
   description: "Vue 3 components and plugins for interaction with JSKOS data",
 
   base: process.env.BASE || "/",
   lang: "en-US",
-
-  // TODO: Fix issues on our end with dark styles, then set this to `true`
-  appearance: false,
 
   themeConfig: {
     repo: "gbv/jskos-vue",
@@ -21,7 +44,7 @@ export default defineConfig({
     editLinkText: "Edit this page on GitHub",
 
     nav: [
-      { text: "Documentation", link: "/", activeMatch: "^/$|^/introduction/|^/components/|^/utilities/" },
+      { text: "Documentation", link: "/", activeMatch: ".*" },
       {
         text: "GitHub",
         link: "https://github.com/gbv/jskos-vue",
@@ -31,41 +54,14 @@ export default defineConfig({
         link: "https://github.com/gbv/jskos-vue/releases",
       },
     ],
-
     sidebar: {
-      "/": getGuideSidebar(),
-      "/introduction/": getGuideSidebar(),
-      "/components/": getGuideSidebar(),
-      "/utilities/": getGuideSidebar(),
+      "/": sidebar,
+      "/introduction/": sidebar,
+      "/components/": sidebar,
+      "/utilities/": sidebar,
     },
+    search: {
+      provider: "local"
+    }
   },
 })
-
-function getGuideSidebar() {
-  return [
-    {
-      text: "Introduction",
-      link: "/",
-    },
-    {
-      text: "Components",
-      items: fs.readdirSync(`./${docsDir}/components`).filter(file => file.endsWith(".md")).map(file => {
-        const name = file.replace(".md", "")
-        return {
-          text: name,
-          link: `/components/${name}`,
-        }
-      }),
-    },
-    {
-      text: "Utilities",
-      items: fs.readdirSync(`./${docsDir}/utilities`).filter(file => file.endsWith(".md")).map(file => {
-        const name = file.replace(".md", "")
-        return {
-          text: name,
-          link: `/utilities/${name}`,
-        }
-      }),
-    },
-  ]
-}
