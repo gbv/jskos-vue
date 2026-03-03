@@ -35,6 +35,8 @@ export default defineConfig({
   base: process.env.BASE || "/",
   lang: "en-US",
 
+  ignoreDeadLinks: 'localhostLinks',
+
   themeConfig: {
     repo: "gbv/jskos-vue",
     docsDir,
