@@ -1,0 +1,1 @@
+import{_ as i,o as a,c as e,ag as t}from"./chunks/framework.B3MdAApw.js";const c=JSON.parse('{"title":"Layout","description":"","frontmatter":{},"headers":[],"relativePath":"layout.md","filePath":"layout.md"}'),l={name:"layout.md"};function n(o,s,h,r,p,k){return a(),e("div",null,[...s[0]||(s[0]=[t("",15)])])}const g=i(l,[["render",n]]);export{c as __pageData,g as default};
