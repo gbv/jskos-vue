@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vue App</title>
+  <!-- jskos-vue stylesheet and required libraries (adjust version for updates) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jskos-vue/dist/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "vue": "https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.js",
+        "jskos-tools": "https://esm.sh/jskos-tools@1.1.2",
+        "vue-scrollto": "https://esm.sh/vue-scrollto@2.20.0",
+        "jskos-vue": "https://cdn.jsdelivr.net/npm/jskos-vue/dist/jskos-vue.js",
+        "jskos-vue-tabs": "https://cdn.jsdelivr.net/npm/jskos-vue-tabs@0.1.8/dist/jskos-vue-tabs.js"
+      }
+    }
+    </script>
+  <!-- cocoda-sdk is not available as ESM build yet, so include the old way -->
+  <script src="https://cdn.jsdelivr.net/npm/cocoda-sdk@3/dist/cocoda-sdk.js"></script>
+  <style>
+    input:invalid {
+      background: #faa;
+    }
+    #api-form {
+      display: grid;
+      grid-template-columns: 1fr 4fr;
+      grid-gap: 0.5em;
+      width: fit-content;
+    }
+    #api-form label {
+      grid-column: 1;
+      font-weight: bold;
+    }
+    #api-form input, #api-form div {
+      grid-column: 2;
+    }
+  </style
+</head>
+<body>
+  <div id="app">
+    <h2>Registry</h2>
+    <p>Where and how to look up terminology data from</p>
+    <form id="api-form">
+      <label for="endpoint">Endpoint</label>
+      <input id="endpoint" type="url" v-model.lazy="endpoint" placeholder="API endpoint URL" />
+      <label for="api">API Type</label>
+      <div v-if="api" @click="api=''">
+        <item-name :item="apiTypes.find(t => t.uri === api)"></item-name>
+      </div>
+      <div v-else>
+        <item-select :options="apiTypes" @select="api = $event.uri"></item-select>
+      </div>
+    </form>
+    <div v-if="registry">
+      <h2>Terminology</h2>
+      <div v-if="terminology">
+        <item-name :item="terminology" @click="terminology=null"/>
+        TODO:  ItemSelect via registry.suggest, registry.getTop, .getNarrower 
+      </div>
+      <!-- TODO: if registry does not support vocSuggest: provide full list of schemes -->
+      <item-suggest v-else :search="search => registry.vocSuggest({ search })" @select="updateTerminology" />
+    </div>
+  </div>
+  <script type="module">
+    const { cdk, addAllProviders } = CDK // global import
+    addAllProviders()
+    import { createApp } from "vue"
+    import * as JskosVue from "jskos-vue"
+
+    // TODO: move to cocoda-sdk library and add better names
+    const apiTypes = Object.values(cdk.providers)
+      .map(provider => ({ uri: provider.providerType, prefLabel: { en: provider.providerName } }))
+
+    createApp({
+      data() {
+        const params = new URLSearchParams(window.location.search)
+        const uri = params.get("terminology") || ""        
+        return {
+          api: params.get("api") || "",
+          endpoint: params.get("endpoint") || "",
+          registry: null,
+          terminology: uri ? { uri } : null,
+          apiTypes
+        }
+      },
+      mounted() { 
+        this.updateRegistry()
+        if (this.terminology) {
+          this.loadTerminology()
+        }
+      },
+      methods: {
+        query() {
+          const query = {}
+          if (this.api) query.api = this.api
+          if (this.endpoint) query.endpoint = this.endpoint
+          if (this.terminology?.uri) query.terminology = this.terminology.uri
+          return query
+        },
+        updateQuery() {
+          const query = new URLSearchParams(this.query())
+          window.history.replaceState({}, "", `${window.location.pathname}?${query.toString()}`)
+        },
+        updateRegistry() {
+          this.updateQuery()
+          this.registry = (this.api && this.endpoint && document.getElementById("endpoint").checkValidity())
+            ? cdk.initializeRegistry({ api: this.api, endpoint: this.endpoint }) : null
+        },
+        loadTerminology() {
+          if (this.terminology?.uri && this.registry) {
+            const app = this
+            this.registry.getSchemes({ params: { uri: this.terminology.uri } })
+              .then(res => {
+                console.log(res)
+                app.terminology = res[0] || app.terminology
+              })
+          }
+        },
+        updateTerminology(terminology) {
+          this.terminology = terminology
+          this.updateQuery()          
+          this.loadTerminology()
+        }
+      },
+      watch: {
+        api() { this.updateRegistry() },
+        endpoint() { this.updateRegistry() }
+      },
+    }).use(JskosVue).mount("#app")
+  </script>
+</body>
+</html>
