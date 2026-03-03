@@ -16,3 +16,16 @@ button {
 button:hover {
   background-color: #D0D0D7;
 }
+
+.vp-doc h2 {
+  border-top: none;
+  margin-top: 24px;
+}
+
+.vp-component-tabs > section {
+  padding: 8px 24px;
+}
+
+template {
+  display: block;
+}

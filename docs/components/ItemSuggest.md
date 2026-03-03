@@ -3,11 +3,12 @@
 Input field to search and select an item (usually concept or concept scheme) from a list of search results. Shows a [LoadingIndicator](./LoadingIndicator) while waiting for results.
 
 ## Props
-- `search(query)` (async function) - a custom search function that provides results in [OpenSearch Suggest Format](https://github.com/dewitt/opensearch/blob/master/mediawiki/Specifications/OpenSearch/Extensions/Suggestions/1.1/Draft%201.wiki)
+- `search(query)` *async function*\
+  custom search function that provides results in [OpenSearch Suggest Format](https://github.com/dewitt/opensearch/blob/master/mediawiki/Specifications/OpenSearch/Extensions/Suggestions/1.1/Draft%201.wiki)
   - `query` is the search string
   - The Promise that is returned by this function can optionally have a property `cancel` attached. If this is the case, it will be called if there is a newer search query and the previous request should be aborted.
-- `placeholder` - override default placeholder ("Type to search...")
-  - `null` uses the default placeholder, providing an empty string clears it
+- `placeholder` *string, default `"Type to search..."`*\
+  placeholder string. `null` uses the default placeholder, an empty string clears it.
 
 ## Methods
 - `focus()` - focuses the input field
@@ -20,6 +21,11 @@ Input field to search and select an item (usually concept or concept scheme) fro
 
 ## Examples
 
+### Search with a custom search function
+
+This example provides a custom search function (results come from local data in this case).
+
+::: component-view
 <script setup>
 import ItemSuggest from "../../src/components/ItemSuggest.vue"
 import { cdk } from "cocoda-sdk"
@@ -83,56 +89,12 @@ const searchPokemon = async (query) => {
 }
 </script>
 
-### Search with a custom search function
-
-This example provides a custom search function (results come from local data in this case).
 
 <item-suggest
   :search="searchPokemon" />
 
-```vue
-<template>
-  <item-suggest
-    :search="searchPokemon" />
-</template>
+:::
 
-<script setup>
-import { ItemSuggest } from "jskos-vue"
-// Custom data and search function
-const data = [
-  { "id": 1, "name": "Bulbasaur" },
-  { "id": 2, "name": "Ivysaur" },
-  { "id": 3, "name": "Venusaur" },
-  { "id": 4, "name": "Charmander" },
-  { "id": 5, "name": "Charmeleon" },
-  { "id": 6, "name": "Charizard" },
-  { "id": 7, "name": "Squirtle" },
-  { "id": 8, "name": "Wartortle" },
-  { "id": 9, "name": "Blastoise" },
-  { "id": 10, "name": "Caterpie" },
-  { "id": 11, "name": "Metapod" },
-  { "id": 12, "name": "Butterfree" },
-  { "id": 13, "name": "Weedle" },
-  { "id": 14, "name": "Kakuna" },
-  { "id": 15, "name": "Beedrill" },
-  { "id": 16, "name": "Pidgey" },
-  { "id": 17, "name": "Pidgeotto" },
-  { "id": 18, "name": "Pidgeot" },
-  { "id": 19, "name": "Rattata" },
-  { "id": 20, "name": "Raticate" },
-]
-const searchPokemon = async (query) => {
-  query = query.toLowerCase()
-  const results = data.filter(entry => entry.name.toLowerCase().includes(query))
-  // Convert to OpenSearch Suggest Format
-  const result = [query]
-  result[1] = results.map(r => r.name)
-  result[2] = results.map(() => "")
-  result[3] = results.map(r => `pokemon:${r.id}`)
-  return result
-}
-</script>
-```
 
 ### Search for concepts inside a concept scheme
 
