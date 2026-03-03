@@ -4,20 +4,21 @@ Represents a JSKOS item (concept or concept scheme) with its notation and label.
 Uses [dragAndDrop](../utilities/dragAndDrop) and is draggable by default.
 
 ## Props
-- `item` (object) - JSKOS item
-  - required
-- `showNotation` (boolean) - whether to show the item's notation
-  - default: `true`
-- `showLabel` (boolean) - whether to show the item's label (`prefLabel`)
-  - default: `true`
-- `fallbackLabel` (string) - string that will be shown if both notation and label are empty
-  - default: "???"
-- `language` (string) - preferred language for the label
+- `item` *object, required*\
+  JSKOS item
+- `showNotation` *boolean, default `true`*\
+  whether to show the item's notation
+- `showLabel` *boolean, default `true`*\
+  whether to show the item's label (`prefLabel`)
+- `fallbackLabel` *string, default `"???"`*
+  - string that will be shown if both notation and label are empty
+- `language` *string, default `undefined`*
+  - preferred language for the label
   - default: uses [jskos-tools' languagePreference](https://gbv.github.io/jskos-tools/#languagepreference)
-- `clickable` (boolean) - adjusts mouse pointer and text decoration on hover if `true`
-  - default: `false`
-- `draggable` (boolean) - whether the item is draggable
-  - default: `true`
+- `clickable` *boolean, default `false`*\
+  adjusts mouse pointer and text decoration on hover if `true`
+- `draggable` *boolean, default `true`*\
+  whether the item is draggable
 
 ## Plugins for notations and labels
 You can adjust how notations/labels are processed in `ItemName` by providing plugins. A plugin is a simple function that receives the current label/notation and the component's props as parameters and returns the processed label/notation. Plugins can be added on the imported component directly using the provided `addLabelPlugin` and `addNotationPlugin` methods.
@@ -55,6 +56,7 @@ Another use case is showing item identifiers in [CURIE syntax](https://www.w3.or
 
 ## Examples
 
+::: component-view
 <script setup>
 import { reactive } from "vue"
 import ItemName from "../../src/components/ItemName.vue"
@@ -111,64 +113,4 @@ const concepts = [
     <item-name :item="concept" />
   </li>
 </ul>
-
-```vue
-<template>
-  <p>
-    Change language:
-    <span
-      v-for="(language, index) in state.languages"
-      :key="index">
-    <button
-      @click="state.languages.move(index, 0)">
-      {{ language }}
-    </button> -
-    </span>
-  </p>
-  <ul>
-    <li
-      v-for="(concept, index) in concepts"
-      :key="index">
-      <item-name :item="concept" />
-    </li>
-  </ul>
-</template>
-
-<script setup>
-import { reactive } from "vue"
-import { ItemName } from "jskos-vue"
-import * as jskos from "jskos-tools"
-
-// Setup jskos-tools' languagePreference
-const state = reactive({
-  languages: ["en", "de", "fr"],
-})
-jskos.languagePreference.store = state
-jskos.languagePreference.path = "languages"
-
-// Add move method to arrays
-Array.prototype.move = function(from, to) {
-  this.splice(to, 0, this.splice(from, 1)[0])
-  return this
-}
-
-const concept1 = {
-  notation: ["EX"],
-}
-const concept2 = {
-  notation: ["EX"],
-  prefLabel: {
-    en: "Example",
-    de: "Beispiel",
-    fr: "Exemple",
-  },
-}
-const concept3 = {}
-
-const concepts = [
-  concept1,
-  concept2,
-  concept3,
-]
-</script>
-```
+:::

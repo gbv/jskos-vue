@@ -1,4 +1,10 @@
 import DefaultTheme from "vitepress/theme"
+import { enhanceAppWithComponentView } from 'vitepress-plugin-component/client'
 import "./custom.css"
 
-export default DefaultTheme
+export default {
+  extends: DefaultTheme,
+  enhanceApp({ app }) {
+    enhanceAppWithComponentView(app)
+  }
+}

@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress"
+import { componentViewMarkdownPlugin } from 'vitepress-plugin-component'
 import fs from "node:fs"
 const docsDir = "docs"
 
@@ -64,6 +65,9 @@ export default defineConfig({
     },
     search: {
       provider: "local"
-    }
+    },
   },
+  markdown: {
+    config: (md) => { md.use(componentViewMarkdownPlugin) }
+  }
 })

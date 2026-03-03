@@ -2,56 +2,49 @@
 
 Pick **one item at a time** (JSKOS concepts, schemes, languages, …) via:
 
-- a typeahead dropdown (internally: [`ItemSuggest`](./ItemSuggest))
-- optional hierarchy browsing (internally: [`ConceptTree`](./ConceptTree))
+- a typeahead dropdown (via [ItemSuggest](./ItemSuggest))
+- optional hierarchy browsing (via [ConceptTree](./ConceptTree))
 
 `ItemSelect` does **not** keep a selection list. It only emits the picked item.  
-If you want to show/edit a list, combine it with [`ItemSelected`](./ItemSelected) in your app.
-
----
+If you want to show/edit a list, combine it with [ItemSelected](./ItemSelected) in your app.
 
 ## Props
 
-- `options` *(array)* — local options (small static lists like languages).  
-  default: `[]`
-  
-- `search` *(function)* — remote search function in **OpenSearch Suggest** format  
-  `[q, labels[], desc[], uris[]]` (same contract as `ItemSuggest`).  
-  default: `null`
-  
-- `minChars` *(number)* — minimum query length before searching (applies to `options` and `search`).  
-  default: `1`
+- `options` *array, default `[]`*\
+  local options (small static lists like languages).
+- `search` *function, default `null`*\
+  remote search function in **OpenSearch Suggest** format  
+  `[q, labels[], desc[], uris[]]` (same contract as `ItemSuggest`).
+- `minChars` *number, default `1`*\
+  minimum query length before searching (applies to `options` and `search`).
   
 
 ### ConceptTree integration
 
-- `treeConcepts` *(array)* — top concepts for the `ConceptTree` browser below the input.  
+- `treeConcepts` *array, default `[]`*\
+  top concepts for the `ConceptTree` browser below the input.  
   default: `[]` (no tree is shown for empty array)
   
-- `treeLoadNarrower` *(function)* — called when a tree node is opened; should load `narrower`.  
-  default: `null`
+- `treeLoadNarrower` *function*\
+  called when a tree node is opened; should load `narrower`.  
  
 
 ### Optional resolving
 
-- `resolve` *(function)* — optional async resolver to turn a selected **URI** into a full item object  
+- `resolve` *function*
+  optional async resolver to turn a selected **URI** into a full item object  
   when it is not available in the internal suggestion cache.  
-  Signature: `async (uri) => item`  
-  default: `null`
+  Signature: `async (uri) => item`
 
 ### UI
 
-- `placeholder` *(string)* — input placeholder.  
-  default: `"Search…"`
-
----
+- `placeholder` *string, default `"Search…"`*\
+  input placeholder.
 
 ## Events
 
 - `select` — emitted when an item is picked (via typeahead or tree).  
   Payload is usually a **normalized item**. If resolving is not possible it may fall back to `{ uri }`.
-
----
 
 ## Behavior notes
 
@@ -74,27 +67,22 @@ a full object when available. If the URI is not in the cache and you provided `r
 After selecting via typeahead the tree is synced via
 `conceptTree.navigateToUri(concept, { select: false })` (best effort).
 
----
-
 ## Methods
 
 Via component ref (`ref="itemSelect"`):
 
 - `focus()` — focuses the internal `ItemSuggest` input.
 
----
-
-## Styling
+## Layout
 
 - `.jskos-vue-itemSelect`
 - `.jskos-vue-itemSelect-tree`
 
-See `ItemSuggest` for styling of dropdown and `ConceptTree` for styling of tree.
-
----
+See [ItemSuggest](./ItemSuggest) for styling of dropdown and [ConceptTree](./ConceptTree) for styling of tree.
 
 ## Examples
 
+::: component-view
 <script setup>
 import ItemSelect from "../../src/components/ItemSelect.vue"
 import ItemSelected from "../../src/components/ItemSelected.vue"
@@ -150,33 +138,4 @@ const resolveConcept = async (uri) => (await state.scheme._registry.getConcepts(
   :tree-load-narrower="loadNarrower"
   @select="(item) => addUnique(state.selected, item)" />
 <item-selected v-model="state.selected" view="table" :orderable="true" />
-
-
-```vue
-<template>
-  <item-select :options="languageOptions" @select="(item) => addUnique(languageSelected, item)" />
-  <item-selected v-model="languageSelected" view="tags" />
-</template>
-
-<script setup>
-import { ref } from "vue"
-import { ItemSelect, ItemSelected } from "jskos-vue"
-
-const languageOptions = [
-  { uri: "urn:lang:en", prefLabel: { en: "English" } },
-  { uri: "urn:lang:de", prefLabel: { en: "German" } },
-  { uri: "urn:lang:it", prefLabel: { en: "Italian" } },
-]
-const languageSelected = ref([])
-
-function addUnique(listRef, item) {
-  if (!item?.uri) {
-    return
-  }
-  const exists = listRef.some((i) => i?.uri === item.uri)
-  if (!exists) {
-    listRef.push(item)
-  }
-}
-</script>
-```
+:::

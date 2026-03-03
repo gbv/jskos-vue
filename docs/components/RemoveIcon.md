@@ -25,26 +25,15 @@ Small button component showing a “×” remove icon.
 
 ## Examples
 
+::: component-view
 <script setup>
-import RemoveIcon from "../../src/components/RemoveIcon.vue"
-const onRemove = () => alert("remove clicked")
+  import { RemoveIcon } from "../../src/index.js"
+  const onRemove = () => alert("remove clicked")
 </script>
-
-<remove-icon @click="onRemove" /> (default) <br>
-<remove-icon aria-label="Remove item" @click="onRemove" /> (aria-label) <br>
-<remove-icon title="Remove item" @click="onRemove" /> (title) <br>
-<remove-icon title="" @click="onRemove" /> (no title)
-
-```vue
 <template>
   <remove-icon @click="onRemove" /> (default) <br>
   <remove-icon aria-label="Remove item" @click="onRemove" /> (aria-label) <br>
   <remove-icon title="Remove item" @click="onRemove" /> (title) <br>
   <remove-icon title="" @click="onRemove" /> (no title)
 </template>
-
-<script setup>
-import { RemoveIcon } from "jskos-vue"
-const onRemove = () => alert("remove clicked")
-</script>
-```
+:::

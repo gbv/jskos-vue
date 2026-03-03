@@ -10,41 +10,36 @@ It supports three views:
 
 Uses [`ItemName`](./ItemName) to display items.
 
-## Props and models
+## Props
  
-- `modelValue` (array) selected items.
-   Use watch option `{ deep: true }` to get change events.
-
-- `view` (string) - display mode: `"tags" | "table" | "list"`  
-  - default: `"tags"`
-  
-- `orderable` (boolean) - show move up/down buttons in `table` view
-  - default: `false`
- 
-- `itemNameOptions` (object) - props forwarded to [`ItemName`](./ItemName)
-  - default: `{ draggable: false }`
+- `modelValue` *array, default `[]`*\ 
+  selected items.
+  Use watch option `{ deep: true }` to get change events.
+- `view` *string, default `"tags"`*\ 
+  display mode: `"tags" | "table" | "list"`
+- `orderable` *boolean, default `false`*\ 
+  show move up/down buttons in `table` view
+- `itemNameOptions` *object, default `{ draggable: false }`*\ 
+  props forwarded to [`ItemName`](./ItemName)
   - Field `draggable` is set to `false`, unless explicitly enabled
-
-- `removable` (boolean) — if `true`, show a remove icon in `view="list"` (like Cocoda)  
-  default: `false`
+- `removable` *boolean, default `false`*\ 
+  if `true`, show a remove icon in `view="list"` (like Cocoda)
+- `removeable` *boolean, default `false`*\ 
+  legacy spelling, treated like `removable`
   
-- `removeable` (boolean) — legacy spelling, treated like `removable`  
-  default: `false`
-  
-
 ## Events
 
 - `select`  
-  Emitted when the user clicks on an item
-  Payload: `{ item }`
+  Emitted with payload `{ item }` when the user clicks on an item
 
-## CSS Variables
+## Layout
 
 - `--jskos-vue-itemSelected-tags-bgColor` - background color of tags. Set to `--jskos-vue-highlight-bgColor` by default.
 - `--jskos-vue-itemSelected-tags-color` - text color of tags. Set to `inherit` by default.
 
 ## Example
 
+::: component-view
 <script setup>
 import { ref } from "vue"
 import ItemSelected from "../../src/components/ItemSelected.vue"
@@ -82,38 +77,4 @@ function onChange(ev) {
  :removable="removable"
  @select="onSelect"
  @change="onChange" />
-
-```vue
-<template>
-  <ItemSelected
-    v-model="selected"
-    :view="view"
-    :orderable="orderable"
-    :removable="removable"
-    @select="onSelect"
-    @change="onChange" />
-</template>
-
-<script setup>
-import { ref } from "vue"
-import { ItemSelected } from "jskos-vue"
-
-const view = ref("tags")
-const orderable = ref(true)
-const removable = ref(true)
-
-const selected = ref([
-  { uri: "urn:lang:en", prefLabel: { en: "English" }, notation: ["EN"] },
-  { uri: "urn:lang:de", prefLabel: { en: "German" }, notation: ["DE"] },
-  { uri: "urn:lang:it", prefLabel: { en: "Italian" }, notation: ["IT"] },
-])
-
-function onSelect({ item }) {
-  window.alert(`Clicked on ${item.uri}`)
-}
-
-function onChange(ev) {
-  console.log("change", ev)
-}
-</script>
-```
+:::

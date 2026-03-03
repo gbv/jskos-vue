@@ -3,8 +3,8 @@
 A full-screen modal.
 
 ## Props
-- `modelValue` (boolean, v-model) - whether the modal is currently shown
-  - default: `undefined` (= value is kept track of internally)
+- `modelValue` *boolean, v-model*\
+  whether the modal is currently shown
 
 ## Slots
 - default: Body content

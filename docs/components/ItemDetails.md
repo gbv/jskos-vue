@@ -4,26 +4,27 @@ Component to display details for a JSKOS item.
 Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo), [AutoLink](./AutoLink). Also uses [dragAndDrop](../utilities/dragAndDrop) and defines a dropzone for items. Dropped items will trigger the `select` event.
 
 ## Props
-- `item` (object) - JSKOS item (concept or concept scheme)
-  - required
-- `itemListOptions` (object) - options that are passed along to [ItemList](./ItemList) via v-bind
-  - default: `{}`
-- `showTabs` (boolean) - option whether to show ItemDetailsTabs
-  - default: `true`
-- `showAncestors` (boolean) - option whether to show the item's ancestors
-  - default: `true`
-- `showBroader` (boolean) - option whether to show the item's broader concepts
-  - default: `true`
-- `showNarrower` (boolean) - option whether to show the item's narrower concepts
-  - default: `true`
-- `dropzone` (boolean) - option whether the component is a drop zone for concepts
-  - default: `true`
-- `draggable` (boolean) - whether item elements are draggable
-  - default: `true`
+- `item` *object, required*\
+  JSKOS item (concept or concept scheme)
+- `itemListOptions` *object, default `{}`\
+  options that are passed along to [ItemList](./ItemList) via v-bind
+- `showTabs` *boolean, default `true`*\
+  option whether to show ItemDetailsTabs
+- `showAncestors` *boolean, default `true`*\
+  option whether to show the item's ancestors
+- `showBroader` *boolean, default `true`*\
+  option whether to show the item's broader concepts
+- `showNarrower` *boolean, default `true`*\
+  option whether to show the item's narrower concepts
+- `dropzone` *boolean, default `true`*\
+  option whether the component is a drop zone for concepts
+- `draggable` *boolean, default `true`*\
+  whether item elements are draggable
   - This will also set `itemListOptions.draggable` if it's not set separately.
-- `flat` (boolean) - whether details are displayed in a flat layout (opposed to tabs; experimental)
-  - default: `false`
-- `fields` (object) - configures which JSKOS fields are shown
+- `flat` *boolean, default `false`*\
+  whether details are displayed in a flat layout (opposed to tabs; experimental)
+- `fields` *object, default `{}`*\
+  configures which JSKOS fields are shown
   - By default, all fields are shown, except for `publisher` for concepts.
 
 ## Slots
@@ -40,7 +41,8 @@ Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo
   - Emitted when a concept is selected.
   - Parameter is an object with properties `item` (containing the clicked JSKOS concept) and `row` (containing a boolean which is `true` when the click was initiated via the row, not on the item directly).
 
-## CSS Variables
+## Layout
+
 - `--jskos-vue-itemDetails-dropzone-bgCover` - background color for overlay which is shown when an item is being dragged over ItemDetails
   - default: `#eeeeee99`
 
