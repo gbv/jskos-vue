@@ -24,10 +24,6 @@ This library provides the following Vue components (plus some helper components 
 [ItemSelect]: components/ItemSelect.html
 [ItemSelected]: components/ItemSelected.html
 
-## Development
-
-See [CONTRIBUTING.md](CONTRIBUTING.md)
-
 ## Related works
 
 The [TS4NFDI Terminology Service Suite](https://github.com/ts4nfdi/terminology-service-suite) (TSS) provides similar components based on React instead of Vue and TSS includes API calls where jskos-vue leaves this to [cocoda-sdk] or other methods. A very rough correspondence of components and widgets, ignoring conceptual differences:
