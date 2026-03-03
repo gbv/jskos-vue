@@ -51,6 +51,14 @@ The documentation build will be in `docs/.vitepress/dist/`.
 
 A full example how to use jskos-vue without bundler is in `examples/browser.html` (also included in the documentation) and there is an additional example in `src/App.vue`. Running `make app` build the second into `examples/app`. Running `npm run examples` starts a web server to serve both examples at localhost.
 
+## Examples
+
+Additional examples are located in directory `examples`. To serve them:
+
+```bash
+npm run examples
+```
+
 ## Build
 
 Library browser build:

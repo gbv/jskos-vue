@@ -96,6 +96,8 @@ Fully working HTML example:
 <!-- @include: ../examples/browser.html -->
 ```
 
+See `examples` directory in the git repository of jskos-vue for an additional example.
+
 # Localization
 
 The library comes with translated messages in English and German. Additional messages can be provided with library [Vue I18n] or its subset petite-vue-i18n. See test file `tests/i18n.test.js` for usage. 
