@@ -7,6 +7,8 @@
       :search="searchForSuggest"
       :placeholder="placeholder"
       @select="onSuggestSelect" />
+    
+    <slot />
 
     <!-- Optional picker: ConceptTree (browse & pick) -->
     <div
