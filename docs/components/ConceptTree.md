@@ -23,6 +23,8 @@ Component to display a concept tree with hierarchy from concept field `narrower`
 - `scheme` *object, default `null`*\
    Concept Scheme to load concepts from. Must have field `uri` or `identifier` at least.
 
+## Concept loading
+
 Either `concepts` or both of `registry` and `scheme` are required to show the concept tree. If `registry` is not set, it is taken from internal field `_registry` or `inScheme[0]._registry` of the first concept. A registry object should have the following methods to load concepts from given scheme URI or concept URI:
 
 - `getConcepts({ concepts: [{ uri }] })` — load concept details
@@ -75,10 +77,10 @@ Close all opened concepts. Note that parents of selected concepts cannot be clos
 
 ## Events
 
-- `select` emitted when a concept is selected. Parameter is the same payload as `ItemList`’s `select` event: an object with properties:
+- `select` emitted when a concept is selected. Note that `update:modelValue` is also emitted each time selection changes.
+  Parameter is the same payload as `ItemList`’s `select` event: an object with properties:
   - `item` (the clicked concept)
   - `row` (`true` when the click was initiated via the row, not on the item directly)
-  Note that `update:modelValue` is also emitted each time selection changes.
 - `open` emitted when a concept’s narrower concepts are opened. Parameter is the concept.
 - `close` emitted when a concept’s narrower concepts are closed. Parameter is the concept.
   

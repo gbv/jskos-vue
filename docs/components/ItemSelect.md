@@ -5,36 +5,32 @@ Pick **one item at a time** (JSKOS concepts, schemes, languages, …) via:
 - a typeahead dropdown (via [ItemSuggest](./ItemSuggest))
 - optional hierarchy browsing (via [ConceptTree](./ConceptTree))
 
-`ItemSelect` does **not** keep a selection list. It only emits the picked item.  
+`ItemSelect` does **not** keep a selection list. It only emits the picked item.
 If you want to show/edit a list, combine it with [ItemSelected](./ItemSelected) in your app.
 
 ## Props
 
 - `options` *array, default `[]`*\
   local options (small static lists like languages).
-- `search` *function, default `null`*\
-  remote search function in **OpenSearch Suggest** format  
-  `[q, labels[], desc[], uris[]]` (same contract as `ItemSuggest`).
+- `search` *function*\
+  remote search function in **OpenSearch Suggest** format (see [ItemSuggest](./ItemSuggest)).
+  Default is based on `options` (if set) or on `registry.suggest` (if both `registry` and `scheme` are set).
+- `resolve` *function*\
+  optional async resolver to turn a selected **URI** into a full JSKOS item object  
+  when it is not available in the internal suggestion cache.  
+  Default is based on `options` (if set) or on `registry.getConcepts` (if available).
 - `minChars` *number, default `1`*\
   minimum query length before searching (applies to `options` and `search`).
-  
-
-### ConceptTree integration
-
-- `treeConcepts` *array, default `[]`*\
+- `registry` *object, default `null`*\
+   Registry to load concepts from
+- `scheme` *object, default `null`*\
+   Concept Scheme to load concepts from. Must have field `uri` or `identifier` at least.
+- `treeConcepts` *array*\
   top concepts for the `ConceptTree` browser below the input.  
-  default: `[]` (no tree is shown for empty array)
+  Default is loaded via `registry.getTop` if both `registry` and `scheme` are set.
+
   
-- `treeLoadNarrower` *function*\
-  called when a tree node is opened; should load `narrower`.  
- 
-
-### Optional resolving
-
-- `resolve` *function*
-  optional async resolver to turn a selected **URI** into a full item object  
-  when it is not available in the internal suggestion cache.  
-  Signature: `async (uri) => item`
+See [concept loading of ConceptTree](./ConceptTree#concept-loading) for background information on `registry` and `scheme`.
 
 ### UI
 
@@ -48,21 +44,15 @@ If you want to show/edit a list, combine it with [ItemSelected](./ItemSelected) 
 
 ## Behavior notes
 
-### Normalization
-
 Before emitting, items are normalized:
 
 - `__label` is derived from `__label` / `prefLabel` (fallback: `uri`)
 - `prefLabel.und` is ensured
 - `notation` is preserved; otherwise tries to derive DDC notation from `/class/<notation>/` URIs
 
-### Suggestion cache + `resolve`
-
 `ItemSuggest` emits only `{ uri }`. `ItemSelect` caches the current suggestion result set so it can emit
 a full object when available. If the URI is not in the cache and you provided `resolve`, it calls
 `resolve(uri)` and emits the returned item (normalized).
-
-### Tree sync
 
 After selecting via typeahead the tree is synced via
 `conceptTree.navigateToUri(concept, { select: false })` (best effort).
@@ -71,7 +61,7 @@ After selecting via typeahead the tree is synced via
 
 Via component ref (`ref="itemSelect"`):
 
-- `focus()` — focuses the internal `ItemSuggest` input.
+- `focus` — focuses the internal `ItemSuggest` input.
 
 ## Layout
 
@@ -97,28 +87,14 @@ const languageOptions = [
 ]
 const languageSelected = ref([])
 function addUnique(listRef, item) {
-  if (!item?.uri) {
-    return
-  }
-  const exists = listRef.some((i) => i?.uri === item.uri)
-  if (!exists) {
+  if (item?.uri && !listRef.some(i => i?.uri === item.uri)) {
     listRef.push(item)
   }
 }
-// Remote DDC example (coli-conc)
-const state = reactive({ registry: null, scheme: null, top: null, selected: [] })
-onMounted(async () => {
-  state.registry = cdk.initializeRegistry({ provider: "ConceptApi", api: "https://coli-conc.gbv.de/api/" })
-  state.scheme = (await state.registry.getSchemes({ params: { uri: "http://bartoc.org/en/node/241" } }))[0]
-  state.top = jskos.sortConcepts(await state.scheme._getTop())
-})
-const suggest = async search => state.scheme._registry.suggest({ search, scheme:state.scheme })
-
-async function loadNarrower(concept) {
-  if (concept.narrower && !concept.narrower.includes(null)) return
-  concept.narrower = jskos.sortConcepts(await concept._getNarrower())
-}
-const resolveConcept = async (uri) => (await state.scheme._registry.getConcepts({ concepts: [{ uri }] }))[0]
+// Remote DDC example
+const selected = ref([])
+const registry = cdk.initializeRegistry({ provider: "ConceptApi", api: "https://coli-conc.gbv.de/api/" })
+const scheme = { uri: "http://bartoc.org/en/node/241" }
 </script>
 
 <h3>Languages (local options)</h3>
@@ -128,14 +104,11 @@ const resolveConcept = async (uri) => (await state.scheme._registry.getConcepts(
   @select="(item) => addUnique(languageSelected, item)" />
 <item-selected v-model="languageSelected" view="tags" />
 
-<h3>DDC (remote suggest) + ConceptTree</h3>
+<h3>DDC (remote, with tree)</h3>
 <item-select
-  v-if="state.scheme && state.top"
-  :search="suggest"
-  :resolve="resolveConcept"
   placeholder="Search DDC…"
-  :tree-concepts="state.top"
-  :tree-load-narrower="loadNarrower"
-  @select="(item) => addUnique(state.selected, item)" />
-<item-selected v-model="state.selected" view="table" :orderable="true" />
+  :registry="registry"
+  :scheme="scheme"
+  @select="(item) => addUnique(selected, item)" />
+<item-selected v-model="selected" view="table" :orderable="true" />
 :::
