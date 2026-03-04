@@ -1,28 +1,39 @@
 # ConceptTree
 
-Component to display a hierarchical concept tree (based on `narrower`), implemented as a thin wrapper around [`ItemList`](./ItemList).
+Component to display a concept tree with hierarchy from concept field `narrower`. The tree is based on [ItemList](./ItemList) and derives all of its slots and methods. The component supports:
 
-It supports:
-
-- selecting a concept (`v-model`)
-- expanding/collapsing nodes (`open` / `close`)
-- programmatic scrolling (`scrollToUri`)
-- programmatic navigation in the hierarchy (`navigateToUri`) 
+- selecting a concept (prop `v-model`)
+- expanding/collapsing nodes (events `open` / `close`)
+- programmatic scrolling (method `scrollToUri`)
+- programmatic navigation in the hierarchy (method [`navigateToUri`](#navigatetouri)) 
+- dynamic loading additional concepts (props `registry` and `scheme`)
 
 ## Props
 
 - `modelValue` *object, v-model, default `null`*\
    currently selected concept (highlighted)  
-- `concepts` *array, required*\
+- `concepts` *array*\
    JSKOS concepts to be displayed (usually top concepts)
 - `hierarchy` *boolean, default `true`*\
    whether to display concept hierarchy (via `narrower`)
 - `itemListOptions` *object, default `{}`*\
-   options passed through to [`ItemList`](./ItemList) via `v-bind`  
+   options passed through to [ItemList](./ItemList)
+- `registry` *object, default `null`*\
+   Registry to load concepts from
+- `scheme` *object, default `null`*\
+   Concept Scheme to load concepts from. Must have field `uri` or `identifier` at least.
+
+Either `concepts` or both of `registry` and `scheme` are required to show the concept tree. If `registry` is not set, it is taken from internal field `_registry` or `inScheme[0]._registry` of the first concept. A registry object should have the following methods to load concepts from given scheme URI or concept URI:
+
+- `getConcepts({ concepts: [{ uri }] })` — load concept details
+- `getTop({ scheme: { uri } })` — load top concepts (only required when prop `concepts` is not set)
+- `getNarrower({ concept: { uri } })` — load narrower concepts (only required when `getConcepts` does not include full field `narrower` for every concept)
+
+See [cocoda-sdk](https://github.com/gbv/cocoda-sdk) for a library that provides registry objects for various terminology APIs.
 
 ## Slots
 
-All slots are forwarded to the internal `ItemList`.
+The slots are forwarded to the corresponding [slots of ItemList](./ItemList#slots):
 
 - `beforeList` — content shown above the list.
 - `afterList` — content shown below the list.
@@ -31,55 +42,45 @@ All slots are forwarded to the internal `ItemList`.
 
 ## Methods
 
-The following methods are exposed via component ref (`ref="conceptTree"`):
+The [methods of ItemList](./ItemList#methods) are exposed to be used on a component reference.
 
-- [`isUriInView` *(see ItemList)*](./ItemList#methods)
-- [`scrollToUri` *(see ItemList)*](./ItemList#methods)
+- `isUriInView` — see [ItemList](./ItemList#methods)
+- `scrollToUri` — see [ItemList](./ItemList#methods)
+- [`navigateToUri`](#navigateToUri) — navigate to a concept in the hierarchy
+- [`close`](#close) — close an opened concept 
 
-### `navigateToUri(uriOrConcept, options)`
+### navigateToUri
 
-Navigate to a concept URI in the hierarchy:
+**Arguments**
 
-- If the concept is already rendered: scroll to it (and optionally select it)
-- Otherwise: tries to open the path from the top concepts down to the target using:
-  - a registry (`_registry`) if present
-  - parent pointers (`ancestors[0]` or `broader[0]`)
-  - `_getNarrower()` to load children when needed
-
-**Signature**
-
-- `uriOrConcept` *string | { uri: string }*
+- `uriOrConcept` *string | { uri: string }*\
+   the concept URI to scroll to
 - `options` *boolean, default `true`*\
   whether to set `modelValue` to the target concept  
 - `onlyIfNotInView` *boolean, default `true`*\
   pass-through to `scrollToUri`  
 
-**Returns**
+**Returns** a Promise with boolean `true` if navigation succeeded, `false` otherwise
 
-- `Promise<boolean>` — `true` if navigation succeeded, otherwise `false`.
+- If the concept is already rendered : scroll to it with `scrollToUri` (and optionally select it)
+- Otherwise: tries to open the path from the top concepts down to the target by loading narrower concepts
 
-**Notes / limitations**
+### close
 
-- Works best with **coli-conc/cocoda-sdk** concepts where:
-  - a registry is attached (`concept._registry` or `concept.inScheme[0]._registry`)
-  - concepts support `_getNarrower()`
-- If no registry is available, or if the target cannot be reached from the provided `concepts` roots, it returns `false`.
+Close an opened concept. Requires concept object with field `uri`. Note that parents of selected concepts cannot be closed.
+
+### collapse
+
+Close all opened concepts. Note that parents of selected concepts cannot be closed.
 
 ## Events
 
-- `select`  
-  Emitted when a concept is selected. Parameter is the same payload as `ItemList`’s `select` event: an object with properties:
-  
+- `select` emitted when a concept is selected. Parameter is the same payload as `ItemList`’s `select` event: an object with properties:
   - `item` (the clicked concept)
   - `row` (`true` when the click was initiated via the row, not on the item directly)
-- `open`  
-  Emitted when a concept’s narrower concepts are opened. Parameter is the concept.
-  
-- `close`  
-  Emitted when a concept’s narrower concepts are closed. Parameter is the concept.
-  
-- `update:modelValue`  
-  Used for v-model updates. Will always be emitted together with `select` when selection changes.
+  Note that `update:modelValue` is also emitted each time selection changes.
+- `open` emitted when a concept’s narrower concepts are opened. Parameter is the concept.
+- `close` emitted when a concept’s narrower concepts are closed. Parameter is the concept.
   
 ## Layout
 
@@ -96,83 +97,69 @@ Navigate to a concept URI in the hierarchy:
 import ConceptTree from "../../src/components/ConceptTree.vue"
 import * as jskos from "jskos-tools"
 import { cdk } from "cocoda-sdk"
-import { reactive, onMounted, useTemplateRef } from "vue"
+import { onMounted, useTemplateRef, ref } from "vue"
 
-let registry
-const state = reactive({
-  scheme: null,
-  async loadScheme() {
-    this.scheme = (await registry.getSchemes({
-      params: {
-        uri: "https://www.ixtheo.de/classification/",
-      },
-    }))[0]
-  },
-  concepts: null,
-  async loadConcepts() {
-    this.concepts = jskos.sortConcepts(await this.scheme._getTop())
-  },
-  async loadNarrower(concept) {
-    if (concept.narrower && !concept.narrower.includes(null)) {
-      return
-    }
-    concept.narrower = jskos.sortConcepts(await concept._getNarrower())
-  },
-  selected: null,
+const registry = cdk.initializeRegistry({
+  provider: "ConceptApi",
+  api: "https://coli-conc.gbv.de/api/",
 })
-
-const conceptTree = useTemplateRef("conceptTree")
+const scheme = { uri: "https://www.ixtheo.de/classification/" }
+const selected = ref(null)
+const concepts = ref(null)
+const message = ref("")
 
 onMounted(async () => {
-  registry = cdk.initializeRegistry({
-    provider: "ConceptApi",
-    api: "https://coli-conc.gbv.de/api/",
-  })
-  await state.loadScheme()
-  await state.loadConcepts()
+  concepts.value = jskos.sortConcepts(await registry.getTop({ scheme }))
 })
 
-const alert = (...args) => window.alert(...args)
+async function loadNarrower(concept) {
+  if (!concept.narrower || concept.narrower.includes(null)) {
+    concept.narrower = jskos.sortConcepts(await registry.getNarrower({ concept }))
+  }
+}
+
+const conceptTree = useTemplateRef("conceptTree")
 </script>
+
 <template>
   <p>
     <button @click="conceptTree.navigateToUri('https://www.ixtheo.de/classification/VB')">
       Navigate to VB Hermeneutik ; Philosophie
     </button>
+    <button @click="conceptTree.collapse()">Collapse tree</button>
   </p>
-  <p v-if="state.selected?.uri">
-    Selected: {{ state.selected.uri }}
-    <button @click="conceptTree.scrollToUri(state.selected.uri)">Scroll to selected</button>
+  <p v-if="message">{{message}}</p>
+  <p v-if="selected?.uri">
+    Selected: {{ selected.uri }}
+    <button @click="conceptTree.scrollToUri(selected.uri)">Scroll to selected</button>
   </p>
   <p v-else>
     Please select a concept.
   </p>
+
   <concept-tree
+    :registry="registry" 
+    :scheme="scheme"
     ref="conceptTree"
-    v-if="state.concepts"
-    v-model="state.selected"
-    style="height: 400px; overflow-y: auto; border: 2px solid #0001;"
-    :concepts="state.concepts"
-    @open="state.loadNarrower($event)">
+    v-if="concepts"
+    v-model="selected"
+    style="height: 400px; overflow-y: auto; border: 2px solid #0001;">
     <template v-slot:beforeItem="{ item }">
-    <span
-      class="opacity-hover"
-      style="margin-right: 5px;"
-      @click.stop="alert(`Clicked on Star for item ${item.uri}`)">
-      ⭐️
-    </span>
-  </template>
-  <template v-slot:afterItem="{ item }">
-    <div
-      class="opacity-hover"
-      style="position: absolute; width: 20px; right: 2px; top: 50%; transform: translateY(-50%);"
-      @click.stop="alert(`Clicked on Rocket for item ${item.uri}`)">
-      🚀
-    </div>
-  </template>
-</concept-tree>
-<div v-else>
-  Loading concepts...
-</div>
+      <span
+        class="opacity-hover"
+        style="margin-right: 5px;"
+        @click.stop="message = `Clicked on Star for item ${item.uri}`">
+        ⭐️
+      </span>
+    </template>
+    <template v-slot:afterItem="{ item }">
+      <div
+        class="opacity-hover"
+        style="position: absolute; width: 20px; right: 2px; top: 50%; transform: translateY(-50%);"
+        @click.stop="message = `Clicked on Rocket for item ${item.uri}`">
+        🚀
+      </div>
+    </template>
+  </concept-tree>
 </template>
 :::
