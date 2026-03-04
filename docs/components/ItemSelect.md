@@ -28,14 +28,14 @@ If you want to show/edit a list, combine it with [ItemSelected](./ItemSelected) 
 - `treeConcepts` *array*\
   top concepts for the `ConceptTree` browser below the input.  
   Default is loaded via `registry.getTop` if both `registry` and `scheme` are set.
-
+- `placeholder` *string, default `"Search…"`*\
+  input placeholder.
   
 See [concept loading of ConceptTree](./ConceptTree#concept-loading) for background information on `registry` and `scheme`.
 
-### UI
+## Slots
 
-- `placeholder` *string, default `"Search…"`*\
-  input placeholder.
+The default slot is shown between input field and hierarchy.
 
 ## Events
 
@@ -109,6 +109,7 @@ const scheme = { uri: "http://bartoc.org/en/node/241" }
   placeholder="Search DDC…"
   :registry="registry"
   :scheme="scheme"
-  @select="(item) => addUnique(selected, item)" />
-<item-selected v-model="selected" view="table" :orderable="true" />
+  @select="(item) => addUnique(selected, item)" >
+  <item-selected v-model="selected" view="table" :orderable="true" />
+</item-select>
 :::
