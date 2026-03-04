@@ -1,6 +1,7 @@
 ## 0.4.1
 
 - Extend ConceptTree with registry, scheme, close, collapse
+- Extend ItemSelect with registry, scheme. Remove prop treeLoadNarrower (*breaking change*)
 - Update and extend documentation
 
 ## 0.4.0

@@ -2,6 +2,7 @@
   <div class="jskos-vue-itemSelect">
     <!-- Typeahead dropdown (coming from ItemSuggest) -->
     <ItemSuggest
+      v-if="searchForSuggest"
       ref="itemSuggest"
       :search="searchForSuggest"
       :placeholder="placeholder"
@@ -9,7 +10,7 @@
 
     <!-- Optional picker: ConceptTree (browse & pick) -->
     <div
-      v-if="treeConcepts?.length"
+      v-if="treeConcepts?.length || registry?.getTop"
       class="jskos-vue-itemSelect-tree">
       <button
         type="button"
@@ -23,6 +24,8 @@
         ref="conceptTree"
         :concepts="treeConcepts"
         :model-value="treeSelected"
+        :registry="registry"
+        :scheme="scheme"
         @select="onTreeSelect"
         @open="onTreeOpen" />
     </div>
@@ -39,7 +42,7 @@ defineOptions({ name: "ItemSelect" })
 
 const props = defineProps({
   // Local options (for small sets like languages)
-  options: { type: Array, default: () => [] },
+  options: { type: Array, default: null },
 
   // Remote search returning OpenSearch Suggest: [q, labels[], desc[], uris[]]
   // (Same contract as ItemSuggest expects.)
@@ -49,7 +52,7 @@ const props = defineProps({
   minChars: { type: Number, default: 1 },
 
   // Optional ConceptTree picker
-  treeConcepts: { type: Array, default: () => [] },
+  treeConcepts: { type: Array, default: null },
   treeLoadNarrower: { type: Function, default: null },
 
   // Optional: resolve a URI into a full item object if it wasn't in the suggestion cache
@@ -57,6 +60,11 @@ const props = defineProps({
   resolve: { type: Function, default: null },
 
   placeholder: { type: String, default: "Search…" },
+
+  // load concepts via registry object
+  registry: { type: Object, default: null },
+  // load concepts from this concept scheme
+  scheme: { type: Object, default: null },
 })
 
 const emit = defineEmits(["select"])
@@ -70,6 +78,7 @@ const treeCollapsed = ref(false)
 const cacheByUri = ref(Object.create(null))
 
 // --- helpers (same normalization as before) ---
+// FIXME: use jskos-tools instead
 function notationFromUri(uri) {
   const m = (uri || "").match(/\/class\/([^/]+)\//)
   return m ? decodeURIComponent(m[1]) : null
@@ -81,6 +90,7 @@ function normalize(item) {
   }
 
   const pl = item.prefLabel || {}
+  // FIXME: don't hard-code languages, use jskos-tools instead
   const rawLabel =
     item.__label ||
     pl.und ||
@@ -182,7 +192,16 @@ function remoteSearchWrapped(q) {
 
 // This is the function we pass to ItemSuggest.
 const searchForSuggest = computed(() => {
-  return props.search ? remoteSearchWrapped : localOptionsToSuggest
+  if (props.options?.length) {
+    return localOptionsToSuggest
+  } else if (props.search) {
+    return remoteSearchWrapped
+  } else if (props.registry && props.scheme?.uri) {
+    return search => props.registry.suggest({ search, params: { voc: props.scheme.uri } })
+  } else {
+    console.error("Could not create suggest function for ItemSelect")
+  }
+  return null
 })
 
 // --- tree sync ---
@@ -198,6 +217,15 @@ async function syncTreeTo(concept) {
   })
 }
 
+const resolver = computed(() => {
+  if (props.resolve) {
+    return props.resolve
+  } else if (props.registry?.getConcepts) {
+    return async uri => props.registry.getConcepts({ concepts: [{ uri }]}).then(c => c?.[0])
+  }
+  return null
+})
+
 // Resolve a selected URI to an item object (cache -> resolve() -> fallback {uri})
 async function itemFromUri(uri) {
   const cached = cacheByUri.value?.[uri]
@@ -205,11 +233,12 @@ async function itemFromUri(uri) {
     return cached
   }
 
-  if (props.resolve) {
+  if (resolver.value) {
     try {
-      const full = await props.resolve(uri)
+      const full = await resolver.value(uri)
       return normalize(full) || { uri }
-    } catch {
+    } catch(e) {
+      console.error(e)
       return { uri }
     }
   }
