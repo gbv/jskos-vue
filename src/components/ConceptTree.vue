@@ -1,5 +1,4 @@
 <template>
-  <!-- ConceptTree is basically an extension of ItemList -->
   <item-list
     ref="itemList"
     v-bind="itemListOptions"
@@ -48,7 +47,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, nextTick, ref } from "vue"
+import { computed, reactive, nextTick, ref, watch, useTemplateRef } from "vue"
 import * as jskos from "jskos-tools"
 import ItemList from "./ItemList.vue"
 import Arrow from "./Arrow.vue"
@@ -57,7 +56,7 @@ import "../shared.css"
 defineOptions({ name: "ConceptTree" })
 
 const props = defineProps({
-  // v-model value is the selected concept and is marked specifically
+  // v-model value is the selected concept, marked specifically
   modelValue: {
     type: Object,
     default: null,
@@ -65,7 +64,7 @@ const props = defineProps({
   // array of concepts to be displayed
   concepts: {
     type: Array,
-    required: true,
+    default: null,
   },
   // whether to display concept hierarchy (via narrower concepts)
   hierarchy: {
@@ -77,12 +76,40 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+  // load concepts via registry object
+  registry: {
+    type: Object,
+    default: null,
+  },
+  // load concepts from this concept scheme
+  scheme: {
+    type: Object,
+    default: null,
+  },
 })
+
+const registry = computed(() => {
+  if (!props.registry) {
+    const top0 = props.concepts?.[0]
+    return top0?._registry || top0?.inScheme?.[0]?._registry
+  }
+  return props.registry
+})
+
+const concepts = ref(props.concepts || [])
+const getTop = async () => {
+  if (registry.value?.getTop && props.scheme?.uri && !props.concepts) { 
+    registry.value.getTop({ scheme: props.scheme }).then(top => {
+      concepts.value = top
+    })
+  }
+}
+watch(() => props.registry, getTop)
+watch(() => props.scheme, getTop, { immediate: true })
 
 const emit = defineEmits(["select", "open", "close", "update:modelValue"])
 
-// Template ref to ItemList instance
-const itemListRef = ref(null)
+const itemListRef = useTemplateRef("itemList")
 
 // reactive object of concept URIs to open status values
 const isOpen = reactive({})
@@ -109,7 +136,7 @@ const getChildrenItems = (item) => {
 // convert list of concepts into items with concept, depth, and isSelected
 const items = computed(() => {
   let out = []
-  for (const concept of props.concepts) {
+  for (const concept of concepts.value) {
     const row = {
       concept,
       depth: 0,
@@ -123,12 +150,26 @@ const items = computed(() => {
   return out
 })
 
-const open = (concept) => {
+// Load children of a concept if needed and possible
+const getNarrower = async concept => {
+  if (!concept.narrower || concept.narrower.includes(null)) {
+    if (registry.value?.getNarrower && props.scheme?.uri) {
+      concept.narrower = jskos.sortConcepts(await registry.value.getNarrower({ concept }))
+    }
+  }
+}
+
+const open = async concept => {
   isOpen[concept.uri] = true
   // a certain concept's narrower concepts were opened
   emit("open", concept)
+  await getNarrower(concept)
 }
 const close = (concept) => {
+  if (!isOpen[concept.uri]) {
+    return
+  }
+  
   // Prevent closing if selected concept is child
   let current = props.modelValue?.uri, initial = current
   while (current) {
@@ -149,6 +190,11 @@ const toggle = (concept) => {
     open (concept)
   }
 }
+const collapse = () => {
+  for (let uri in isOpen) {
+    close({ uri })
+  }
+}
 
 // --- methods that proxy to ItemList ---
 function isUriInView(...args) {
@@ -159,9 +205,7 @@ function scrollToUri(...args) {
   return itemListRef.value?.scrollToUri?.(...args)
 }
 
-/**
- * Navigate to a concept URI in the hierarchy.
- */
+// Navigate to a concept URI in the hierarchy.
 async function navigateToUri(uriOrConcept, { select = true, onlyIfNotInView = true } = {}) {
   const uri = typeof uriOrConcept === "string" ? uriOrConcept : uriOrConcept?.uri
   if (!uri) {
@@ -184,16 +228,14 @@ async function navigateToUri(uriOrConcept, { select = true, onlyIfNotInView = tr
   }
 
   // Find registry from top concepts
-  const top0 = props.concepts?.[0]
-  const registry = top0?._registry || top0?.inScheme?.[0]?._registry
-  if (!registry?.getConcepts) {
+  if (!registry.value?.getConcepts) {
     return false
   }
 
   // Build parent chain target -> ... -> root
   let chain = [{ uri }] // will become [root, ..., target]
   try {
-    const fetchOne = async (u) => (await registry.getConcepts({ concepts: [{ uri: u }] }))[0]
+    const fetchOne = async uri => await registry.value?.getConcepts({ concepts: [{ uri }] }).then(c => c?.[0])
     let current = await fetchOne(uri)
     const seen = new Set([uri])
 
@@ -207,12 +249,12 @@ async function navigateToUri(uriOrConcept, { select = true, onlyIfNotInView = tr
       current = await fetchOne(parentUri)
     }
     chain.reverse()
-  } catch {
+  } catch(e) {
     return false
   }
 
   // Walk from root -> target, opening/loading narrower
-  let current = props.concepts.find(c => jskos.compare(c, chain[0]))
+  let current = concepts.value?.find(c => jskos.compare(c, chain[0]))
   if (!current) {
     return false
   }
@@ -222,17 +264,7 @@ async function navigateToUri(uriOrConcept, { select = true, onlyIfNotInView = tr
     isOpen[current.uri] = true
 
     // Load children if needed
-    const needsLoad =
-      !Array.isArray(current.narrower) ||
-      current.narrower.includes(null)
-
-    if (needsLoad && typeof current._getNarrower === "function") {
-      try {
-        current.narrower = jskos.sortConcepts(await current._getNarrower())
-      } catch {
-        // ignore
-      }
-    }
+    await getNarrower(current)
 
     const next = (current.narrower || []).find(ch => jskos.compare(ch, chain[i]))
     if (!next) {
@@ -250,8 +282,7 @@ async function navigateToUri(uriOrConcept, { select = true, onlyIfNotInView = tr
   return true
 }
 
-defineExpose({ isUriInView, scrollToUri, navigateToUri })
-
+defineExpose({ isUriInView, scrollToUri, navigateToUri, close, collapse })
 </script>
 
 <style>

@@ -1,3 +1,8 @@
+## 0.4.1
+
+- Extend ConceptTree with registry, scheme, close, collapse
+- Update and extend documentation
+
 ## 0.4.0
 
 - Add ItemSelect / ItemSelected / RemoveIcon components. (#4)
