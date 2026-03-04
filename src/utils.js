@@ -69,18 +69,6 @@ export function debounce(func, wait, immediate) {
   }
 }
 
-// TODO: remove in a future version. Still used by jskos-proxy.
-// https://github.com/gbv/jskos-vue/issues/31
-export function cdkRegistryToSuggestFunction(registry, { voc = false, scheme }) {
-  return async (query) => {
-    if (voc) {
-      return registry.vocSuggest({ search: query })
-    } else {
-      return registry.suggest({ search: query, scheme })
-    }
-  }
-}
-
 const draggedItem = ref(null)
 export const dragAndDrop = {
   draggedItem,

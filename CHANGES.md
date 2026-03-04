@@ -1,7 +1,9 @@
-## 0.4.1
+## 0.5.0
 
 - Extend ConceptTree with registry, scheme, close, collapse
-- Extend ItemSelect with registry, scheme. Remove prop treeLoadNarrower (*breaking change*)
+- Extend ItemSelect with registry, scheme and slot (#38, #39).
+  Remove prop treeLoadNarrower (*breaking change*)
+- Remove cdkRegistryToSuggestFunction (*breaking change* #31) 
 - Update and extend documentation
 
 ## 0.4.0
