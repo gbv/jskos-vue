@@ -59,16 +59,13 @@
       <div v-if="scheme">
         <item-name :item="scheme" @click="scheme=null"></item-name>
         <hr>
-        <item-details v-if="concept" :item="concept"></item-details>
-        <hr>
-        <!-- TODO: See <https://github.com/gbv/jskos-vue/issues/38> -->
-        <item-select placeholder="Search in scheme…"
-          :search="suggestConcept"
-          :resolve="resolveConcept"
-          :tree-concepts="topConcepts"
-          :tree-load-narrower="loadNarrower"
-          @select="concept = $event"
-          ></item-select>
+        <item-select
+          placeholder="Search in scheme…"
+          :registry="registry"
+          :scheme="scheme"
+          @select="concept = $event">
+          <item-details v-if="concept" :item="concept"></item-details>
+        </item-select>
       </div>
       <!-- TODO: if registry does not support vocSuggest: provide full list of schemes -->
       <item-suggest v-else :search="search => registry.vocSuggest({ search })" @select="updateTerminology" />
@@ -131,21 +128,7 @@
         updateTerminology(scheme) {
           this.scheme = scheme
           this.updateQuery()          
-          this.loadTerminology()?.then(() => this.loadTop())
-        },
-        async loadTop() {
-          this.topConcepts = jskos.sortConcepts(await this.scheme?._getTop())
-        },
-        async suggestConcept(search) {
-          return this.registry?.suggest({ search, scheme: this.scheme })
-        },
-        async resolveConcept(uri) {
-          return (await this.scheme?._registry?.getConcepts({ concepts: [{ uri }] }))[0]
-        },
-        async loadNarrower(concept) {
-          if (!concept.narrower || concept?.narrower.includes(null)) {
-            concept.narrower = jskos.sortConcepts(await concept._getNarrower())
-          }
+          this.loadTerminology()
         },
       },
       watch: {
