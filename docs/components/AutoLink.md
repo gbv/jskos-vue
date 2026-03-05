@@ -4,14 +4,12 @@ Replacement for the `<a>` element that automatically links the URL if it's valid
 
 ## Props
 
-- `href` *string*\
-  a string that could be a URL
-- `text` *string, default value from `href`*\
-  text shown for the link
+- `href` *string* —  a string that could be a URL
+- `text` *string, default value from `href`* — text shown for the link
 
 ## Slots
 
-- `default` alternative to the `text` property
+- `default` — alternative to the `text` property
 
 ## Example
 

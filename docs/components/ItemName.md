@@ -1,26 +1,34 @@
 # ItemName
+
 Represents a JSKOS item (concept or concept scheme) with its notation and label.
 
 Uses [dragAndDrop](../utilities/dragAndDrop) and is draggable by default.
 
 ## Props
-- `item` *object, required*\
-  JSKOS item
-- `showNotation` *boolean, default `true`*\
-  whether to show the item's notation
-- `showLabel` *boolean, default `true`*\
-  whether to show the item's label (`prefLabel`)
-- `fallbackLabel` *string, default `"???"`*
-  - string that will be shown if both notation and label are empty
-- `language` *string, default `undefined`*
-  - preferred language for the label
-  - default: uses [jskos-tools' languagePreference](https://gbv.github.io/jskos-tools/#languagepreference)
-- `clickable` *boolean, default `false`*\
-  adjusts mouse pointer and text decoration on hover if `true`
-- `draggable` *boolean, default `true`*\
-  whether the item is draggable
 
+- `item` *object, required* — JSKOS item
+
+- `showNotation` *boolean, default `true`* — whether to show the item's notation
+
+- `showLabel` *boolean, default `true`* — whether to show the item's label (`prefLabel`)
+
+- `fallbackLabel` *string, default `"???"`*  — string that will be shown if both notation and label are empty
+
+- `language` *string, default `undefined`*  — preferred language for the label\
+  default uses [jskos-tools' languagePreference](https://gbv.github.io/jskos-tools/#languagepreference)
+
+- `clickable` *boolean, default `false`* — adjusts mouse pointer and text decoration on hover if `true`
+
+- `draggable` *boolean, default `true`* — whether the item is draggable
+
+## CSS classes
+
+- `.jskos-vue-itemName` — the component element 
+- `.jskos-vue-itemName-notation` — the notation of the item
+- `.jskos-vue-clickable` — set if the name is clickable
+  
 ## Plugins for notations and labels
+
 You can adjust how notations/labels are processed in `ItemName` by providing plugins. A plugin is a simple function that receives the current label/notation and the component's props as parameters and returns the processed label/notation. Plugins can be added on the imported component directly using the provided `addLabelPlugin` and `addNotationPlugin` methods.
 
 For example, you can use the following snippet to add trailing zeros to DDC notations in the first two levels:

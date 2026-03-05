@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vue App</title>
+  <title>JSKS Vue Demo</title>
   <!-- jskos-vue stylesheet and required libraries (adjust version for updates) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jskos-vue/dist/style.css">
   <script type="importmap">
@@ -37,9 +36,13 @@
     #api-form input, #api-form div {
       grid-column: 2;
     }
+    .jskos-vue-item-details {
+      border: 1px solid 333;
+    }
   </style
 </head>
 <body>
+  <h1><a href="https://github.com/gbv/jskos-vue">jskos-vue</a> demo</h1>
   <div id="app">
     <h2>Registry</h2>
     <p>Where and how to look up scheme data from</p>
@@ -59,6 +62,10 @@
       <div v-if="scheme">
         <item-name :item="scheme" @click="scheme=null"></item-name>
         <hr>
+        <item-details :item="scheme"></item-name>
+        <remove-icon @click="scheme=null" />
+        <hr>
+        <item-details v-if="concept" :item="concept" :show-narrower="false"></item-details>
         <item-select
           placeholder="Search in scheme…"
           :registry="registry"
@@ -98,9 +105,7 @@
       },
       mounted() { 
         this.updateRegistry()
-        if (this.scheme) {
-          this.loadTerminology()
-        }
+        this.loadTerminology()
       },
       methods: {
         query() {
@@ -121,14 +126,32 @@
         },
         loadTerminology() {
           if (this.scheme?.uri && this.registry) {
-            return this.registry.getSchemes({ params: { uri: this.scheme.uri } })
+            this.registry.getSchemes({ params: { uri: this.scheme.uri } })
               .then(res => this.scheme = res[0] || this.scheme)
+              .then(() => this.loadTop())
           }
         },
         updateTerminology(scheme) {
           this.scheme = scheme
           this.updateQuery()          
           this.loadTerminology()
+        },
+        async loadTop() {
+          console.log("loadTop")
+          this.topConcepts = this.scheme?.uri && this.registry?.getTop
+            ? jskos.sortConcepts(await this.registry.getTop({ scheme: this.scheme }))
+            : null
+        },
+        async suggestConcept(search) {
+          return this.registry?.suggest({ search, scheme: this.scheme })
+        },
+        async resolveConcept(uri) {
+          return (await this.scheme?._registry?.getConcepts({ concepts: [{ uri }] }))[0]
+        },
+        async loadNarrower(concept) {
+          if (!concept.narrower || concept?.narrower.includes(null)) {
+            concept.narrower = jskos.sortConcepts(await concept._getNarrower())
+          }
         },
       },
       watch: {

@@ -174,7 +174,7 @@ function scrollToUri(uri, onlyIfNotInView = false) {
 defineExpose({ isUriInView, scrollToUri })
 </script>
 
-<style scoped>
+<style>
 .jskos-vue-itemList {
   padding: 0;
 }

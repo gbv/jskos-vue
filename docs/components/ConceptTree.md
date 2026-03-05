@@ -10,17 +10,13 @@ Component to display a concept tree with hierarchy from concept field `narrower`
 
 ## Props
 
-- `modelValue` *object, v-model, default `null`*\
-   currently selected concept (highlighted)  
-- `concepts` *array*\
-   JSKOS concepts to be displayed (usually top concepts)
-- `hierarchy` *boolean, default `true`*\
-   whether to display concept hierarchy (via `narrower`)
-- `itemListOptions` *object, default `{}`*\
-   options passed through to [ItemList](./ItemList)
-- `registry` *object, default `null`*\
+- `modelValue` *object, v-model, default `null`* — currently selected concept (highlighted)
+- `concepts` *array, required* — JSKOS concepts to be displayed (usually top concepts)
+- `hierarchy` *boolean, default `true`* — whether to display concept hierarchy (via `narrower`)
+- `itemListOptions` *object, default `{}`* — options passed through to [`ItemList`](./ItemList) via `v-bind`
+- `registry` *object, default `null`* —  
    Registry to load concepts from
-- `scheme` *object, default `null`*\
+- `scheme` *object, default `null`* —  
    Concept Scheme to load concepts from. Must have field `uri` or `identifier` at least.
 
 ## Concept loading
@@ -55,17 +51,13 @@ The [methods of ItemList](./ItemList#methods) are exposed to be used on a compon
 
 **Arguments**
 
-- `uriOrConcept` *string | { uri: string }*\
-   the concept URI to scroll to
-- `options` *boolean, default `true`*\
-  whether to set `modelValue` to the target concept  
-- `onlyIfNotInView` *boolean, default `true`*\
-  pass-through to `scrollToUri`  
+- `uriOrConcept` *string | { uri: string }* — the concept URI to scroll to
+- `options` *boolean, default `true`* —  whether to set `modelValue` to the target concept  
+- `onlyIfNotInView` *boolean, default `true`* — pass-through to `scrollToUri`  
+
+If the concept is already rendered, it is scrolled to (and optionally selected). Otherwise the function tries to open the path from the top concepts down to the target using by loading narrower concepts.
 
 **Returns** a Promise with boolean `true` if navigation succeeded, `false` otherwise
-
-- If the concept is already rendered : scroll to it with `scrollToUri` (and optionally select it)
-- Otherwise: tries to open the path from the top concepts down to the target by loading narrower concepts
 
 ### close
 
@@ -83,15 +75,15 @@ Close all opened concepts. Note that parents of selected concepts cannot be clos
   - `row` (`true` when the click was initiated via the row, not on the item directly)
 - `open` emitted when a concept’s narrower concepts are opened. Parameter is the concept.
 - `close` emitted when a concept’s narrower concepts are closed. Parameter is the concept.
-  
-## Layout
+- `update:modelValue`
+  Used for v-model updates. Will always be emitted together with `select` when selection changes.
 
-- `--jskos-vue-conceptTree-selected-bgColor` — row background color for selected concept (v-model)  
-  default: `#fdbd58aa`
-  
-- `--jskos-vue-conceptTree-hover-bgColor` — row hover background color  
-  default: `#fdbd58aa`
-  
+## CSS Classes
+
+- `.jskos-vue-conceptTree` — the component element
+- `.jskos-vue-conceptTree-arrow` — arrow to expand/collapse a subtree
+- `.jskos-vue-conceptTree-depthSpacer` — vertical line left to expanded subtrees
+
 ## Example
 
 ::: component-view

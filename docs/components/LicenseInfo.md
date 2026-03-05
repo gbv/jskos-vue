@@ -1,9 +1,10 @@
 # LicenseInfo
+
 Component to display license information for a JSKOS item.
 
 ## Props
-- `item` *object, required*\
-  JSKOS item (concept or concept scheme)
+
+- `item` *object, required* —  JSKOS item (concept or concept scheme)
 
 ## Examples
 

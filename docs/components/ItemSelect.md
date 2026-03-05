@@ -10,26 +10,43 @@ If you want to show/edit a list, combine it with [ItemSelected](./ItemSelected) 
 
 ## Props
 
-- `options` *array, default `[]`*\
-  local options (small static lists like languages).
-- `search` *function*\
-  remote search function in **OpenSearch Suggest** format (see [ItemSuggest](./ItemSuggest)).
+- `options` *array, default `[]`* — local options (small static lists like languages).
+
+- `search` *function* — remote search function in **OpenSearch Suggest** format (see [ItemSuggest](./ItemSuggest)).
   Default is based on `options` (if set) or on `registry.suggest` (if both `registry` and `scheme` are set).
-- `resolve` *function*\
-  optional async resolver to turn a selected **URI** into a full JSKOS item object  
-  when it is not available in the internal suggestion cache.  
-  Default is based on `options` (if set) or on `registry.getConcepts` (if available).
-- `minChars` *number, default `1`*\
-  minimum query length before searching (applies to `options` and `search`).
-- `registry` *object, default `null`*\
-   Registry to load concepts from
-- `scheme` *object, default `null`*\
-   Concept Scheme to load concepts from. Must have field `uri` or `identifier` at least.
-- `treeConcepts` *array*\
-  top concepts for the `ConceptTree` browser below the input.  
+
+- `resolve` *function* — optional async resolver to turn a selected **URI** into a full JSKOS item object  when it is not available in the internal suggestion cache. Default is based on `options` (if set) or on `registry.getConcepts` (if available).
+
+- `minChars` *number, default `1`* — minimum query length before searching (applies to `options` and `search`).
+
+- `registry` *object, default `null`* — Registry to load concepts from
+
+- `scheme` *object, default `null`* — Concept Scheme to load concepts from. Must have field `uri` or `identifier` at least.
+
+- `treeConcepts` *array* — top concepts for the `ConceptTree` browser below the input.  
   Default is loaded via `registry.getTop` if both `registry` and `scheme` are set.
-- `placeholder` *string, default `"Search…"`*\
-  input placeholder.
+
+- `placeholder` *string, default `"Search…"`* — 
+ 
+
+### ConceptTree integration
+
+- `treeConcepts` *array, default `[]`* — top concepts for the `ConceptTree` browser below the input.  
+  default: `[]` (no tree is shown for empty array)
+
+- `treeLoadNarrower` *function* — called when a tree node is opened; should load `narrower`.  
+ 
+
+### Optional resolving
+
+- `resolve` *function*
+  optional async resolver to turn a selected **URI** into a full item object  
+  when it is not available in the internal suggestion cache.  
+  Signature: `async (uri) => item`
+
+### UI
+
+- `placeholder` *string, default `"Search…"`* — input placeholder.
   
 See [concept loading of ConceptTree](./ConceptTree#concept-loading) for background information on `registry` and `scheme`.
 

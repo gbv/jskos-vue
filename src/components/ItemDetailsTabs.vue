@@ -271,7 +271,7 @@ const fields_ = computed(() => Object.assign({
 
 </script>
 
-<style scoped>
+<style>
 .jskos-vue-itemDetails-tabs {
   margin-top: 8px;
   line-height: var(--jskos-vue-itemDetails-lineHeight);

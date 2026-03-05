@@ -37,5 +37,5 @@ test("ItemName", async () => {
   expect(wrapper.text()).toBe("Nothing here")
 
   await wrapper.setProps({ clickable: true })
-  expect(wrapper.classes()).toContain("clickable")
+  expect(wrapper.classes()).toContain("jskos-vue-clickable")
 })

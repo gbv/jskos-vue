@@ -2,7 +2,7 @@
   <span
     :class="{
       'jskos-vue-itemName': true,
-      clickable,
+      'jskos-vue-clickable': clickable
     }"
     :draggable="draggable"
     @dragstart="dragstart(item)"
@@ -115,12 +115,11 @@ const label = computed(() =>
 )
 </script>
 
-<style scoped>
+<style>
 .jskos-vue-itemName-notation {
   font-weight: bold;
 }
-.jskos-vue-itemName.clickable:hover {
-  cursor: pointer;
+.jskos-vue-itemName.jskos-vue-clickable:hover {
   text-decoration: underline;
 }
 </style>

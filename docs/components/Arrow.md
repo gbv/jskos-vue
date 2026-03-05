@@ -1,13 +1,16 @@
 # Arrow
 
-Arrows via CSS.
+A small arrows implemented in pure CSS.
 
 ## Props
 
-- `direction` *string, required*\
-  up/down/left/right
-- `clickable` *boolean, default `false`*\
-  adjusts color and mouse pointer if `true`
+- `direction` *string, required* — up/down/left/right
+- `clickable` *boolean, default `false`* — adjusts color and mouse pointer if `true`
+
+## CSS Classes
+
+- `.jskos-vue-arrow` — the component element
+- `.jskos-vue-clickable` — set if the arrow is clickable
 
 ## Example
 

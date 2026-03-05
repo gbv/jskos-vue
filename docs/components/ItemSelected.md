@@ -4,38 +4,33 @@ A list of JSKOS items where items can be reordered and removed from.
 
 It supports three views:
 
-- **`list`**: list rendering via [`ItemList`](./ItemList)
-- **`tags`**: inline list of compact tags
-- **`table`**: rows with ordering controls (up/down)
+- **`list`** — list rendering via [`ItemList`](./ItemList)
+- **`tags`** — inline list of compact tags
+- **`table`** — rows with ordering controls (up/down)
 
 Uses [`ItemName`](./ItemName) to display items.
 
 ## Props
  
-- `modelValue` *array, default `[]`*\ 
-  selected items.
+- `modelValue` *array, default `[]`* — selected items.
   Use watch option `{ deep: true }` to get change events.
-- `view` *string, default `"tags"`*\ 
-  display mode: `"tags" | "table" | "list"`
-- `orderable` *boolean, default `false`*\ 
-  show move up/down buttons in `table` view
-- `itemNameOptions` *object, default `{ draggable: false }`*\ 
+- `view` *string, default `"tags"`* — display mode: `"tags" | "table" | "list"`
+- `orderable` *boolean, default `false`* — show move up/down buttons in `table` view
+- `itemNameOptions` *object, default `{ draggable: false }`* —  
   props forwarded to [`ItemName`](./ItemName)
   - Field `draggable` is set to `false`, unless explicitly enabled
-- `removable` *boolean, default `false`*\ 
-  if `true`, show a remove icon in `view="list"` (like Cocoda)
-- `removeable` *boolean, default `false`*\ 
-  legacy spelling, treated like `removable`
+- `removable` *boolean, default `false`* — if `true`, show a remove icon in `view="list"` (like Cocoda)
+- `removeable` *boolean, default `false`* — legacy spelling, treated like `removable`
   
 ## Events
 
 - `select`  
   Emitted with payload `{ item }` when the user clicks on an item
 
-## Layout
+## CSS variables and classes
 
-- `--jskos-vue-itemSelected-tags-bgColor` - background color of tags. Set to `--jskos-vue-highlight-bgColor` by default.
-- `--jskos-vue-itemSelected-tags-color` - text color of tags. Set to `inherit` by default.
+- `--jskos-vue-itemSelected-tags-bgColor` — background color of tags. Set to `--jskos-vue-highlight-bgColor` by default.
+- `--jskos-vue-itemSelected-tags-color` — text color of tags. Set to `inherit` by default.
 
 ## Example
 
@@ -63,7 +58,7 @@ function onChange(ev) {
   View:
   <button v-for="v in ['tags','table','list']" :key="v" @click="view=v">{{ v }}</button>
   <label style="margin-left: 10px;">
-    <input type="checkbox" v-model="orderable"> orderable (table only)
+    <input type="checkbox" v-model="orderable"> orderable
   </label>
   <label style="margin-left: 10px;">
     <input type="checkbox" v-model="removable"> removable

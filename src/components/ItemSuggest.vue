@@ -293,7 +293,7 @@ defineExpose({
 })
 </script>
 
-<style scoped>
+<style>
 .jskos-vue-itemSuggest {
   position: relative;
   height: 34px;

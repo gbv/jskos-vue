@@ -304,6 +304,9 @@ defineExpose({ isUriInView, scrollToUri, navigateToUri, close, collapse })
 .jskos-vue-conceptTree-arrow > div {
   padding-left: 0 !important;
 }
+</style>
+
+<style scoped>
 /* Add padding to list elements when hierachy is turned off */
 .jskos-vue-conceptTree-noHierarchy > div {
   padding-left: 5px !important;

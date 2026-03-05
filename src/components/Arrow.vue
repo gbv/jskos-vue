@@ -2,7 +2,7 @@
   <div
     :class="{
       'jskos-vue-arrow': true,
-      'jskos-vue-arrow-clickable': clickable,
+      'jskos-vue-clickable': clickable,
     }">
     <div
       :class="`jskos-vue-arrow-${direction}`" />
@@ -27,7 +27,7 @@ defineProps({
 })
 </script>
 
-<style scoped>
+<style>
 .jskos-vue-arrow {
   display: inline-block;
   vertical-align: middle;
@@ -39,10 +39,7 @@ defineProps({
   padding: 3px;
   margin: 2px 5px;
 }
-.jskos-vue-arrow-clickable:hover {
-  cursor: pointer;
-}
-.jskos-vue-arrow-clickable:hover > div {
+.jskos-vue-arrow.jskos-vue-clickable:hover > div {
   border-color: var(--jskos-vue-arrow-hover-color);
 }
 .jskos-vue-arrow > .jskos-vue-arrow-right {

@@ -136,7 +136,7 @@ const { dragover, dragenter, dragleave, drop, isDraggingOver } = addDropzone(nul
 const itemListOptions_ = computed(() => Object.assign({ draggable: props.draggable }, props.itemListOptions))
 </script>
 
-<style scoped>
+<style>
 .jskos-vue-itemDetails {
   position: relative;
   font-size: var(--jskos-vue-fontSize-small);
@@ -162,15 +162,6 @@ const itemListOptions_ = computed(() => Object.assign({ draggable: props.draggab
 }
 .jskos-vue-itemDetails-broader > div:before {
   content: "˄";
-}
-.jskos-vue-itemDetails-licenseBadge {
-  padding-left: 5px;
-}
-.jskos-vue-itemDetails-licenseBadge > img {
-  height: 1em;
-  vertical-align: middle;
-  padding-bottom: 4px;
-  display: inline-block;
 }
 .jskos-vue-itemDetails-dropzone {
   position: absolute;

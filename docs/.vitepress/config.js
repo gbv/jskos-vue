@@ -37,6 +37,7 @@ export default defineConfig({
   lang: "en-US",
 
   ignoreDeadLinks: 'localhostLinks',
+  appearance:  "force-auto",
 
   themeConfig: {
     repo: "gbv/jskos-vue",

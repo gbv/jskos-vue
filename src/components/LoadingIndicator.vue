@@ -16,7 +16,6 @@ import "../shared.css"
 /**
  * Component that displays a spinning loading indicator.
  */
-
 const props = defineProps({
   /**
    * The size of the loading indicator.
@@ -37,7 +36,7 @@ const sizePixels = computed(() => ({
 </script>
 
 <!-- adjusted from: https://www.w3schools.com/howto/howto_css_loader.asp -->
-<style scoped>
+<style>
 .jskos-vue-loadingIndicator {
   border-radius: 50%;
   animation: jskos-vue-loadingIndicator-spin 2s linear infinite;

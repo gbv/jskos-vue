@@ -64,7 +64,7 @@ test("ItemSelected: empty model renders nothing", () => {
 
 test("ItemSelected: tags view emits select and removes items (in-place splice)", async () => {
   const items = reactive([{ uri: "urn:1" }, { uri: "urn:2" }, { uri: "urn:3" }])
-  const w = mountSelected({ modelValue: items, view: "tags" })
+  const w = mountSelected({ modelValue: items, view: "tags", removable: true })
 
   expect(w.findAll(".jskos-vue-itemSelected-tag").length).toBe(3)
 

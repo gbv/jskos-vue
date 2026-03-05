@@ -1,15 +1,16 @@
 # LoadingIndicator
+
 Spinning loading indicator.
 
 ## Props
-- `size` *string, default `md`*\
-  size of the indicator: `sm | md | lg | xl`
 
-## CSS Variables
-- `--jskos-vue-loadingIndicator-primary-color` *string, default `lightgray`*\
-  color of the ring
-- `--jskos-vue-loadingIndicator-secondary-color` *string, default `blue`*\
-  color of the spinner
+- `size` *string, default `md`* — size of the indicator: `sm | md | lg | xl`
+
+## CSS classes and variables
+
+- `.jskos-vue-loadingIndicator` — the component element 
+- `--jskos-vue-loadingIndicator-primary-color` *string, default `lightgray`* — color of the ring
+- `--jskos-vue-loadingIndicator-secondary-color` *string, default `blue`* — color of the spinner
 
 ## Examples
 

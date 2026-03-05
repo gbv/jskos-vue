@@ -1,3 +1,8 @@
+## 0.5.1
+
+- Make most CSS classes global and document them
+- Support dark mode (#37)
+
 ## 0.5.0
 
 - Extend ConceptTree with registry, scheme, close, collapse

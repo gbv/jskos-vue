@@ -3,21 +3,29 @@
 Input field to search and select an item (usually concept or concept scheme) from a list of search results. Shows a [LoadingIndicator](./LoadingIndicator) while waiting for results.
 
 ## Props
-- `search(query)` *async function*\
-  custom search function that provides results in [OpenSearch Suggest Format](https://github.com/dewitt/opensearch/blob/master/mediawiki/Specifications/OpenSearch/Extensions/Suggestions/1.1/Draft%201.wiki)
+
+- `search(query)` *async function* — custom search function that provides results in [OpenSearch Suggest Format](https://github.com/dewitt/opensearch/blob/master/mediawiki/Specifications/OpenSearch/Extensions/Suggestions/1.1/Draft%201.wiki):
   - `query` is the search string
   - The Promise that is returned by this function can optionally have a property `cancel` attached. If this is the case, it will be called if there is a newer search query and the previous request should be aborted.
-- `placeholder` *string, default `"Type to search..."`*\
-  placeholder string. `null` uses the default placeholder, an empty string clears it.
+- `placeholder` *string, default `"Type to search..."`* — placeholder string. `null` uses the default placeholder, an empty string clears it.
 
 ## Methods
-- `focus()` - focuses the input field
-- `setQuery(newQuery, focus = false)` - sets the query (input field) to `newQuery`; optionally focuses the input field
+
+- `focus()` — focuses the input field
+- `setQuery(newQuery, focus = false)` — sets the query (input field) to `newQuery`; optionally focuses the input field
 
 ## Events
-- `select`
-  - Emitted when a search result is selected (either via click or enter).
-  - Parameter is the JSKOS concept of the selected result (with `uri` and `inScheme` properties).
+
+- `select` is emitted when a search result is selected (either via click or enter). Parameter is the JSKOS concept of the selected result (with `uri` and `inScheme` properties).
+
+## CSS classes
+
+- `.jskos-vue-itemSuggest` — the component element
+- `.jskos-vue-itemSuggest-loading` — 
+- `.jskos-vue-itemSuggest-results` — 
+- `.jskos-vue-itemSuggest-results-item` — 
+- `.jskos-vue-itemSuggest-results-list` — 
+- `.jskos-vue-itemSuggest-selected` — 
 
 ## Examples
 

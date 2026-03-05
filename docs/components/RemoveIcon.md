@@ -15,9 +15,9 @@ Small button component showing a “×” remove icon.
   Emitted when the button is clicked.
   Parameter is the native click event.
 
-## CSS
+## CSS Classes
 
-- Class `.jskos-vue-removeIcon`
+- `.jskos-vue-removeIcon` — the component element 
 
 ## Localized labels
 

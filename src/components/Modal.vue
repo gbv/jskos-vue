@@ -22,7 +22,7 @@
           <div class="jskos-vue-modal-body">
             <slot />
           </div>
-          <footer class="jskos-vue-modal-footer">
+          <footer>
             <slot name="footer" />
           </footer>
         </div>
@@ -93,14 +93,6 @@ defineExpose({
 </script>
 
 <style>
-.jskos-vue-modal-header > h1 {
-  font-size: 1.5rem;
-  margin: 1rem 1rem;
-  flex: 1;
-}
-</style>
-
-<style scoped>
 .jskos-vue-modal {
   position: fixed;
   top: 0;
@@ -121,7 +113,6 @@ defineExpose({
   top: 50%;
   left: 50%;
   transform: translateX(calc(-50% - 1em)) translateY(calc(-50% - 1em));
-  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   z-index: var(--jskos-vue-modal-zIndexBase);
   display: flex;
@@ -130,8 +121,13 @@ defineExpose({
 }
 .jskos-vue-modal-header {
   background-color: var(--jskos-vue-modal-bgColor);
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--jskos-vue-modal-background-color);
   display: flex;
+}
+.jskos-vue-modal-header > h1 {
+  font-size: 1.5rem;
+  margin: 1rem 1rem;
+  flex: 1;
 }
 .jskos-vue-modal-header > button {
   padding: 1rem 1rem;
@@ -150,11 +146,10 @@ defineExpose({
   overflow-y: auto;
   position: relative;
 }
-.jskos-vue-modal-footer {
-  border-top: 1px solid #dee2e6;
+.jskos-vue-modal-dialog > footer {
+  border-top: 1px solid var(--jskos-vue-border-color);
   padding: 8px;
   font-size: var(--jskos-vue-fontSize-small);
-  background-color: var(--jskos-vue-modal-footer-bgColor);
 }
 .jskos-vue-modal-backdrop {
   position: absolute;
@@ -166,6 +161,9 @@ defineExpose({
   background-color: #000;
   opacity: 0.5;
 }
+</style>
+
+<style scoped>
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.15s ease;
 }

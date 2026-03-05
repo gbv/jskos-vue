@@ -1,50 +1,46 @@
 # ItemDetails
+
 Component to display details for a JSKOS item.
 
 Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo), [AutoLink](./AutoLink). Also uses [dragAndDrop](../utilities/dragAndDrop) and defines a dropzone for items. Dropped items will trigger the `select` event.
 
 ## Props
-- `item` *object, required*\
-  JSKOS item (concept or concept scheme)
-- `itemListOptions` *object, default `{}`\
-  options that are passed along to [ItemList](./ItemList) via v-bind
-- `showTabs` *boolean, default `true`*\
-  option whether to show ItemDetailsTabs
-- `showAncestors` *boolean, default `true`*\
-  option whether to show the item's ancestors
-- `showBroader` *boolean, default `true`*\
-  option whether to show the item's broader concepts
-- `showNarrower` *boolean, default `true`*\
-  option whether to show the item's narrower concepts
-- `dropzone` *boolean, default `true`*\
-  option whether the component is a drop zone for concepts
-- `draggable` *boolean, default `true`*\
-  whether item elements are draggable
-  - This will also set `itemListOptions.draggable` if it's not set separately.
-- `flat` *boolean, default `false`*\
-  whether details are displayed in a flat layout (opposed to tabs; experimental)
-- `fields` *object, default `{}`*\
-  configures which JSKOS fields are shown
-  - By default, all fields are shown, except for `publisher` for concepts.
+
+- `item` *object, required* — JSKOS item (concept or concept scheme)
+- `itemListOptions` *object, default `{}` — options that are passed along to [ItemList](./ItemList) via v-bind
+- `showTabs` *boolean, default `true`* — option whether to show ItemDetailsTabs
+- `showAncestors` *boolean, default `true`* — option whether to show the item's ancestors
+- `showBroader` *boolean, default `true`* — option whether to show the item's broader concepts
+- `showNarrower` *boolean, default `true`* — option whether to show the item's narrower concepts
+- `dropzone` *boolean, default `true`* — option whether the component is a drop zone for concepts
+- `draggable` *boolean, default `true`* — whether item elements are draggable. Also sets `itemListOptions.draggable` if not set separately.
+- `flat` *boolean, default `false`* — whether details are displayed in a flat layout (opposed to tabs; experimental)
+- `fields` *object, default `{}`* — configures which JSKOS fields are shown. By default all fields, except for `publisher` of concepts.
 
 ## Slots
-- `before`: Content shown above the component (same as `beforeName`).
-- `beforeName`: Content shown before the item's name.
-- `afterName`: Content shown after the item's name.
-- `beforeTabs`: Content shown right before detail tabs (below ancestors and broader)
-- `afterTabs`: Content shown right after detail tabs (above narrower)
-- `after`: Content shown below the component.
-- `additionalTabs`: Slot to add additional tabs (via [jskos-vue-tabs](https://github.com/gbv/jskos-vue-tabs)) or absolutely positioned content for all tabs.
+
+- `before` — shown above the component (same as `beforeName`).
+- `beforeName` — shown before the item's name.
+- `afterName` — shown after the item's name.
+- `beforeTabs` — shown right before detail tabs (below ancestors and broader)
+- `afterTabs` — shown right after detail tabs (above narrower)
+- `after` — shown below the component.
+- `additionalTabs` — slot to add additional tabs (via [jskos-vue-tabs](https://github.com/gbv/jskos-vue-tabs)) or absolutely positioned content for all tabs.
 
 ## Events
-- `select`
-  - Emitted when a concept is selected.
-  - Parameter is an object with properties `item` (containing the clicked JSKOS concept) and `row` (containing a boolean which is `true` when the click was initiated via the row, not on the item directly).
 
-## Layout
+- `select` is emitted when a concept is selected. Parameter is an object with properties `item` (containing the clicked JSKOS concept) and `row` (containing a boolean which is `true` when the click was initiated via the row, not on the item directly).
 
+## CSS variables and classes
+
+- `.jskos-vue-itemDetails` — the component element
+- `.jskos-vue-itemDetails-name`
+- `.jskos-vue-itemDetails-dropzone`
+- `.jskos-vue-itemDetails-ancestors`
+- `.jskos-vue-itemDetails-broader`
+- `.jskos-vue-itemDetails-narrower`
+- `.jskos-vue-itemDetails-tabs`
 - `--jskos-vue-itemDetails-dropzone-bgCover` - background color for overlay which is shown when an item is being dragged over ItemDetails
-  - default: `#eeeeee99`
 
 ## Examples
 

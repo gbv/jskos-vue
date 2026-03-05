@@ -3,39 +3,28 @@
 A full-screen modal.
 
 ## Props
-- `modelValue` *boolean, v-model*\
-  whether the modal is currently shown
+
+- `modelValue` *boolean, v-model* —  whether the modal is currently shown
 
 ## Slots
-- default: Body content
-- `header`: Header content
-- `footer`: Footer content
+
+- `default` — body content
+- `header` — header content
+- `footer` — footer content
 
 ## Methods
-- `show()` - shows the modal
-- `hide()` - hides the modal
 
-## Events
-- `update:modelValue`
-  - Used to push changes to v-model value.
+- `show` — show the modal
+- `hide` — hide the modal
 
 ## CSS Variables
-- `--jskos-vue-modal-bgColor` - background color for header and body of the modal
-  - default: same as `--jskos-vue-bgColor` (white)
-- `--jskos-vue-modal-footer-bgColor` - footer background color
-  - default: `rgba(0, 0, 0, 0.05)`
-- `--jskos-vue-modal-minWidth` - minimum width of the modal
-  - default: `400px`
-  - Useful tip: Set this value to `var(--jskos-vue-modal-maxWidth)` to have a consistently sized full-screen modal.
-- `--jskos-vue-modal-maxWidth` - maximum width of the modal
-  - default: `800px`
-- `--jskos-vue-modal-minHeight` - minimum height of the modal
-  - default: `300px`
-  - Useful tip: Set this value to `var(--jskos-vue-modal-maxHeight)` to have a consistently sized full-screen modal.
-- `--jskos-vue-modal-maxHeight` - maximum height of the modal
-  - default: `calc(100% - 3.5rem)`
-- `--jskos-vue-modal-zIndexBase` - base value for `z-index`
-  - default: `1000`
+
+- `--jskos-vue-modal-bgColor` — background color for header and body of the modal
+- `--jskos-vue-modal-minWidth` — minimum width of the modal. Set this value to `var(--jskos-vue-modal-maxWidth)` to have a consistently sized full-screen modal.
+- `--jskos-vue-modal-maxWidth` — maximum width of the modal
+- `--jskos-vue-modal-minHeight` — minimum height of the modal. Set this value to `var(--jskos-vue-modal-maxHeight)` to have a consistently sized full-screen modal.
+- `--jskos-vue-modal-maxHeight`  — maximum height of the modal
+- `--jskos-vue-modal-zIndexBase`  — base value for `z-index`
 
 ## Examples
 

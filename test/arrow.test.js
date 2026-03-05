@@ -11,6 +11,6 @@ test("Arrow", async () => {
   expect(root.get("div").classes()).toStrictEqual(["jskos-vue-arrow-up"])
 
   await arrow.setProps({ clickable: true, direction: "down" })
-  expect(root.classes()).toStrictEqual(["jskos-vue-arrow", "jskos-vue-arrow-clickable"])
+  expect(root.classes()).toStrictEqual(["jskos-vue-arrow", "jskos-vue-clickable"])
   expect(root.get("div").classes()).toStrictEqual(["jskos-vue-arrow-down"])
 })

@@ -14,7 +14,9 @@
           v-bind="tagItemNameProps"
           @click="emit('select', { item })" />
         
-        <RemoveIcon @click.stop="removeItem(item)" />
+        <RemoveIcon 
+          v-if="removableEffective"
+          @click.stop="removeItem(item)" />
 
       </span>
     </div>
@@ -59,6 +61,7 @@
             </button>
 
             <RemoveIcon
+              v-if="removableEffective"
               class="jskos-vue-itemSelected-actionBtn"
               @click.stop="removeItem(item)" />
           </div>
@@ -175,7 +178,7 @@ function onListSelect(ev) {
 <style>
 /* TABLE */
 .jskos-vue-itemSelected-table {
-  border: 1px solid rgba(2, 6, 23, 0.12);
+  border: 1px solid var(--jskos-vue-border-color);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -183,11 +186,11 @@ function onListSelect(ev) {
 .jskos-vue-itemSelected-row {
   display: flex;
   align-items: stretch;
-  background: #fff;
+  background: var(--jskos-vue-bgColor);
 }
 
 .jskos-vue-itemSelected-row + .jskos-vue-itemSelected-row {
-  border-top: 1px solid rgba(2, 6, 23, 0.12);
+  border-top: 1px solid var(--jskos-vue-border-color);
 }
 
 .jskos-vue-itemSelected-cell {
@@ -208,13 +211,13 @@ function onListSelect(ev) {
 .jskos-vue-itemSelected-actionGroup {
   display: flex;
   overflow: hidden;
-  background: #fff;
+  background: var(--jskos-vue-bgColor);
 }
 
 .jskos-vue-itemSelected-actionBtn {
   width: 44px;
   border: 0;
-  border-left: 1px solid rgba(2, 6, 23, 0.12);
+  border-left: 1px solid var(--jskos-vue-border-color);
   border-radius: 0;
   background: transparent;
   cursor: pointer;
