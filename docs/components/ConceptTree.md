@@ -14,10 +14,8 @@ Component to display a concept tree with hierarchy from concept field `narrower`
 - `concepts` *array, default `null`* — JSKOS concepts to be displayed (usually top concepts). Optional if registry and scheme are provided.
 - `hierarchy` *boolean, default `true`* — whether to display concept hierarchy (via `narrower`)
 - `itemListOptions` *object, default `{}`* — options passed through to [`ItemList`](./ItemList) via `v-bind`
-- `registry` *object, default `null`* —  
-   Registry to load concepts from
-- `scheme` *object, default `null`* —  
-   Concept Scheme to load concepts from. Must have field `uri` or `identifier` at least.
+- `registry` *object, default `null`* — Registry to load concepts from
+- `scheme` *object, default `null`* — Concept Scheme to load concepts from. Must have field `uri` or `identifier` at least.
 
 ## Concept loading
 
@@ -51,14 +49,12 @@ The [methods of ItemList](./ItemList#methods) are exposed to be used on a compon
 
 ### navigateToUri
 
-**Arguments**
+Navigate to a concept in the hierarchy with loading missing concepts. If the concept is already rendered, it is scrolled to (and optionally selected). Otherwise the function tries to open the path from the top concepts down to the target using by loading narrower concepts. Returns a Promise with boolean `true` if navigation succeeded, `false` otherwise. Method arguments:
 
 - `uriOrConcept` *string | { uri: string }* — the concept URI to navigate to
 - `options` *object, optional*
   - `select` *boolean, default `true`* — whether to set `modelValue` to the target concept
   - `onlyIfNotInView` *boolean, default `true`* — pass-through to `scrollToUri`
-
-If the concept is already rendered, it is scrolled to (and optionally selected). Otherwise the function tries to open the path from the top concepts down to the target by loading missing concepts as needed.
 
 **Returns** a Promise resolving to `true` if navigation succeeded, `false` otherwise.
 
