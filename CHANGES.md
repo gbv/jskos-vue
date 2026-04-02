@@ -1,3 +1,7 @@
+## 0.5.2
+- Expose open method in ConceptTree
+- update dependencies
+
 ## 0.5.1
 
 - Make most CSS classes global and document them
