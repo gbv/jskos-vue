@@ -282,7 +282,7 @@ async function navigateToUri(uriOrConcept, { select = true, onlyIfNotInView = tr
   return true
 }
 
-defineExpose({ isUriInView, scrollToUri, navigateToUri, close, collapse })
+defineExpose({ isUriInView, scrollToUri, navigateToUri, open, close, collapse })
 </script>
 
 <style>
