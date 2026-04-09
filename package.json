@@ -51,7 +51,7 @@
     "@vitest/coverage-v8": "^4.0.18",
     "@vue/test-utils": "^2.4.6",
     "cocoda-sdk": "^3.5.0",
-    "eslint": "^10.0.0",
+    "eslint": "^10.2.0",
     "eslint-config-gbv": "^2.7.0",
     "happy-dom": "^20.5.0",
     "http-server": "^14.1.1",
