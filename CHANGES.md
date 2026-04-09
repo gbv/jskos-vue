@@ -1,14 +1,9 @@
-## 0.5.2
-- Expose open method in ConceptTree
-- update dependencies
-
-## 0.5.1
-
-- Make most CSS classes global and document them
-- Support dark mode (#37)
-
 ## 0.5.0
 
+- Expose open method in ConceptTree
+- update dependencies
+- Support dark mode (#37)
+- Make most CSS classes global and document them
 - Extend ConceptTree with registry, scheme, close, collapse
 - Extend ItemSelect with registry, scheme and slot (#38, #39).
   Remove prop treeLoadNarrower (*breaking change*)
