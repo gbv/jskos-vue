@@ -39,6 +39,14 @@ export default defineConfig({
   ignoreDeadLinks: 'localhostLinks',
   appearance:  "force-auto",
 
+  vite: {
+    build: { target: "esnext" },
+    esbuild: { target: "esnext" },
+    optimizeDeps: {
+      esbuildOptions: { target: "esnext" },
+    },
+  },
+
   themeConfig: {
     repo: "gbv/jskos-vue",
     docsDir,
