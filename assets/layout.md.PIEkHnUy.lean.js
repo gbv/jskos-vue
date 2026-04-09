@@ -1,0 +1,1 @@
+import{_ as i,o as a,c as e,ai as t}from"./chunks/framework.AlDDizky.js";const c=JSON.parse('{"title":"Layout","description":"","frontmatter":{},"headers":[],"relativePath":"layout.md","filePath":"layout.md"}'),n={name:"layout.md"};function l(h,s,p,r,o,k){return a(),e("div",null,[...s[0]||(s[0]=[t("",13)])])}const E=i(n,[["render",l]]);export{c as __pageData,E as default};
