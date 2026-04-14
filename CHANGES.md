@@ -1,3 +1,11 @@
+## 0.5.1
+
+- Fix automatic tree navigation in `ItemSelect` / `ConceptTree`
+- Fix narrower loading in `ConceptTree` via `_getNarrower()` / registry
+- Fix `ItemSuggest` request handling by removing problematic cancellation logic
+- Update related tests and docs
+- Update dependencies
+
 ## 0.5.0
 
 - Expose open method in ConceptTree

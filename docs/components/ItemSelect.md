@@ -56,8 +56,7 @@ The default slot is shown between input field and hierarchy.
 
 ## Events
 
-- `select` — emitted when an item is picked (via typeahead or tree).  
-  Payload is usually a **normalized item**. If resolving is not possible it may fall back to `{ uri }`.
+- `select` — emitted when an item is picked (via typeahead or tree). Payload is usually a normalized item. If resolving is not possible, it may fall back to `{ uri }`.
 
 ## Behavior notes
 

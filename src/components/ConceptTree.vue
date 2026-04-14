@@ -96,14 +96,35 @@ const registry = computed(() => {
   return props.registry
 })
 
-const concepts = ref(props.concepts || [])
+const loadedConcepts = ref([])
+
+watch(
+  () => props.concepts,
+  (value) => {
+    loadedConcepts.value = value || []
+  },
+  { immediate: true },
+)
+
 const getTop = async () => {
-  if (registry.value?.getTop && props.scheme?.uri && !props.concepts) { 
-    registry.value.getTop({ scheme: props.scheme }).then(top => {
-      concepts.value = top
-    })
+  if (props.concepts?.length) {
+    return loadedConcepts.value
   }
+  if (registry.value?.getTop && props.scheme?.uri && !props.concepts) {
+    loadedConcepts.value = jskos.sortConcepts(
+      await registry.value.getTop({ scheme: props.scheme }),
+    )
+  }
+  return loadedConcepts.value
 }
+
+async function ensureTopConcepts() {
+  if (loadedConcepts.value?.length) {
+    return loadedConcepts.value
+  }
+  return await getTop()
+}
+
 watch(() => props.registry, getTop)
 watch(() => props.scheme, getTop, { immediate: true })
 
@@ -136,7 +157,7 @@ const getChildrenItems = (item) => {
 // convert list of concepts into items with concept, depth, and isSelected
 const items = computed(() => {
   let out = []
-  for (const concept of concepts.value) {
+  for (const concept of loadedConcepts.value) {
     const row = {
       concept,
       depth: 0,
@@ -151,11 +172,20 @@ const items = computed(() => {
 })
 
 // Load children of a concept if needed and possible
-const getNarrower = async concept => {
-  if (!concept.narrower || concept.narrower.includes(null)) {
-    if (registry.value?.getNarrower && props.scheme?.uri) {
-      concept.narrower = jskos.sortConcepts(await registry.value.getNarrower({ concept }))
-    }
+const getNarrower = async (concept) => {
+  if (concept.narrower && !concept.narrower.includes(null)) {
+    return
+  }
+
+  if (typeof concept._getNarrower === "function") {
+    concept.narrower = jskos.sortConcepts(await concept._getNarrower())
+    return
+  }
+
+  if (registry.value?.getNarrower) {
+    concept.narrower = jskos.sortConcepts(
+      await registry.value.getNarrower({ concept }),
+    )
   }
 }
 
@@ -212,6 +242,8 @@ async function navigateToUri(uriOrConcept, { select = true, onlyIfNotInView = tr
     return false
   }
 
+  await ensureTopConcepts()
+
   // Fast path: already rendered -> scroll (+ optional select)
   const rendered = items.value.find(i => jskos.compare(i.concept, { uri }))?.concept
   if (rendered) {
@@ -254,7 +286,7 @@ async function navigateToUri(uriOrConcept, { select = true, onlyIfNotInView = tr
   }
 
   // Walk from root -> target, opening/loading narrower
-  let current = concepts.value?.find(c => jskos.compare(c, chain[0]))
+  let current = loadedConcepts.value?.find(c => jskos.compare(c, chain[0]))
   if (!current) {
     return false
   }

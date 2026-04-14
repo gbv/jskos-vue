@@ -103,7 +103,6 @@ const emit = defineEmits(["select"])
   
 const isLoading = ref(false)
 const isOpen = ref(false)
-const cancel = ref(null)
 const query = ref("")
 const searchSelected = ref(-1)
 const results = ref([])
@@ -121,7 +120,7 @@ const search = debounce(async (searchQuery) => {
   isLoading.value = true
 
   const promise = props.search(searchQuery)
-  cancel.value = promise.cancel
+  
 
   // convert into different array
   let suggestResults
@@ -141,18 +140,12 @@ const search = debounce(async (searchQuery) => {
   // check if value has changed since starting the request
   if (searchQuery === query.value.trim()) {
     results.value = suggestResults
-    cancel.value = null
     isLoading.value = false
   }
 }, 200)
 
 watch(query, (newQuery) => {
   searchSelected.value = -1
-  // Already cancel previous request
-  if (cancel.value != null) {
-    cancel.value("There was a newer search query.")
-    cancel.value = null
-  }
   if (newQuery === "") {
     isLoading.value = false
     isOpen.value = false

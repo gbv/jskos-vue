@@ -11,7 +11,7 @@ Component to display a concept tree with hierarchy from concept field `narrower`
 ## Props
 
 - `modelValue` *object, v-model, default `null`* — currently selected concept (highlighted)
-- `concepts` *array, required* — JSKOS concepts to be displayed (usually top concepts)
+- `concepts` *array, default `null`* — JSKOS concepts to be displayed (usually top concepts). Optional if registry and scheme are provided.
 - `hierarchy` *boolean, default `true`* — whether to display concept hierarchy (via `narrower`)
 - `itemListOptions` *object, default `{}`* — options passed through to [`ItemList`](./ItemList) via `v-bind`
 - `registry` *object, default `null`* —  
@@ -44,20 +44,23 @@ The [methods of ItemList](./ItemList#methods) are exposed to be used on a compon
 
 - `isUriInView` — see [ItemList](./ItemList#methods)
 - `scrollToUri` — see [ItemList](./ItemList#methods)
-- [`navigateToUri`](#navigateToUri) — navigate to a concept in the hierarchy
-- [`close`](#close) — close an opened concept 
+- [`navigateToUri`](#navigatetouri) — navigate to a concept in the hierarchy
+- [`open`](#open) — open a concept and load narrower concepts if needed
+- [`close`](#close) — close an opened concept
+- [`collapse`](#collapse) — close all opened concepts
 
 ### navigateToUri
 
 **Arguments**
 
-- `uriOrConcept` *string | { uri: string }* — the concept URI to scroll to
-- `options` *boolean, default `true`* —  whether to set `modelValue` to the target concept  
-- `onlyIfNotInView` *boolean, default `true`* — pass-through to `scrollToUri`  
+- `uriOrConcept` *string | { uri: string }* — the concept URI to navigate to
+- `options` *object, optional*
+  - `select` *boolean, default `true`* — whether to set `modelValue` to the target concept
+  - `onlyIfNotInView` *boolean, default `true`* — pass-through to `scrollToUri`
 
-If the concept is already rendered, it is scrolled to (and optionally selected). Otherwise the function tries to open the path from the top concepts down to the target using by loading narrower concepts.
+If the concept is already rendered, it is scrolled to (and optionally selected). Otherwise the function tries to open the path from the top concepts down to the target by loading missing concepts as needed.
 
-**Returns** a Promise with boolean `true` if navigation succeeded, `false` otherwise
+**Returns** a Promise resolving to `true` if navigation succeeded, `false` otherwise.
 
 ### close
 
@@ -84,34 +87,27 @@ Close all opened concepts. Note that parents of selected concepts cannot be clos
 - `.jskos-vue-conceptTree-arrow` — arrow to expand/collapse a subtree
 - `.jskos-vue-conceptTree-depthSpacer` — vertical line left to expanded subtrees
 
+
+
 ## Example
 
 ::: component-view
 <script setup>
 import ConceptTree from "../../src/components/ConceptTree.vue"
-import * as jskos from "jskos-tools"
 import { cdk } from "cocoda-sdk"
-import { onMounted, useTemplateRef, ref } from "vue"
+import { useTemplateRef, ref } from "vue"
 
 const registry = cdk.initializeRegistry({
   provider: "ConceptApi",
   api: "https://coli-conc.gbv.de/api/",
 })
-const scheme = { uri: "https://www.ixtheo.de/classification/" }
-const selected = ref(null)
-const concepts = ref(null)
-const message = ref("")
 
-onMounted(async () => {
-  concepts.value = jskos.sortConcepts(await registry.getTop({ scheme }))
-})
-
-async function loadNarrower(concept) {
-  if (!concept.narrower || concept.narrower.includes(null)) {
-    concept.narrower = jskos.sortConcepts(await registry.getNarrower({ concept }))
-  }
+const scheme = {
+  uri: "https://www.ixtheo.de/classification/",
 }
 
+const selected = ref(null)
+const message = ref("")
 const conceptTree = useTemplateRef("conceptTree")
 </script>
 
@@ -120,37 +116,44 @@ const conceptTree = useTemplateRef("conceptTree")
     <button @click="conceptTree.navigateToUri('https://www.ixtheo.de/classification/VB')">
       Navigate to VB Hermeneutik ; Philosophie
     </button>
-    <button @click="conceptTree.collapse()">Collapse tree</button>
+    <button @click="conceptTree.collapse()">
+      Collapse tree
+    </button>
   </p>
-  <p v-if="message">{{message}}</p>
+
+  <p v-if="message">
+    {{ message }}
+  </p>
+
   <p v-if="selected?.uri">
     Selected: {{ selected.uri }}
-    <button @click="conceptTree.scrollToUri(selected.uri)">Scroll to selected</button>
+    <button @click="conceptTree.scrollToUri(selected.uri)">
+      Scroll to selected
+    </button>
   </p>
   <p v-else>
     Please select a concept.
   </p>
 
   <concept-tree
-    :registry="registry" 
-    :scheme="scheme"
     ref="conceptTree"
-    v-if="concepts"
     v-model="selected"
+    :registry="registry"
+    :scheme="scheme"
     style="height: 400px; overflow-y: auto; border: 2px solid #0001;">
-    <template v-slot:beforeItem="{ item }">
+    <template #beforeItem="slotProps">
       <span
         class="opacity-hover"
         style="margin-right: 5px;"
-        @click.stop="message = `Clicked on Star for item ${item.uri}`">
+        @click.stop="message = `Clicked on Star for item ${slotProps.item.uri}`">
         ⭐️
       </span>
     </template>
-    <template v-slot:afterItem="{ item }">
+    <template #afterItem="slotProps">
       <div
         class="opacity-hover"
         style="position: absolute; width: 20px; right: 2px; top: 50%; transform: translateY(-50%);"
-        @click.stop="message = `Clicked on Rocket for item ${item.uri}`">
+        @click.stop="message = `Clicked on Rocket for item ${slotProps.item.uri}`">
         🚀
       </div>
     </template>

@@ -14,7 +14,7 @@ const ItemSuggestStub = {
   emits: ["select"],
   template: `
     <div class="itemsuggest-stub">
-      <button class="pick0" @click="$emit('select', { uri: 'urn:lang:en', prefLabel: { en: 'English' } })">
+      <button class="pick0" @click="$emit('select', { uri: 'urn:lang:en' })">
         pick0
       </button>
     </div>
@@ -71,4 +71,31 @@ test("calls ConceptTree.navigateToUri after picking", async () => {
   await flushPromises()
 
   expect(navigateSpy).toHaveBeenCalled()
+})
+test("uses resolve when selected URI is not in cache", async () => {
+  const resolve = vi.fn(async (uri) => ({
+    uri,
+    prefLabel: { en: "English" },
+  }))
+
+  const search = vi.fn(async (q) => [q, [], [], []])
+
+  const w = mount(ItemSelect, {
+    props: {
+      search,
+      resolve,
+    },
+    global: {
+      stubs: {
+        ItemSuggest: ItemSuggestStub,
+      },
+    },
+  })
+
+  await w.find(".pick0").trigger("click")
+  await flushPromises()
+
+  expect(resolve).toHaveBeenCalledWith("urn:lang:en")
+  expect(w.emitted("select")).toBeTruthy()
+  expect(w.emitted("select")[0][0].uri).toBe("urn:lang:en")
 })

@@ -158,18 +158,25 @@ function localOptionsToSuggest(q) {
   ]
 }
 
+function providerSearch(q) {
+  if (props.search) {
+    return props.search(q)
+  }
+  if (props.registry && props.scheme?.uri) {
+    return props.registry.suggest({ search: q, params: { voc: props.scheme.uri } })
+  }
+  return Promise.resolve([q, [], [], []])
+}
+
+
 // Wrap remote search so we can also populate cacheByUri (labels+uris -> normalized objects)
 function remoteSearchWrapped(q) {
   const query = (q || "").trim()
   if (!query || query.length < props.minChars) {
-    const p = Promise.resolve([query, [], [], []])
-    p.cancel = () => {}
-    return p
+    return Promise.resolve([query, [], [], []])
   }
 
-  const p0 = props.search(query)
-
-  const p = Promise.resolve(p0).then((os) => {
+  return Promise.resolve(providerSearch(query)).then((os) => {
     const labels = os?.[1] || []
     const uris = os?.[3] || []
 
@@ -186,10 +193,7 @@ function remoteSearchWrapped(q) {
 
     return os
   })
-
-  // Preserve cancel if the underlying promise supports it
-  p.cancel = p0?.cancel
-  return p
+ 
 }
 
 // This is the function we pass to ItemSuggest.
@@ -199,7 +203,7 @@ const searchForSuggest = computed(() => {
   } else if (props.search) {
     return remoteSearchWrapped
   } else if (props.registry && props.scheme?.uri) {
-    return search => props.registry.suggest({ search, params: { voc: props.scheme.uri } })
+    return remoteSearchWrapped
   } else {
     console.error("Could not create suggest function for ItemSelect")
   }
