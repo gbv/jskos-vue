@@ -36,6 +36,7 @@
 
 <script setup>
 import { ref, nextTick, computed } from "vue"
+import * as jskos from "jskos-tools"
 import Arrow from "./Arrow.vue"
 import ItemSuggest from "./ItemSuggest.vue"
 import ConceptTree from "./ConceptTree.vue"
@@ -80,10 +81,10 @@ const treeCollapsed = ref(true)
 const cacheByUri = ref(Object.create(null))
 
 // --- helpers (same normalization as before) ---
-// FIXME: use jskos-tools instead
-function notationFromUri(uri) {
-  const m = (uri || "").match(/\/class\/([^/]+)\//)
-  return m ? decodeURIComponent(m[1]) : null
+function itemWithScheme(item) {
+  return item.inScheme?.length || !props.scheme
+    ? item
+    : { ...item, inScheme: [props.scheme] }
 }
 
 function normalize(item) {
@@ -104,7 +105,7 @@ function normalize(item) {
 
   const notation =
     (Array.isArray(item.notation) && item.notation[0]) ||
-    notationFromUri(item.uri)
+    jskos.notation(itemWithScheme(item))
 
   const rawLabelStr = String(rawLabel)
   const cleanedLabel =

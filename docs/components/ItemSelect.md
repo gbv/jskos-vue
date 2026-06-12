@@ -64,7 +64,7 @@ Before emitting, items are normalized:
 
 - `__label` is derived from `__label` / `prefLabel` (fallback: `uri`)
 - `prefLabel.und` is ensured
-- `notation` is preserved; otherwise tries to derive DDC notation from `/class/<notation>/` URIs
+- `notation` is preserved; otherwise `jskos-tools` tries to derive it from the item URI and scheme URI pattern
 
 `ItemSuggest` emits only `{ uri }`. `ItemSelect` caches the current suggestion result set so it can emit
 a full object when available. If the URI is not in the cache and you provided `resolve`, it calls

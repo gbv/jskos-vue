@@ -21,6 +21,24 @@ const ItemSuggestStub = {
   `,
 }
 
+const DdcSuggestStub = {
+  name: "ItemSuggest",
+  props: ["search", "placeholder"],
+  emits: ["select"],
+  mounted() {
+    this.search("123")
+  },
+  template: `
+    <div class="itemsuggest-stub">
+      <button
+        class="pick-ddc"
+        @click="$emit('select', { uri: 'http://dewey.info/class/123/e23/' })">
+        pick-ddc
+      </button>
+    </div>
+  `,
+}
+
 test("emits select when an option is picked", async () => {
   const w = mount(ItemSelect, {
     props: { options: languageOptions },
@@ -40,6 +58,35 @@ test("emits select when an option is picked", async () => {
   // Minimal contract: must have a uri
   expect(sel.uri).toBe("urn:lang:en")
 
+})
+
+test("uses jskos-tools to derive notation from scheme URI pattern", async () => {
+  const w = mount(ItemSelect, {
+    props: {
+      options: [
+        {
+          uri: "http://dewey.info/class/123/e23/",
+          prefLabel: { en: "123 Computer science" },
+        },
+      ],
+      scheme: {
+        uri: "http://dewey.info/scheme/edition/e23/",
+        uriPattern: "^http://dewey.info/class/([^/]+)/e23/$",
+      },
+    },
+    global: {
+      stubs: {
+        ItemSuggest: DdcSuggestStub,
+      },
+    },
+  })
+
+  await w.find(".pick-ddc").trigger("click")
+  await flushPromises()
+
+  const sel = w.emitted("select")[0][0]
+  expect(sel.notation).toEqual(["123"])
+  expect(sel.prefLabel.und).toBe("Computer science")
 })
 
 test("renders ConceptTree collapsed by default", () => {
