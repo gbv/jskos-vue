@@ -60,19 +60,17 @@ The default slot is shown between input field and hierarchy.
 
 ## Behavior notes
 
-Before emitting, items are normalized:
+Before emitting `select`, items are normalized:
 
-- `__label` is derived from `__label` / `prefLabel` (fallback: `uri`)
-- `prefLabel.und` is ensured
-- `notation` is preserved; otherwise `jskos-tools` tries to derive it from the item URI and scheme URI pattern
+- `__label` is kept or selected from `prefLabel` with `jskos-tools`.
+- `prefLabel.und` is added for display. Existing labels are kept.
+- `notation` is kept. If missing, `jskos-tools` tries to derive it from the item URI and scheme.
 
 `ItemSuggest` emits only `{ uri }`. `ItemSelect` caches the current suggestion result set so it can emit
-a full object when available. If the URI is not in the cache and you provided `resolve`, it calls
-`resolve(uri)` and emits the returned item (normalized).
+a full object when available. If the URI is not cached, `resolve(uri)` can provide the item.
 
-The hierarchy browser starts collapsed. After selecting via typeahead, it is expanded and synced via
-`conceptTree.navigateToUri(concept, { select: false })` (best effort). If the tree is collapsed
-and opened again later, the selected concept is synced again.
+The hierarchy browser starts collapsed. Selecting via typeahead opens it and tries to show the
+selected concept. If the tree is closed and opened again, the selected concept is synced again.
 
 ## Methods
 

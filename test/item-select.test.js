@@ -1,6 +1,7 @@
 import { test, expect, vi } from "vitest"
 import { mount, flushPromises } from "@vue/test-utils"
 import ItemSelect from "../src/components/ItemSelect.vue"
+import * as jskos from "jskos-tools"
 
 const languageOptions = [
   { uri: "urn:lang:en", prefLabel: { en: "English" } },
@@ -34,6 +35,24 @@ const DdcSuggestStub = {
         class="pick-ddc"
         @click="$emit('select', { uri: 'http://dewey.info/class/123/e23/' })">
         pick-ddc
+      </button>
+    </div>
+  `,
+}
+
+const PreferredLabelSuggestStub = {
+  name: "ItemSuggest",
+  props: ["search", "placeholder"],
+  emits: ["select"],
+  mounted() {
+    this.search("urn:pref-label")
+  },
+  template: `
+    <div class="itemsuggest-stub">
+      <button
+        class="pick-preferred-label"
+        @click="$emit('select', { uri: 'urn:pref-label' })">
+        pick-preferred-label
       </button>
     </div>
   `,
@@ -87,6 +106,42 @@ test("uses jskos-tools to derive notation from scheme URI pattern", async () => 
   const sel = w.emitted("select")[0][0]
   expect(sel.notation).toEqual(["123"])
   expect(sel.prefLabel.und).toBe("Computer science")
+})
+
+test("uses jskos language preferences when normalizing labels", async () => {
+  const defaults = jskos.languagePreference.defaults
+
+  try {
+    jskos.languagePreference.defaults = ["de", "en"]
+
+    const w = mount(ItemSelect, {
+      props: {
+        options: [
+          {
+            uri: "urn:pref-label",
+            prefLabel: {
+              en: "English",
+              de: "Deutsch",
+            },
+          },
+        ],
+      },
+      global: {
+        stubs: {
+          ItemSuggest: PreferredLabelSuggestStub,
+        },
+      },
+    })
+
+    await w.find(".pick-preferred-label").trigger("click")
+    await flushPromises()
+
+    const sel = w.emitted("select")[0][0]
+    expect(sel.__label).toBe("Deutsch")
+    expect(sel.prefLabel.und).toBe("Deutsch")
+  } finally {
+    jskos.languagePreference.defaults = defaults
+  }
 })
 
 test("renders ConceptTree collapsed by default", () => {

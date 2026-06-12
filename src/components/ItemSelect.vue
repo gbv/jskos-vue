@@ -92,16 +92,7 @@ function normalize(item) {
     return null
   }
 
-  const pl = item.prefLabel || {}
-  // FIXME: don't hard-code languages, use jskos-tools instead
-  const rawLabel =
-    item.__label ||
-    pl.und ||
-    pl.en ||
-    pl.de ||
-    pl.it ||
-    Object.values(pl)[0] ||
-    item.uri
+  const rawLabel = item.__label || jskos.prefLabel(item)
 
   const notation =
     (Array.isArray(item.notation) && item.notation[0]) ||
