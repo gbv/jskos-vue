@@ -6,7 +6,11 @@ Input field to search and select an item (usually concept or concept scheme) fro
 
 - `search(query)` *async function* — custom search function that provides results in [OpenSearch Suggest Format](https://github.com/dewitt/opensearch/blob/master/mediawiki/Specifications/OpenSearch/Extensions/Suggestions/1.1/Draft%201.wiki):
   - `query` is the search string
+- `options` *array, default `null`* — local JSKOS items to search if `search` is not set.
+- `minChars` *number, default `1`* — minimum query length for local `options`.
 - `placeholder` *string, default `"Type to search..."`* — placeholder string. `null` uses the default placeholder, an empty string clears it.
+
+If both `search` and `options` are set, `search` is used.
 
 ## Methods
 
@@ -101,6 +105,12 @@ const searchPokemon = async (query) => {
   :search="searchPokemon" />
 
 :::
+
+### Search local options
+
+```vue
+<item-suggest :options="languageOptions" />
+```
 
 
 ### Search for concepts inside a concept scheme

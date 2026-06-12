@@ -68,6 +68,32 @@ describe("ItemSuggest", () => {
     expect(results[1].text()).toContain("German")
   })
 
+  test("searches local options and emits selected URI", async () => {
+    const w = mountSuggest({
+      search: null,
+      options: [
+        { uri: "urn:lang:en", prefLabel: { en: "English" } },
+        { uri: "urn:lang:de", prefLabel: { en: "German" } },
+      ],
+    })
+    const input = w.find("input[type='search']")
+
+    await input.setValue("ger")
+    vi.advanceTimersByTime(250)
+    await flushPromises()
+
+    const results = w.findAll(".jskos-vue-itemSuggest-results-item")
+    expect(results.length).toBe(1)
+    expect(results[0].text()).toContain("German")
+
+    await results[0].trigger("click")
+
+    expect(w.emitted("select")).toBeTruthy()
+    expect(w.emitted("select")[0][0]).toEqual({
+      uri: "urn:lang:de",
+    })
+  })
+
   test("emits select when clicking a result", async () => {
     const w = mountSuggest()
     const input = w.find("input[type='search']")

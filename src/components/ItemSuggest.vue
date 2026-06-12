@@ -59,7 +59,8 @@
  * - add drag and drop for concepts
  */
 
-import { nextTick, ref, watch } from "vue"
+import { nextTick, ref, watch, computed } from "vue"
+import * as jskos from "jskos-tools"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
 import { addClickHandlers, debounce, useLocale } from "../utils"
@@ -97,6 +98,10 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  // Local options (for small sets like languages)
+  options: { type: Array, default: null },
+  // Minimum query length before searching local options
+  minChars: { type: Number, default: 1 },
 })
   
 const emit = defineEmits(["select"])
@@ -113,16 +118,33 @@ const itemSuggest = ref(null)
 const searchInput = ref(null)
 const resultList = ref(null)
 
-const search = debounce(async (searchQuery) => {
+// Prefer an explicit search function; fall back to local options for small lists.
+const searchProvider = computed(() => {
+  if (props.search) {
+    return props.search
+  }
+  if (props.options?.length) {
+    return localOptionsToSuggest
+  }
+  return null
+})
+
+const runSearch = debounce(async (searchQuery) => {
   searchQuery = searchQuery.trim()
   results.value = []
 
   isLoading.value = true
 
-  const promise = props.search(searchQuery)
+  if (!searchProvider.value) {
+    isLoading.value = false
+    return
+  }
+
+  const promise = searchProvider.value(searchQuery)
   
 
-  // convert into different array
+  // Convert OpenSearch Suggest [query, labels, descriptions, uris]
+  // into result rows [label, description, uri] used by the template.
   let suggestResults
   try {
     suggestResults = (await promise).slice(1).reduce((current, next) => {
@@ -137,7 +159,7 @@ const search = debounce(async (searchQuery) => {
     suggestResults = []
   }
 
-  // check if value has changed since starting the request
+  // Ignore stale results if the user changed the input while awaiting search.
   if (searchQuery === query.value.trim()) {
     results.value = suggestResults
     isLoading.value = false
@@ -154,7 +176,7 @@ watch(query, (newQuery) => {
     isLoading.value = true
     isOpen.value = true
     // Actually perform the search
-    search(newQuery)
+    runSearch(newQuery)
   }
 })
 
@@ -228,6 +250,43 @@ addClickHandlers(() => [
     },
   },
 ])
+
+// Normalize local JSKOS options into the small shape needed for suggestions.
+function optionToSuggestItem(item) {
+  if (!item?.uri) {
+    return null
+  }
+  return {
+    uri: item.uri,
+    __label: jskos.prefLabel(item),
+  }
+}
+
+// Build an OpenSearch Suggest response from local options.
+function localOptionsToSuggest(q) {
+  const query = (q || "").trim()
+  if (!query || query.length < props.minChars) {
+    return [query, [], [], []]
+  }
+
+  const qLower = query.toLowerCase()
+
+  const matches = (props.options || [])
+    .map(optionToSuggestItem)
+    .filter(Boolean)
+    .filter((it) => {
+      const label = it.__label || ""
+      return label.toLowerCase().includes(qLower) || it.uri.toLowerCase().includes(qLower)
+    })
+    .slice(0, 50)
+
+  return [
+    query,
+    matches.map((it) => it.__label),
+    matches.map(() => ""), // no descriptions
+    matches.map((it) => it.uri),
+  ]
+}
 
 
 function mouseover(index) {
