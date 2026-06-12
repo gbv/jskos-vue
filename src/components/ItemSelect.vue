@@ -12,11 +12,11 @@
 
     <!-- Optional picker: ConceptTree (browse & pick) -->
     <div
-      v-if="treeConcepts?.length || registry?.getTop"
+      v-if="hasTree"
       class="jskos-vue-itemSelect-tree">
       <button
         type="button"
-        @click="treeCollapsed = !treeCollapsed">
+        @click="toggleTree">
         <arrow :direction="treeCollapsed ? 'right' : 'down'" />
         Hierarchy
       </button>
@@ -74,7 +74,7 @@ const emit = defineEmits(["select"])
 const conceptTree = ref(null)
 const itemSuggest = ref(null)
 const treeSelected = ref(null) // highlighted/active concept in ConceptTree
-const treeCollapsed = ref(false)
+const treeCollapsed = ref(true)
 
 // Cache last suggestion items by URI so we can emit full objects, not only { uri }
 const cacheByUri = ref(Object.create(null))
@@ -210,17 +210,32 @@ const searchForSuggest = computed(() => {
   return null
 })
 
-// --- tree sync ---
+const hasTree = computed(() => props.treeConcepts?.length || props.registry?.getTop)
+
+// Keep the optional tree in step with the selected concept. The tree starts
+// collapsed, so opening it first gives Vue a tick to mount ConceptTree before
+// navigateToUri tries to expand and highlight the selected concept.
 async function syncTreeTo(concept) {
-  if (!conceptTree.value || !concept?.uri) {
+  if (!hasTree.value || !concept?.uri) {
     return
   }
   treeSelected.value = concept
+  treeCollapsed.value = false
   await nextTick()
+  if (!conceptTree.value) {
+    return
+  }
   await conceptTree.value.navigateToUri(concept, {
     select: false,
     onlyIfNotInView: true,
   })
+}
+
+async function toggleTree() {
+  treeCollapsed.value = !treeCollapsed.value
+  if (!treeCollapsed.value && treeSelected.value?.uri) {
+    await syncTreeTo(treeSelected.value)
+  }
 }
 
 const resolver = computed(() => {

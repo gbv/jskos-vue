@@ -70,8 +70,9 @@ Before emitting, items are normalized:
 a full object when available. If the URI is not in the cache and you provided `resolve`, it calls
 `resolve(uri)` and emits the returned item (normalized).
 
-After selecting via typeahead the tree is synced via
-`conceptTree.navigateToUri(concept, { select: false })` (best effort).
+The hierarchy browser starts collapsed. After selecting via typeahead, it is expanded and synced via
+`conceptTree.navigateToUri(concept, { select: false })` (best effort). If the tree is collapsed
+and opened again later, the selected concept is synced again.
 
 ## Methods
 

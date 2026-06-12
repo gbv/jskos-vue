@@ -42,6 +42,29 @@ test("emits select when an option is picked", async () => {
 
 })
 
+test("renders ConceptTree collapsed by default", () => {
+  const ConceptTreeStub = {
+    name: "ConceptTree",
+    template: "<div class=\"concepttree-stub\"></div>",
+  }
+
+  const w = mount(ItemSelect, {
+    props: {
+      options: languageOptions,
+      treeConcepts: [{ uri: "urn:top" }],
+    },
+    global: {
+      stubs: {
+        ItemSuggest: ItemSuggestStub,
+        ConceptTree: ConceptTreeStub,
+      },
+    },
+  })
+
+  expect(w.find(".jskos-vue-itemSelect-tree").exists()).toBe(true)
+  expect(w.find(".concepttree-stub").exists()).toBe(false)
+})
+
 test("calls ConceptTree.navigateToUri after picking", async () => {
   const navigateSpy = vi.fn(async () => true)
 
@@ -70,8 +93,51 @@ test("calls ConceptTree.navigateToUri after picking", async () => {
   await w.find(".pick0").trigger("click")
   await flushPromises()
 
+  expect(w.find(".concepttree-stub").exists()).toBe(true)
   expect(navigateSpy).toHaveBeenCalled()
 })
+
+test("resyncs selected concept when reopening collapsed ConceptTree", async () => {
+  const navigateSpy = vi.fn(async () => true)
+
+  const ConceptTreeStub = {
+    name: "ConceptTree",
+    props: ["concepts", "modelValue"],
+    template: "<div class=\"concepttree-stub\"></div>",
+    methods: {
+      navigateToUri: navigateSpy,
+    },
+  }
+
+  const w = mount(ItemSelect, {
+    props: {
+      options: languageOptions,
+      treeConcepts: [{ uri: "urn:top" }],
+    },
+    global: {
+      stubs: {
+        ItemSuggest: ItemSuggestStub,
+        ConceptTree: ConceptTreeStub,
+      },
+    },
+  })
+
+  await w.find(".pick0").trigger("click")
+  await flushPromises()
+  expect(navigateSpy).toHaveBeenCalledTimes(1)
+
+  const treeToggle = () => w.find(".jskos-vue-itemSelect-tree > button")
+
+  await treeToggle().trigger("click")
+  await flushPromises()
+  expect(w.find(".concepttree-stub").exists()).toBe(false)
+
+  await treeToggle().trigger("click")
+  await flushPromises()
+  expect(w.find(".concepttree-stub").exists()).toBe(true)
+  expect(navigateSpy).toHaveBeenCalledTimes(2)
+})
+
 test("uses resolve when selected URI is not in cache", async () => {
   const resolve = vi.fn(async (uri) => ({
     uri,
