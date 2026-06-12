@@ -40,6 +40,7 @@ import * as jskos from "jskos-tools"
 import Arrow from "./Arrow.vue"
 import ItemSuggest from "./ItemSuggest.vue"
 import ConceptTree from "./ConceptTree.vue"
+import { localOptionsToSuggest as optionsToSuggest } from "../utils.js"
 
 defineOptions({ name: "ItemSelect" })
 
@@ -116,38 +117,20 @@ function normalize(item) {
   }
 }
 
-// Build an OpenSearch Suggest response from local options.
-// This makes ItemSuggest usable for languages etc.
+// Use the shared local-options search, but keep ItemSelect's normalization.
+// The matched objects are cached so selecting a URI can emit the full item.
 function localOptionsToSuggest(q) {
-  const query = (q || "").trim()
-  if (!query || query.length < props.minChars) {
-    return [query, [], [], []]
-  }
-
-  const qLower = query.toLowerCase()
-
-  const matches = (props.options || [])
-    .map(normalize)
-    .filter(Boolean)
-    .filter((it) => {
-      const label = it.__label || ""
-      return label.toLowerCase().includes(qLower) || it.uri.toLowerCase().includes(qLower)
-    })
-    .slice(0, 50)
-
-  // Cache them so on select(uri) we can return full objects.
-  const nextCache = Object.create(null)
-  for (const it of matches) {
-    nextCache[it.uri] = it
-  }
-  cacheByUri.value = nextCache
-
-  return [
-    query,
-    matches.map((it) => it.__label),
-    matches.map(() => ""), // no descriptions
-    matches.map((it) => it.uri),
-  ]
+  return optionsToSuggest(props.options, q, {
+    minChars: props.minChars,
+    normalize,
+    onMatches(matches) {
+      const nextCache = Object.create(null)
+      for (const it of matches) {
+        nextCache[it.uri] = it
+      }
+      cacheByUri.value = nextCache
+    },
+  })
 }
 
 function providerSearch(q) {

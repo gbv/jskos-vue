@@ -60,10 +60,9 @@
  */
 
 import { nextTick, ref, watch, computed } from "vue"
-import * as jskos from "jskos-tools"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
-import { addClickHandlers, debounce, useLocale } from "../utils"
+import { addClickHandlers, debounce, localOptionsToSuggest, useLocale } from "../utils"
 
 import "../shared.css"
 
@@ -124,7 +123,9 @@ const searchProvider = computed(() => {
     return props.search
   }
   if (props.options?.length) {
-    return localOptionsToSuggest
+    return q => localOptionsToSuggest(props.options, q, {
+      minChars: props.minChars,
+    })
   }
   return null
 })
@@ -250,44 +251,6 @@ addClickHandlers(() => [
     },
   },
 ])
-
-// Normalize local JSKOS options into the small shape needed for suggestions.
-function optionToSuggestItem(item) {
-  if (!item?.uri) {
-    return null
-  }
-  return {
-    uri: item.uri,
-    __label: jskos.prefLabel(item),
-  }
-}
-
-// Build an OpenSearch Suggest response from local options.
-function localOptionsToSuggest(q) {
-  const query = (q || "").trim()
-  if (!query || query.length < props.minChars) {
-    return [query, [], [], []]
-  }
-
-  const qLower = query.toLowerCase()
-
-  const matches = (props.options || [])
-    .map(optionToSuggestItem)
-    .filter(Boolean)
-    .filter((it) => {
-      const label = it.__label || ""
-      return label.toLowerCase().includes(qLower) || it.uri.toLowerCase().includes(qLower)
-    })
-    .slice(0, 50)
-
-  return [
-    query,
-    matches.map((it) => it.__label),
-    matches.map(() => ""), // no descriptions
-    matches.map((it) => it.uri),
-  ]
-}
-
 
 function mouseover(index) {
   if (!preventHovering.value) {

@@ -161,6 +161,54 @@ export function useLocale(messages={}) {
   }
 }
 
+function suggestOption(item) {
+  if (!item?.uri) {
+    return null
+  }
+  return {
+    uri: item.uri,
+    __label: item.__label || jskos.prefLabel(item) || item.uri,
+  }
+}
+
+/**
+ * Convert local JSKOS options to OpenSearch Suggest format.
+ *
+ * `normalize` can adapt app-specific option shapes before filtering.
+ * `onMatches` exposes the normalized matches, for example to fill a URI cache.
+ */
+export function localOptionsToSuggest(options, q, {
+  minChars = 1,
+  normalize = suggestOption,
+  onMatches = null,
+} = {}) {
+  const query = (q || "").trim()
+  if (!query || query.length < minChars) {
+    onMatches?.([])
+    return [query, [], [], []]
+  }
+
+  const qLower = query.toLowerCase()
+
+  const matches = (options || [])
+    .map(normalize)
+    .filter(Boolean)
+    .filter((it) => {
+      const label = it.__label || ""
+      return label.toLowerCase().includes(qLower) || it.uri.toLowerCase().includes(qLower)
+    })
+    .slice(0, 50)
+
+  onMatches?.(matches)
+
+  return [
+    query,
+    matches.map((it) => it.__label),
+    matches.map(() => ""), // no descriptions for local options
+    matches.map((it) => it.uri),
+  ]
+}
+
 /**
  * Converts a date string to a localized date string.
  * Incomplete dates (YYYY or YYYY-MM) will be returned non-localized.

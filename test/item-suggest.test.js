@@ -94,6 +94,29 @@ describe("ItemSuggest", () => {
     })
   })
 
+  test("prefers search over local options", async () => {
+    const search = vi.fn(async (query) => [
+      query,
+      ["Remote"],
+      [""],
+      ["urn:remote"],
+    ])
+    const w = mountSuggest({
+      search,
+      options: [
+        { uri: "urn:local", prefLabel: { en: "Local" } },
+      ],
+    })
+    const input = w.find("input[type='search']")
+
+    await input.setValue("local")
+    vi.advanceTimersByTime(250)
+    await flushPromises()
+
+    expect(search).toHaveBeenCalledWith("local")
+    expect(w.find(".jskos-vue-itemSuggest-results-item").text()).toContain("Remote")
+  })
+
   test("emits select when clicking a result", async () => {
     const w = mountSuggest()
     const input = w.find("input[type='search']")

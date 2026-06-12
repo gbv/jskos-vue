@@ -13,6 +13,9 @@ const ItemSuggestStub = {
   name: "ItemSuggest",
   props: ["search", "placeholder"],
   emits: ["select"],
+  mounted() {
+    this.search("en")
+  },
   template: `
     <div class="itemsuggest-stub">
       <button class="pick0" @click="$emit('select', { uri: 'urn:lang:en' })">
@@ -76,7 +79,8 @@ test("emits select when an option is picked", async () => {
 
   // Minimal contract: must have a uri
   expect(sel.uri).toBe("urn:lang:en")
-
+  expect(sel.__label).toBe("English")
+  expect(sel.prefLabel.und).toBe("English")
 })
 
 test("uses jskos-tools to derive notation from scheme URI pattern", async () => {

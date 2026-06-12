@@ -11,24 +11,28 @@ test("ItemName", async () => {
     notation: [notation],
   }
 
+  const processedLabel = `${en}!`
+  const processedNotation = `:${notation}`
+
+  ItemName.addLabelPlugin(label => `${label}!`)
   ItemName.addNotationPlugin(notation => `:${notation}`)
 
   const wrapper = mount(ItemName, { props: { item } })
 
   expect(wrapper.text()).toContain(notation)
-  expect(wrapper.text()).toContain(en)
+  expect(wrapper.text()).toContain(processedLabel)
   expect(wrapper.classes()).toContain("jskos-vue-itemName")
 
   const notationSpan = wrapper.find(".jskos-vue-itemName-notation")
   expect(notationSpan.exists()).toBe(true)
-  expect(notationSpan.text()).toBe(`:${notation}`)
+  expect(notationSpan.text()).toBe(processedNotation)
 
   await wrapper.setProps({ showNotation: false })
   expect(wrapper.text()).not.toContain(notation)
-  expect(wrapper.text()).toBe(en)
+  expect(wrapper.text()).toBe(processedLabel)
 
   await wrapper.setProps({ showNotation: true, showLabel: false })
-  expect(wrapper.text()).toBe(`:${notation}`)
+  expect(wrapper.text()).toBe(processedNotation)
 
   await wrapper.setProps({ showNotation: false, showLabel: false })
   expect(wrapper.text()).toBe("???")
