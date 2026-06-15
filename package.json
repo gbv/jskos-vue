@@ -22,6 +22,7 @@
     "build": "vite build",
     "app": "BUILD_MODE=app npm run build",
     "examples": "http-server examples",
+    "loc": "cloc $(git ls-files src test)",
     "lint": "eslint",
     "fix": "eslint --fix",
     "lint-staged": "lint-staged",
