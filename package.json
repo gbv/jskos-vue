@@ -1,7 +1,7 @@
 {
   "name": "jskos-vue",
   "description": "Vue 3 components and plugins for interaction with JSKOS data",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "files": [
     "dist",
     "src"
