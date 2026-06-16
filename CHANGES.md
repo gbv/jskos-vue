@@ -1,3 +1,11 @@
+## 0.5.2
+
+- Replace use of _getTop, _getNarrower, _getAncestors (#45)
+- Collapse tree in `ItemSelect` by default until search input is entered. (#43)
+- Support local `options` search in `ItemSuggest`. (#35)
+- Add unit tests for utilities, plugins, and local `options` search. (#10)
+- Update dependencies
+
 ## 0.5.1
 
 - Fix automatic tree navigation in `ItemSelect` / `ConceptTree`
@@ -122,4 +130,3 @@ No release notes, please see source code changes
 ## 0.1.0
 
 First npm release for jskos-vue. Note that breaking changes can occur at any time before we release v1. Refer to [the documentation](https://gbv.github.io/jskos-vue/) for further information.
-
