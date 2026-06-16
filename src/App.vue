@@ -587,7 +587,7 @@ const examples = reactive({
     },
     concepts: null,
     async loadConcepts() {
-      this.concepts = jskos.sortConcepts(await this.scheme._getTop())
+      this.concepts = jskos.sortConcepts(await this.scheme.getTop())
     },
     async loadNarrower(concept) {
       if (concept.narrower && !concept.narrower.includes(null)) {
