@@ -587,7 +587,7 @@ const examples = reactive({
     },
     concepts: null,
     async loadConcepts() {
-      this.concepts = jskos.sortConcepts(await this.scheme.getTop())
+      this.concepts = jskos.sortConcepts(await registry.getTop({ scheme: this.scheme }))
     },
     async loadNarrower(concept) {
       if (concept.narrower && !concept.narrower.includes(null)) {
@@ -668,8 +668,8 @@ function handleClick({ item, row }) {
   alert(`Clicked on item with URI ${item.uri}. (row: ${row})`)
 }
 
-function alert() {
-  alert(...arguments)
+function alert(...args) {
+  window.alert(...args)
 }
 </script>
 
