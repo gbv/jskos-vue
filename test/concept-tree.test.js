@@ -92,7 +92,7 @@ test("ConceptTree loads top concepts from registry and scheme", async () => {
   expect(items[1].concept.uri).toBe("http://test.org/top2")
 })
 
-test("ConceptTree navigateToUri loads narrower via _getNarrower", async () => {
+test("ConceptTree navigateToUri loads narrower via registry.getNarrower", async () => {
   const child = {
     uri: "http://test.org/1/1",
     broader: [{ uri: "http://test.org/1" }],
@@ -101,7 +101,6 @@ test("ConceptTree navigateToUri loads narrower via _getNarrower", async () => {
   const root = {
     uri: "http://test.org/1",
     narrower: [null],
-    _getNarrower: vi.fn().mockResolvedValue([child]),
   }
 
   const registry = {
@@ -115,6 +114,7 @@ test("ConceptTree navigateToUri loads narrower via _getNarrower", async () => {
       }
       return Promise.resolve([])
     }),
+    getNarrower: vi.fn().mockResolvedValue([child]),
   }
 
   const tree = mountTree({
@@ -126,7 +126,7 @@ test("ConceptTree navigateToUri loads narrower via _getNarrower", async () => {
   await flushPromises()
 
   expect(ok).toBe(true)
-  expect(root._getNarrower).toHaveBeenCalled()
+  expect(registry.getNarrower).toHaveBeenCalledWith({ concept: root })
 
   const items = tree.findComponent(ItemList).props("items")
   expect(items.map((i) => i.concept.uri)).toEqual([

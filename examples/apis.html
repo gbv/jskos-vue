@@ -150,7 +150,7 @@
         },
         async loadNarrower(concept) {
           if (!concept.narrower || concept?.narrower.includes(null)) {
-            concept.narrower = jskos.sortConcepts(await concept._getNarrower())
+            concept.narrower = jskos.sortConcepts(await this.registry.getNarrower({ concept }))
           }
         },
       },

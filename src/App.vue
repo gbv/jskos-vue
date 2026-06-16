@@ -593,7 +593,7 @@ const examples = reactive({
       if (concept.narrower && !concept.narrower.includes(null)) {
         return
       }
-      concept.narrower = jskos.sortConcepts(await concept._getNarrower())
+      concept.narrower = jskos.sortConcepts(await registry.getNarrower({ concept }))
     },
     selected: null,
     itemListOptions: {
@@ -615,7 +615,7 @@ const examples = reactive({
       const registry = _registry || concept._registry || concept.inScheme[0]._registry
       if (registry) {
         concept = (await registry.getConcepts({ concepts: [concept] }))[0]
-        concept.narrower = jskos.sortConcepts(await concept._getNarrower())
+        concept.narrower = jskos.sortConcepts(await registry.getNarrower({ concept }))
         concept.ancestors = jskos.sortConcepts(await concept._getAncestors())
         // 3. Set selected to new concept
         if (concept) {

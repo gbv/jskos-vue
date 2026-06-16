@@ -177,15 +177,11 @@ const getNarrower = async (concept) => {
     return
   }
 
-  if (typeof concept._getNarrower === "function") {
-    concept.narrower = jskos.sortConcepts(await concept._getNarrower())
-    return
-  }
-
   if (registry.value?.getNarrower) {
     concept.narrower = jskos.sortConcepts(
       await registry.value.getNarrower({ concept }),
     )
+    return
   }
 }
 
