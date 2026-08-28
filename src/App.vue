@@ -342,6 +342,12 @@
       orderable
       removeable />
   </p>
+  <h2>Mapping table</h2>
+  <p>
+    <mapping-table
+      :mappings="examples.mappings"
+      :show-labels="true" />
+  </p>
 
   <p>
     Loading indicator:
@@ -367,7 +373,7 @@
 import { reactive } from "vue"
 import * as jskos from "jskos-tools"
 import { Tab } from "jskos-vue-tabs"
-import { cdk} from "cocoda-sdk"
+import { cdk } from "cocoda-sdk"
 // Add ItemName plugin
 import ItemName from "./components/ItemName.vue"
 
@@ -626,6 +632,7 @@ const examples = reactive({
   itemSelect: {
     selected: [],
   },
+  mappings: [],
 })
 
 
@@ -670,6 +677,12 @@ function handleClick({ item, row }) {
 function alert(...args) {
   window.alert(...args)
 }
+
+fetch("https://coli-conc.gbv.de/api/mappings?limit=10")
+  .then(res => res.json())
+  .then(res => {
+    examples.mappings = res 
+  })
 </script>
 
 <style>

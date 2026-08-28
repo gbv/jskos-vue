@@ -17,13 +17,14 @@ let build = {
     cssFileName: "style",
   },
   rollupOptions: {
-    external: ["vue", "jskos-tools", "jskos-vue-tabs", "vue-scrollto", "cocoda-sdk"],
+    external: ["vue", "jskos-tools", "jskos-vue-tabs", "vue-scrollto", "vue-flexible-table", "cocoda-sdk"],
     output: {
       exports: "named",
       globals: {
         vue: "Vue",
         "jskos-tools": "jskos",
         "jskos-vue-tabs": "JskosVueTabs",
+        "vue-flexible-table": "VueFlexibleTable",
         "vue-scrollto": "VueScrollTo",
       },
     },

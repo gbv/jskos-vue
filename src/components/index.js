@@ -4,6 +4,7 @@ import ItemDetails from "./ItemDetails.vue"
 import ItemDetailsTabs from "./ItemDetailsTabs.vue"
 import LicenseInfo from "./LicenseInfo.vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
+import MappingTable from "./MappingTable.vue"
 import Arrow from "./Arrow.vue"
 import AutoLink from "./AutoLink.vue"
 import ConceptTree from "./ConceptTree.vue"
@@ -21,6 +22,7 @@ export {
   LicenseInfo,
   LoadingIndicator,
   Arrow,
+  MappingTable,
   AutoLink,
   ConceptTree,
   ItemSuggest,
