@@ -1,6 +1,6 @@
 # ItemSelect
 
-Pick **one item at a time** (JSKOS concepts, schemes, languages, …) via:
+Pick [JSKOS item](https://gbv.github.io/jskos/#item) at a time via:
 
 - a typeahead dropdown (via [ItemSuggest](./ItemSuggest))
 - optional hierarchy browsing (via [ConceptTree](./ConceptTree))

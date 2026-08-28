@@ -84,7 +84,6 @@ Close all opened concepts. Note that parents of selected concepts cannot be clos
 - `.jskos-vue-conceptTree-depthSpacer` — vertical line left to expanded subtrees
 
 
-
 ## Example
 
 ::: component-view

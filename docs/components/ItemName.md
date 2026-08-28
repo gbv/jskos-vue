@@ -1,6 +1,6 @@
 # ItemName
 
-Represents a JSKOS item (concept or concept scheme) with its notation and label.
+Represents a [JSKOS item](https://gbv.github.io/jskos/#item) (concept or concept scheme) with its notation and label.
 
 Uses [dragAndDrop](../utilities/dragAndDrop) and is draggable by default.
 

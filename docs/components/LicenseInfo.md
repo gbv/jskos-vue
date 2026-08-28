@@ -1,6 +1,6 @@
 # LicenseInfo
 
-Component to display license information for a JSKOS item.
+Component to display license information of a [JSKOS item](https://gbv.github.io/jskos/#item).
 
 ## Props
 

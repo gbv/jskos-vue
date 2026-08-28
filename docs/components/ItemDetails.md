@@ -1,6 +1,6 @@
 # ItemDetails
 
-Component to display details for a JSKOS item.
+Component to display details of a [JSKOS item](https://gbv.github.io/jskos/#item).
 
 Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo), [AutoLink](./AutoLink). Also uses [dragAndDrop](../utilities/dragAndDrop) and defines a dropzone for items. Dropped items will trigger the `select` event.
 

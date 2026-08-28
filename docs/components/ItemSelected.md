@@ -1,6 +1,6 @@
 # ItemSelected
 
-A list of JSKOS items where items can be reordered and removed from.
+A list of [JSKOS items](https://gbv.github.io/jskos/#item) where items can be reordered and removed from.
 
 It supports three views:
 

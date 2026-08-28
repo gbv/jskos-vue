@@ -1,6 +1,6 @@
 # ItemList
 
-A list of JSKOS items with their notation and label.
+A list of [JSKOS items](https://gbv.github.io/jskos/#item) with their notation and label.
 
 Uses [ItemName](./ItemName). Also uses [dragAndDrop](../utilities/dragAndDrop) and rows are draggable by default.
 
