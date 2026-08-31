@@ -15,6 +15,7 @@ This library provides the following Vue components (plus some helper components 
 - [ItemDetails] - full but condense details of a JSKOS item
 - [ItemSelected] - editable list of JSKOS items
 - [ItemSelect] - form to select multiple JSKOS items
+- [MappingTable] - table of JSKOS mappings
 
 [ItemName]: components/ItemName.html
 [ItemList]: components/ItemList.html
@@ -23,23 +24,29 @@ This library provides the following Vue components (plus some helper components 
 [ItemDetails]: components/ItemDetails.html
 [ItemSelect]: components/ItemSelect.html
 [ItemSelected]: components/ItemSelected.html
+[MappingTable]: components/MappingTable.html
+[AutoLink]: components/AutoLink.html
 
 ## Related works
 
 The [TS4NFDI Terminology Service Suite](https://github.com/ts4nfdi/terminology-service-suite) (TSS) provides similar components based on React instead of Vue and TSS includes API calls where jskos-vue leaves this to [cocoda-sdk] or other methods. A very rough correspondence of components and widgets, ignoring conceptual differences:
 
-jskos-vue     | TSS 
---------------|-------------------------
-[ItemName]    | [TitleWidget]
-[ItemList]    | *planned [EntityListWidget](https://github.com/ts4nfdi/terminology-service-suite/issues/318)*
-[ConceptTree] | [HierarchyWidget]
-/             | [GraphViewWidget]
-[ItemSuggest] | [AutocompleteWidget]
-[ItemDetails] | [EntityInfoWidget]
-/             | [EntityRelationsWidget]
+jskos-vue      | TSS 
+---------------|-------------------------
+[ItemName]     | [TitleWidget]
+[ItemList]     | [EntityListWidget]
+[ConceptTree]  | [HierarchyWidget]
+/              | [GraphViewWidget]
+[ItemSuggest]  | [AutocompleteWidget]
+[ItemDetails]  | [EntityInfoWidget] and [MetadataWidget]
+/              | [EntityRelationsWidget]
+[MappingTable] | [MappingListWidget]
+[AutoLink]     | [IriWidget]
 
-In addition [jskos-vue-tabs] is similar to TSS [TabWidget]. A mapping Widget is planned in [both jskos-vue](https://github.com/gbv/jskos-vue/issues/26) and in [in TSS](https://github.com/ts4nfdi/terminology-service-suite/issues/305).
+In addition [jskos-vue-tabs] is similar to TSS [TabWidget]. TSS further has [SearchBarWidget], [SearchResultWidget], [BreadcrumbWidget], [EntityDefinedByWidget], [EntityOntoListWidget], [CrossRefTabWidget], [TermDepictionWidget], [AlternativeNameTabWidget], [MathFormulaWidget].
 
+
+[jskos-vue-tabs]: https://github.com/gbv/jskos-vue-tabs
 
 [EntityInfoWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_additional-entity-metadata-entityinfowidget--docs
 [EntityRelationsWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_additional-entity-metadata-entityrelationswidget--docs
@@ -48,3 +55,17 @@ In addition [jskos-vue-tabs] is similar to TSS [TabWidget]. A mapping Widget is 
 [AutocompleteWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/html_search-autocompletewidget--docs
 [TabWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_additional-entity-metadata-tabwidget--docs
 [TitleWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_entity-metadata-titlewidget--docs
+[EntityListWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_search-entitylistwidget--docs
+[MappingListWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_mapping-mappinglistwidget--docs
+[SearchBarWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_search-searchbarwidget--docs
+[SearchResultWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_search-searchresultslistwidget--docs
+[BreadcrumbWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_additional-entity-metadata-breadcrumbwidget--docs
+[MetadataWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_entity-metadata-metadatawidget--docs
+[AlternativeNameTabWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_entity-metadata-alternativenametabwidget--docs
+[MathFormulaWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_entity-metadata-mathformulawidget--docs
+[IriWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_entity-metadata-iriwidget--docs
+[EntityDefinedByWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_additional-entity-metadata-entitydefinedbywidget--docs
+[EntityOntoListWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_additional-entity-metadata-entityontolistwidget--docs
+[CrossRefTabWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_additional-entity-metadata-crossreftabwidget--docs
+[TermDepictionWidget]: https://terminology.services.base4nfdi.de/tss/comp/latest/?path=/docs/react_additional-entity-metadata-termdepictionwidget--docs
+

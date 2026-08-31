@@ -1,3 +1,7 @@
+## 0.6.0
+
+- Add MappingTable component
+
 ## 0.5.2
 
 - Replace use of _getTop, _getNarrower, _getAncestors (#45)
