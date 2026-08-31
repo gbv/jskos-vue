@@ -1,0 +1,1 @@
+import{_ as t,o as a,c as r,ai as s}from"./chunks/framework.AlDDizky.js";const p=JSON.parse('{"title":"Introduction","description":"","frontmatter":{},"headers":[],"relativePath":"index.md","filePath":"index.md"}'),o={name:"index.md"};function i(n,e,d,l,c,h){return a(),r("div",null,[...e[0]||(e[0]=[s("",11)])])}const f=t(o,[["render",i]]);export{p as __pageData,f as default};
