@@ -27,7 +27,7 @@ import { ref, watch } from "vue"
 import { MappingTable } from "../../src/index.js"
 
 const mappings = ref([])
-const apiurl = ref("http://coli-conc.gbv.de/api/mappings?limit=10")
+const apiurl = ref("https://coli-conc.gbv.de/api/mappings?limit=10")
 
 const load = async () => {
   try {
