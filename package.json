@@ -52,9 +52,9 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.3",
     "@vitest/coverage-v8": "^4.0.18",
-    "@vue/test-utils": "^2.4.6",
+    "@vue/test-utils": "^2.5.0",
     "cocoda-sdk": "^3.5.0",
-    "eslint": "^10.2.0",
+    "eslint": "^10.9.1",
     "eslint-config-gbv": "^2.7.0",
     "happy-dom": "^20.5.0",
     "http-server": "^14.1.1",
