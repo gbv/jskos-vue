@@ -21,6 +21,10 @@ template {
   display: block;
 }
 
+.selected {
+  background: #faa;
+}
+
 @media (prefers-color-scheme: dark) {
   button {
     background-color: #666;

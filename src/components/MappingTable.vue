@@ -2,7 +2,9 @@
   <flexible-table
     class="jskos-vue-mappingTable"
     :fields="fields"
-    :items="items">
+    :items="items"
+    @hover="item => emit('hover', item)"
+    @click="item => emit('click', item)">
     <template #sourceConcepts="{ value }">
       <span>
         <item-name
@@ -45,6 +47,8 @@ import * as jskos from "jskos-tools"
 import ItemName from "./ItemName.vue"
 import { computed } from "vue"
 
+const emit = defineEmits(["hover", "click"])
+
 const props = defineProps({
   mappings: {
     type: Array,
@@ -55,10 +59,6 @@ const props = defineProps({
     default: false,
   },
 })
-
-// TODO: highlighted row and select row
-
-// defineEmits(["click"])
 
 const fields = computed(() => {
   let fields = [
@@ -144,10 +144,12 @@ const items = computed(() => props.mappings.map(mapping => {
     item.type = jskos.mappingTypeByType(mapping.type)
     item.date = mapping.modified || mapping.created
     item.date = item.date && item.date.slice(0, 10)
+    item._rowClass = mapping._rowClass
     return item
   }
 }).filter(Boolean))
 </script>
 
 <style>
+@import "vue-flexible-table/dist/style.css"
 </style>

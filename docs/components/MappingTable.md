@@ -8,11 +8,17 @@ A table of [JSKOS mappings](https://gbv.github.io/jskos/#mapping).
 
 - `showLabels` *boolean, default `false`* — whether to show the concepts' labels
 
+## Events
+
+- `hover` when a mapping row is hovered or unhovered
+
+- `click` when a mapping row is clicked
+ 
 ## CSS classes
 
 - `.jskos-vue-mappingTable` — the component element
 
-The table is based on [vue-flexible-table](https://www.npmjs.com/package/vue-flexible-table).
+The table is based on [vue-flexible-table](https://www.npmjs.com/package/vue-flexible-table), so its configuration, CSS classes and variables can also be used.
 
 ## Example
 
@@ -20,39 +26,25 @@ The table is based on [vue-flexible-table](https://www.npmjs.com/package/vue-fle
 import { ref, watch } from "vue"
 import { MappingTable } from "../../src/index.js"
 
-const mappings = ref([
-  {
-    "type": ["http://www.w3.org/2004/02/skos/core#closeMatch"],
-    "fromScheme": {"uri":"http://dewey.info/scheme/edition/e22/"},    
-    "toScheme": {"uri":"http://d-nb.info/gnd/7749153-1"},
-    "from": {
-        "memberSet": [ {
-            "uri": "http://dewey.info/class/612.112/e22/",
-            "notation": ["612.112"]
-        } ]
-    },
-    "to": {
-        "memberSet": [ {
-            "uri": "http://d-nb.info/gnd/4074195-3",
-            "prefLabel": { "de": "Leukozyt" }
-        } ]
-    },
-    "creator": [null],
-    "justification": "https://w3id.org/semapv/vocab/ManualMappingCuration",
-    "tool": [ { "url": "https://coli-conc.gbv.de/cocoda/" } ]
-  }
-])
+const mappings = ref([])
+const apiurl = ref("http://coli-conc.gbv.de/api/mappings?limit=10")
 
-const apiurl = ref("")
-watch(apiurl, async newurl => {
+const load = async () => {
   try {
-     const url = new URL(newurl)
+     const url = new URL(apiurl.value)
      mappings.value = await fetch(url).then(res => res.json())
   } catch {}
-})
+}
+
+watch(apiurl, load, { immediate: true })
+
+const selectMapping = item => {
+  item.mapping._rowClass = item.mapping._rowClass ? "" : "selected"
+}
 </script>
 
 ::: component-view
 <input v-model.lazy="apiurl" type="text" placeholder="API request URL" style="width: 100%" />
-<mapping-table :mappings="mappings" :show-labels="true" />
+<button @click="load">load</button>
+<mapping-table :mappings="mappings" :show-labels="true" @click="selectMapping"/>
 :::

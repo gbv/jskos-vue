@@ -1,7 +1,6 @@
 import { defineConfig } from "vitepress"
 import { componentViewMarkdownPlugin } from 'vitepress-plugin-component'
 import fs from "node:fs"
-import { resolve } from "path"
 const docsDir = "docs"
 
 const mdfiles = dir => fs.readdirSync(`./${docsDir}${dir}`)
@@ -46,11 +45,6 @@ export default defineConfig({
     optimizeDeps: {
       esbuildOptions: { target: "esnext" },
     },
-    resolve: {
-      alias: {
-        "vue-flexible-table": resolve(__dirname) + "/../../node_modules/vue-flexible-table/dist/vue-flexible-table.js",
-      },
-    }
   },
 
   themeConfig: {

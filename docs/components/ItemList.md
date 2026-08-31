@@ -40,7 +40,7 @@ Uses [ItemName](./ItemName). Also uses [dragAndDrop](../utilities/dragAndDrop) a
 
 - `select` emitted when an item or a row (if `rowMode` prop is `true`) is clicked. Parameter is an object with properties `item` (containing the clicked JSKOS item) and `row` (containing a boolean which is `true` when the click was initiated via the row, not on the item directly).
 
-## CSS Classes and Variables
+## CSS classes and variables
 
 - `.jskos-vue-itemList` — the component element
 - `.jskos-vue-itemList-item` — 
