@@ -4,7 +4,7 @@ A table of [JSKOS mappings](https://gbv.github.io/jskos/#mapping).
 
 ## Props
 
-- `items` *array, required* — the list of mappings to be displayed.
+- `mappings` *array, required* — the list of mappings to be displayed.
 
 - `showLabels` *boolean, default `false`* — whether to show the concepts' labels
 
