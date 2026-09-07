@@ -32,5 +32,5 @@ test("MappingTable", async () => {
     
   expect(comp.findComponent(ItemName).exists()).toBe(true)
 
-  expect(comp.findAll(".jskos-vue-mappingTable-sourceScheme").length).toBe(2)
+  expect(comp.findAll(".jskos-vue-mappingTable-date").length).toBe(2)
 })
