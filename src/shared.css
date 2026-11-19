@@ -29,6 +29,17 @@
   /* LoadingIndicator */
   --jskos-vue-loadingIndicator-primary-color: lightgray;
   --jskos-vue-loadingIndicator-secondary-color: blue;
+  /* QualifiedStatements */
+  --jskos-vue-qualifiedStatements-fontWeight: 600;
+  --jskos-vue-qualifiedStatements-gap: 0.75rem;
+  --jskos-vue-qualifiedStatements-smallGap: 0.15rem;
+  --jskos-vue-qualifiedStatements-propertyWidth: 8.75rem;
+  --jskos-vue-qualifiedStatements-statementGap: 0.5rem;
+  --jskos-vue-qualifiedStatements-groupGap: 1rem;
+  --jskos-vue-qualifiedStatements-mutedOpacity: 0.75;
+  --jskos-vue-qualifiedStatements-border: 1px solid var(--jskos-vue-border-color);
+  --jskos-vue-qualifiedStatements-focusOutline: 2px solid var(--jskos-vue-arrow-hover-color);
+  --jskos-vue-qualifiedStatements-inspectorColumns: minmax(8rem, 1fr) 3fr;
   /* Modal */
   --jskos-vue-modal-bgColor: var(--jskos-vue-bgColor);
   --jskos-vue-modal-footer-bgColor: rgba(0, 0, 0, 0.05);

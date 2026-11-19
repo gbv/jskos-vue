@@ -349,6 +349,22 @@
       :show-labels="true" />
   </p>
 
+  <h2>Qualified Statements</h2>
+  <p>
+    Data from
+    <a :href="qualifiedStatementsSource">cocoda-Test-Person</a>
+  </p>
+  <loading-indicator
+    v-if="examples.qualifiedStatements.loading"
+    size="md" />
+  <p v-else-if="examples.qualifiedStatements.error">
+    Could not load Qualified Statements: {{ examples.qualifiedStatements.error }}
+  </p>
+  <qualified-statements
+    v-else-if="examples.qualifiedStatements.item"
+    :item="examples.qualifiedStatements.item"
+    :registry="qualifiedStatementsRegistry" />
+
   <p>
     Loading indicator:
     <loading-indicator size="sm" />
@@ -420,6 +436,13 @@ const registry = cdk.initializeRegistry({
   provider: "ConceptApi",
   api: "https://coli-conc.gbv.de/api/",
 })
+
+const qualifiedStatementsRegistry = cdk.initializeRegistry({
+  provider: "ConceptApi",
+  api: "https://api.dante.gbv.de/",
+})
+const qualifiedStatementsUri = "https://officialuri.com/1234_bio_transfer_test_testpool_person"
+const qualifiedStatementsSource = `https://uri.gbv.de/terminology/cocoda_test_person/?uri=${encodeURIComponent(qualifiedStatementsUri)}`
 
 const fish = { notation: ["F"], prefLabel: { en: "fish", de: "Fisch" } }
 
@@ -632,6 +655,29 @@ const examples = reactive({
   itemSelect: {
     selected: [],
   },
+  qualifiedStatements: {
+    item: null,
+    loading: false,
+    error: "",
+    async load() {
+      this.loading = true
+      this.error = ""
+      try {
+        const [item] = await qualifiedStatementsRegistry.getConcepts({
+          concepts: [{ uri: qualifiedStatementsUri }],
+          params: { properties: "*" },
+        })
+        this.item = item
+        if (!item) {
+          throw new Error("No item returned")
+        }
+      } catch (error) {
+        this.error = error?.message || String(error)
+      } finally {
+        this.loading = false
+      }
+    },
+  },
   mappings: [],
 })
 
@@ -657,6 +703,7 @@ const LANGUAGE_OPTIONS = [
   await examples.conceptTree.loadScheme()
   await examples.conceptTree.loadConcepts()
 })()
+examples.qualifiedStatements.load()
 // Initialize long ConceptList example
 const loadLongItemList = async () => {
   const url = "https://coli-conc.gbv.de/api/voc/concepts?uri=http://dewey.info/scheme/edition/e23/&limit=10000"
