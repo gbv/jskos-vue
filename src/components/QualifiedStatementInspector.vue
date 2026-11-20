@@ -224,22 +224,26 @@ function makeEntry({
   const languageMap = isLanguageMap(key, value)
   const literal = isLiteral(value)
   const compactUri = ["uri", "url"].includes(key) && isUri(value)
+  // URI-only objects are terminal links, not useful navigation levels.
   const navigable = isObject(value)
     && !languageMap
     && !literal
     && Object.keys(value).some(field => !["uri", "url"].includes(field))
   const fallback = label || propertyLabel(key)
-  const text = compactUri
-    ? resolution.shorten(value)
-    : languageMap
-      ? languageMapText(value)
-      : literal
-        ? `${value.string}${value.language ? ` [${value.language}]` : ""}`
-        : isObject(value)
-          ? objectLabel(value, fallback, index)
-          : isUri(value)
-            ? resolution.label(value)
-            : scalarText(value)
+  let text
+  if (compactUri) {
+    text = resolution.shorten(value)
+  } else if (languageMap) {
+    text = languageMapText(value)
+  } else if (literal) {
+    text = `${value.string}${value.language ? ` [${value.language}]` : ""}`
+  } else if (isObject(value)) {
+    text = objectLabel(value, fallback, index)
+  } else if (isUri(value)) {
+    text = resolution.label(value)
+  } else {
+    text = scalarText(value)
+  }
   const linkUri = isObject(value) ? value.uri || value.url : isUri(value) ? value : null
   return {
     key: `${keyPrefix}${key}-${index}`,
@@ -264,10 +268,6 @@ function makeTypeEntry({ key, keyPrefix, label, values }) {
     items: values.map((value, index) => makeEntry({ key, keyPrefix, label, value, index })),
     key: `${keyPrefix}${key}`,
     label,
-    navigable: false,
-    propertyUri: null,
-    qualifiedStatement: false,
-    value: values,
   }
 }
 
@@ -317,11 +317,8 @@ function entriesForBundle(bundle, side, mappingIndex) {
       })),
       key: `mapping-${mappingIndex}-${side}-${bundleType}`,
       label,
+      // memberList is ordered; the other JSKOS bundle types are unordered.
       memberList: bundleType === "memberList" ? "ol" : concepts.length > 1 ? "ul" : null,
-      navigable: false,
-      propertyUri: null,
-      qualifiedStatement: false,
-      value: concepts,
     })
   }
   const metadata = Object.fromEntries(Object.entries(bundle)
@@ -339,10 +336,6 @@ function entriesForMappings(mappings) {
       key: `mapping-${index}-heading`,
       label: `${t("mapping")} ${index + 1}`,
       mappingHeading: true,
-      navigable: false,
-      propertyUri: null,
-      qualifiedStatement: false,
-      value: mapping,
     }]
     const types = Array.isArray(mapping.type) ? mapping.type : mapping.type ? [mapping.type] : []
     if (types.length && types.every(isUri)) {
@@ -380,26 +373,31 @@ function entriesForFields(value, {
   const entries = []
   for (const [key, fieldValue] of Object.entries(value)) {
     if (key === "resource" && statementFields) {
+      // Resource properties are rendered separately from statement qualifiers.
       continue
     }
     const propertyName = propertyLabel(key)
-    const fieldLabel = statementFields
-      ? `${t("statement")}: ${propertyName}`
-      : labelPrefix
-        ? `${labelPrefix}: ${propertyName}`
-        : propertyName
+    let fieldLabel = propertyName
+    if (statementFields) {
+      fieldLabel = `${t("statement")}: ${propertyName}`
+    } else if (labelPrefix) {
+      fieldLabel = `${labelPrefix}: ${propertyName}`
+    }
 
+    // Qualified properties map a property URI to an array of statements.
     if (key.startsWith("qualified") && isObject(fieldValue)) {
       for (const [propertyUri, statements] of Object.entries(fieldValue)) {
         for (const [index, statement] of (statements || []).entries()) {
-          const propertyName = resolution.label(propertyUri)
+          const qualifiedPropertyName = resolution.label(propertyUri)
           const qualifiedStatement = key === "qualifiedRelations" && isObject(statement?.resource)
           entries.push(makeEntry({
             index,
             itemCount: statements.length,
             key: `${key}-${propertyUri}`,
             keyPrefix,
-            label: statementFields ? `${t("statement")}: ${propertyName}` : propertyName,
+            label: statementFields
+              ? `${t("statement")}: ${qualifiedPropertyName}`
+              : qualifiedPropertyName,
             navigationIncludesValue: qualifiedStatement,
             propertyUri,
             qualifiedStatement,
@@ -422,6 +420,7 @@ function entriesForFields(value, {
           value: fieldValue,
         }))
       } else if (key === "type" && fieldValue.every(isUri)) {
+        // Type URIs share one row while retaining their individual links.
         entries.push(makeTypeEntry({ key, keyPrefix, label: fieldLabel, values: fieldValue }))
       } else {
         fieldValue.forEach((item, index) => entries.push(makeEntry({
@@ -451,6 +450,8 @@ function entriesForObject(value, { qualifiedStatement = false } = {}) {
   if (!qualifiedStatement || !isObject(value?.resource)) {
     return entriesForFields(value)
   }
+  // Keep resource properties and statement qualifiers separate: identical keys
+  // can have different JSKOS semantics.
   return [
     ...entriesForFields(value.resource, { keyPrefix: "resource-" }),
     ...entriesForFields(value, { keyPrefix: "statement-", statementFields: true }),
