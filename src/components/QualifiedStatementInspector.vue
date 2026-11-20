@@ -504,6 +504,12 @@ function contextValue(value, qualifiedStatement) {
 }
 
 function isInPath(entry) {
+  // Qualifiers make this a distinct statement context, even for the same resource.
+  if (entry.qualifiedStatement
+    && isObject(entry.value)
+    && Object.keys(entry.value).some(key => key !== "resource")) {
+    return path.value.some(node => node.value === entry.value)
+  }
   const value = contextValue(entry.value, entry.qualifiedStatement)
   if (!isObject(value)) {
     return false

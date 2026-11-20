@@ -254,6 +254,33 @@ test("opens one inline inspector at a time and collapses it", async () => {
   expect(wrapper.find(".jskos-vue-qualifiedStatements-inspector").exists()).toBe(false)
 })
 
+test("closes the inspector when the item changes", async () => {
+  const first = {
+    qualifiedRelations: {
+      [uris.relatedTo]: [{
+        resource: { uri: "https://example.org/first", prefLabel: { en: "First item" } },
+      }],
+    },
+  }
+  const second = {
+    qualifiedRelations: {
+      [uris.participatedIn]: [{
+        resource: { uri: "https://example.org/second", prefLabel: { en: "Second item" } },
+      }],
+    },
+  }
+  const wrapper = mountQualified({ item: first })
+  await flushPromises()
+
+  await statementRow(wrapper, "First item").get("button").trigger("click")
+  expect(wrapper.find(".jskos-vue-qualifiedStatements-inspector").exists()).toBe(true)
+
+  await wrapper.setProps({ item: second })
+
+  expect(wrapper.find(".jskos-vue-qualifiedStatements-inspector").exists()).toBe(false)
+  expect(statementRow(wrapper, "Second item").get("button").attributes("aria-expanded")).toBe("false")
+})
+
 test("uses concise breadcrumbs through a long source and nested pagination", async () => {
   const wrapper = mountQualified()
   await flushPromises()
@@ -514,6 +541,41 @@ test("supports a cocoda-sdk registry and custom labels", async () => {
     concepts: [{ uri: "https://example.org/unlabelled" }],
   })
   expect(registry.getConcepts).toHaveBeenCalledTimes(1)
+})
+
+test("opens distinct qualified statements that share a resource URI", async () => {
+  const sharedUri = "https://example.org/shared"
+  const repeated = {
+    qualifiedRelations: {
+      [uris.participatedIn]: [{
+        resource: {
+          uri: sharedUri,
+          prefLabel: { en: "Shared resource" },
+          qualifiedRelations: {
+            [uris.relatedTo]: [{
+              rank: "preferred",
+              startDate: "2000",
+              resource: {
+                uri: sharedUri,
+                prefLabel: { en: "Shared resource in another statement" },
+              },
+            }],
+          },
+        },
+      }],
+    },
+  }
+  const wrapper = mountQualified({ item: repeated })
+  await flushPromises()
+
+  await statementRow(wrapper, "Shared resource").get("button").trigger("click")
+  const nestedStatement = inspectorRow(wrapper, "Related to")
+
+  expect(nestedStatement.find("button").exists()).toBe(true)
+  await nestedStatement.get("button").trigger("click")
+
+  expect(inspectorRow(wrapper, "Statement: Rank").text()).toContain("preferred")
+  expect(inspectorRow(wrapper, "Statement: Start date").text()).toContain("2000")
 })
 
 test("prevents navigation cycles without a visible depth limit", async () => {

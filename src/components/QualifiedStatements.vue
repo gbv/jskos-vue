@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject, nextTick, provide, ref, useId } from "vue"
+import { computed, inject, nextTick, provide, ref, useId, watch } from "vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import QualifiedRelations from "./QualifiedRelations.vue"
 import QualifiedLiterals from "./QualifiedLiterals.vue"
@@ -63,6 +63,9 @@ function closeInspector({ restoreFocus = true } = {}) {
     nextTick(() => trigger.focus())
   }
 }
+
+// A new item can reuse positional IDs after the old trigger has been detached.
+watch(() => props.item, () => closeInspector({ restoreFocus: false }))
 
 function toggleInspector(statementId, trigger) {
   if (activeStatementId.value === statementId) {
