@@ -292,12 +292,9 @@ function entriesForFields(value, {
       continue
     }
     const propertyName = propertyLabel(key)
-    let fieldLabel = propertyName
-    if (statementFields) {
-      fieldLabel = `${t("statement")}: ${propertyName}`
-    } else if (labelPrefix) {
-      fieldLabel = `${labelPrefix}: ${propertyName}`
-    }
+    const fieldLabel = labelPrefix
+      ? `${labelPrefix}: ${propertyName}`
+      : propertyName
 
     // Qualified properties map each property URI to its statement array.
     if (key.startsWith("qualified") && isObject(fieldValue)) {
@@ -310,9 +307,7 @@ function entriesForFields(value, {
             itemCount: statements.length,
             key: `${key}-${propertyUri}`,
             keyPrefix,
-            label: statementFields
-              ? `${t("statement")}: ${qualifiedPropertyName}`
-              : qualifiedPropertyName,
+            label: qualifiedPropertyName,
             navigationIncludesValue: qualifiedStatement,
             propertyUri,
             qualifiedStatement,
@@ -365,11 +360,23 @@ function entriesForObject(value, { qualifiedStatement = false } = {}) {
   if (!qualifiedStatement || !isObject(value?.resource)) {
     return entriesForFields(value)
   }
-  // Keep resource properties and statement qualifiers separate: identical keys
-  // can have different JSKOS semantics.
+
+  const resourceEntries = entriesForFields(value.resource, {
+    keyPrefix: "resource-",
+  })
+  const statementEntries = entriesForFields(value, {
+    keyPrefix: "statement-",
+    statementFields: true,
+  })
+
   return [
-    ...entriesForFields(value.resource, { keyPrefix: "resource-" }),
-    ...entriesForFields(value, { keyPrefix: "statement-", statementFields: true }),
+    ...resourceEntries,
+    ...(statementEntries.length ? [{
+      key: "statement-heading",
+      label: t("statement"),
+      statementHeading: true,
+    }] : []),
+    ...statementEntries,
   ]
 }
 
@@ -505,6 +512,7 @@ function goTo(index) {
         :class="{
           'jskos-vue-qualifiedStatements-inspectorRow': true,
           'jskos-vue-qualifiedStatements-mappingHeading': entry.mappingHeading,
+          'jskos-vue-qualifiedStatements-statementHeading': entry.statementHeading,
         }">
         <dt>
           <AutoLink

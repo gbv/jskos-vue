@@ -450,15 +450,25 @@ test("keeps statement qualifiers separate from matching resource properties", as
 
   await statementRow(wrapper, "The Birth").get("button").trigger("click")
 
-  expect(inspectorRow(wrapper, "Start date").text()).toContain("1984/1985")
-  expect(inspectorRow(wrapper, "Statement: Start date").text()).toContain("1900")
-  expect(inspectorRow(wrapper, "End date").text()).toContain("1984/1985")
-  expect(inspectorRow(wrapper, "Statement: End date").text()).toContain("1901")
-  expect(inspectorRow(wrapper, "Types").text()).toContain("Concept, Event, Birth")
-  expect(inspectorRow(wrapper, "Statement: Types").text()).toContain("Statement type")
-  expect(inspectorRow(wrapper, "Sources").text()).toContain("Resource source")
-  expect(inspectorRow(wrapper, "Statement: Sources").text()).toContain("Statement source")
-  expect(inspectorRow(wrapper, "Statement: Rank").text()).toContain("preferred")
+  const startDates = inspectorRows(wrapper, "Start date")
+  const endDates = inspectorRows(wrapper, "End date")
+  const types = inspectorRows(wrapper, "Types")
+  const sources = inspectorRows(wrapper, "Sources")
+
+  expect(wrapper.get(".jskos-vue-qualifiedStatements-statementHeading").text()).toBe("Statement")
+  expect(startDates).toHaveLength(2)
+  expect(startDates[0].text()).toContain("1984/1985")
+  expect(startDates[1].text()).toContain("1900")
+  expect(endDates).toHaveLength(2)
+  expect(endDates[0].text()).toContain("1984/1985")
+  expect(endDates[1].text()).toContain("1901")
+  expect(types).toHaveLength(2)
+  expect(types[0].text()).toContain("Concept, Event, Birth")
+  expect(types[1].text()).toContain("Statement type")
+  expect(sources).toHaveLength(2)
+  expect(sources[0].text()).toContain("Resource source")
+  expect(sources[1].text()).toContain("Statement source")
+  expect(inspectorRow(wrapper, "Rank").text()).toContain("preferred")
 })
 
 test("navigates directly to nested qualified relation resources with meaningful breadcrumbs", async () => {
@@ -661,8 +671,9 @@ test("opens distinct qualified statements that share a resource URI", async () =
   expect(nestedStatement.find("button").exists()).toBe(true)
   await nestedStatement.get("button").trigger("click")
 
-  expect(inspectorRow(wrapper, "Statement: Rank").text()).toContain("preferred")
-  expect(inspectorRow(wrapper, "Statement: Start date").text()).toContain("2000")
+  expect(wrapper.get(".jskos-vue-qualifiedStatements-statementHeading").text()).toBe("Statement")
+  expect(inspectorRow(wrapper, "Rank").text()).toContain("preferred")
+  expect(inspectorRow(wrapper, "Start date").text()).toContain("2000")
 })
 
 test("prevents navigation cycles without a visible depth limit", async () => {
