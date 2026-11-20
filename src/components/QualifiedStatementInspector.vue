@@ -206,7 +206,7 @@ function bundleLabel(side, bundleType) {
     memberList: t("ordered"),
     memberSet: t("set"),
   }
-  return `${t(side)} — ${bundleType} (${semantics[bundleType]})`
+  return `${t(side)} (${semantics[bundleType]})`
 }
 
 function entriesForBundle(bundle, side, mappingIndex) {

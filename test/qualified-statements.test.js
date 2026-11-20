@@ -498,9 +498,9 @@ test("renders mappings and concept bundle semantics together", async () => {
 
   expect(inspectorRows(wrapper, "Type")).toHaveLength(1)
   expect(inspectorRow(wrapper, "Type").text()).toContain("Exact match")
-  expect(inspectorRow(wrapper, "From — memberSet (set)").text()).toContain("Saint John (Kanada)")
+  expect(inspectorRow(wrapper, "From (set)").text()).toContain("Saint John (Kanada)")
 
-  const choices = inspectorRow(wrapper, "To — memberChoice (alternatives)")
+  const choices = inspectorRow(wrapper, "To (alternatives)")
   expect(choices.get("ul").findAll("li")).toHaveLength(4)
   expect(choices.findAll("a").map(link => link.attributes("href"))).toEqual([
     "http://geonames.org/3207179",
@@ -511,12 +511,12 @@ test("renders mappings and concept bundle semantics together", async () => {
   expect(choices.text()).toContain("uri.gbv.de/…/DEBKGGND00000H96")
   expect(choices.find("button").exists()).toBe(false)
 
-  const ordered = inspectorRow(wrapper, "From — memberList (ordered)")
+  const ordered = inspectorRow(wrapper, "From (ordered)")
   expect(ordered.get("ol").findAll("li").map(item => item.text())).toEqual([
     "First concept",
     "Second concept",
   ])
-  expect(inspectorRow(wrapper, "To — memberSet (set)").text()).toContain("Target concept")
+  expect(inspectorRow(wrapper, "To (set)").text()).toContain("Target concept")
   expect(inspectorRow(wrapper, "Confidence").text()).toContain("0.95")
   expect(inspectorRow(wrapper, "Note").text()).toContain("Mapping metadata (en)")
 })
@@ -531,8 +531,8 @@ test("keeps mappings, multiple sources, and objects without URIs accessible", as
 
   await inspectorRow(wrapper, "Mappings").get("button").trigger("click")
   expect(wrapper.text()).toContain("Mapping 1")
-  expect(inspectorRow(wrapper, "From — memberSet (set)")).toBeDefined()
-  expect(inspectorRow(wrapper, "To — memberSet (set)")).toBeDefined()
+  expect(inspectorRow(wrapper, "From (set)")).toBeDefined()
+  expect(inspectorRow(wrapper, "To (set)")).toBeDefined()
 
   await wrapper.get(".jskos-vue-qualifiedStatements-close").trigger("click")
   await statementRow(wrapper, "Definition").get("button").trigger("click")
