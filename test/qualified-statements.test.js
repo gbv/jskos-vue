@@ -366,7 +366,7 @@ test("uses concise breadcrumbs through a long source and nested pagination", asy
   expect(inspectorRow(wrapper, "Preferred labels").text()).toContain(sourceCitation)
 
   const uriLink = inspectorRow(wrapper, "URI").get("a")
-  expect(uriLink.text()).toBe("uri.gbv.de/document/opac-de-627:ppn:1986707431")
+  expect(uriLink.text()).toBe(sourceCitation)
   expect(uriLink.attributes("href")).toBe(sourceUri)
   expect(uriLink.attributes("title")).toBe(sourceUri)
   expect(wrapper.text()).toContain("Pagination")

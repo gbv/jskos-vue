@@ -143,7 +143,9 @@ function makeEntry({
   const fallback = label || propertyLabel(key)
   let text
   if (compactUri) {
-    text = resolution.shorten(value)
+    text = key === "uri"
+      ? resolution.label(value)
+      : resolution.shorten(value)
   } else if (languageMap) {
     text = localizedValues[0]?.text || ""
   } else if (literal) {
