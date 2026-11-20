@@ -78,11 +78,10 @@ function propertyLabel(key) {
     : translated
 }
 
-function languageMapText(value) {
+function languageMapValues(value) {
   return Object.entries(value)
     .flatMap(([language, labels]) => (Array.isArray(labels) ? labels : [labels])
-      .map(label => `${label} (${language})`))
-    .join("; ")
+      .map(text => ({ language, text })))
 }
 
 function shortNavigationLabel(label, text, { includeValue = false, index = 0, itemCount = 1 } = {}) {
@@ -133,6 +132,7 @@ function makeEntry({
   qualifiedStatement = false,
 }) {
   const languageMap = isLanguageMap(key, value)
+  const localizedValues = languageMap ? languageMapValues(value) : null
   const literal = isLiteral(value)
   const compactUri = ["uri", "url"].includes(key) && isUri(value)
   // URI-only objects are terminal links, not useful navigation levels.
@@ -145,7 +145,7 @@ function makeEntry({
   if (compactUri) {
     text = resolution.shorten(value)
   } else if (languageMap) {
-    text = languageMapText(value)
+    text = localizedValues[0]?.text || ""
   } else if (literal) {
     text = `${value.string}${value.language ? ` [${value.language}]` : ""}`
   } else if (isObject(value)) {
@@ -159,6 +159,7 @@ function makeEntry({
   return {
     key: `${keyPrefix}${key}-${index}`,
     label: fallback,
+    languageMapValues: localizedValues,
     fullUri: compactUri ? value : null,
     linkUri,
     navigable,
@@ -513,9 +514,22 @@ function goTo(index) {
           </template>
         </dt>
         <dd class="jskos-vue-qualifiedStatements-inspectorValue">
+          <span
+            v-if="entry.languageMapValues"
+            class="jskos-vue-qualifiedStatements-languageMap">
+            <span
+              v-for="(item, index) in entry.languageMapValues"
+              :key="`${item.language}-${index}`"
+              class="jskos-vue-qualifiedStatements-languageMapValue">
+              <span :lang="item.language">{{ item.text }}</span>
+              <small class="jskos-vue-qualifiedStatements-languageMapLanguage">
+                ({{ item.language }})
+              </small>
+            </span>
+          </span>
           <component
             :is="entry.memberList"
-            v-if="entry.memberList"
+            v-else-if="entry.memberList"
             class="jskos-vue-qualifiedStatements-mappingMembers">
             <li
               v-for="item in entry.items"

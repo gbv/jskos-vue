@@ -414,10 +414,6 @@ test("opens qualified relation resources directly and groups their types", async
   expect(inspectorRow(wrapper, "End date").text()).toContain("1984/1985")
   const scopeNote = inspectorRow(wrapper, "Scope note")
   expect(scopeNote.find("button").exists()).toBe(false)
-  expect(scopeNote.text()).toContain("Deutsche Anmerkung (de)")
-  expect(scopeNote.text()).toContain("First English note (en)")
-  expect(scopeNote.text()).toContain("Second English note (en)")
-  expect(scopeNote.text()).toContain("es war neunzehnhundertvierundachtzig! (und)")
   expect(inspectorRow(wrapper, "Place").text()).toContain("Knüllwald")
   expect(inspectorRow(wrapper, "Had participant").text()).toContain("Alexis Girard")
 
@@ -425,6 +421,27 @@ test("opens qualified relation resources directly and groups their types", async
   expect(types.findAll("a")).toHaveLength(3)
   expect(types.text()).toContain("Concept, Event, Birth")
   expect(wrapper.get(".jskos-vue-qualifiedStatements-breadcrumb").findAll("li")).toHaveLength(1)
+})
+
+test("renders language-map values separately with their language", async () => {
+  const wrapper = mountQualified()
+  await flushPromises()
+
+  await statementRow(wrapper, "The Birth").get("button").trigger("click")
+
+  const values = inspectorRow(wrapper, "Scope note")
+    .findAll(".jskos-vue-qualifiedStatements-languageMapValue")
+
+  expect(values.map(value => value.get("[lang]").text())).toEqual([
+    "Deutsche Anmerkung",
+    "First English note",
+    "Second English note",
+    "es war neunzehnhundertvierundachtzig!",
+  ])
+  expect(values.map(value => value.get("[lang]").attributes("lang")))
+    .toEqual(["de", "en", "en", "und"])
+  expect(values.map(value => value.get("small").text()))
+    .toEqual(["(de)", "(en)", "(en)", "(und)"])
 })
 
 test("keeps statement qualifiers separate from matching resource properties", async () => {

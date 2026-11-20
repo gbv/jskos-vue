@@ -293,6 +293,16 @@ provide(qualifiedStatementsUiKey, {
   margin: 0;
   padding-left: var(--jskos-vue-qualifiedStatements-groupGap);
 }
+.jskos-vue-qualifiedStatements-languageMap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jskos-vue-qualifiedStatements-smallGap);
+}
+.jskos-vue-qualifiedStatements-languageMapLanguage {
+  color: var(--jskos-vue-color-lightGrey);
+  font-size: var(--jskos-vue-fontSize-small);
+  margin-left: var(--jskos-vue-qualifiedStatements-smallGap);
+}
 .jskos-vue-qualifiedStatements-navigate .jskos-vue-arrow {
   padding: 0;
 }
