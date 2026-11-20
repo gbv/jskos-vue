@@ -227,6 +227,9 @@ provide(qualifiedStatementsUiKey, {
 .jskos-vue-qualifiedStatements-inspectorHeader {
   justify-content: space-between;
 }
+.jskos-vue-qualifiedStatements-inspectorValue {
+  gap: var(--jskos-vue-qualifiedStatements-statementGap);
+}
 .jskos-vue-qualifiedStatements-breadcrumb ol {
   display: flex;
   flex-wrap: wrap;
@@ -235,10 +238,22 @@ provide(qualifiedStatementsUiKey, {
   margin: 0 0 var(--jskos-vue-qualifiedStatements-gap);
   padding: 0;
 }
+.jskos-vue-qualifiedStatements-breadcrumb button {
+  text-decoration: underline;
+  text-underline-offset: var(--jskos-vue-qualifiedStatements-smallGap);
+}
+.jskos-vue-qualifiedStatements-breadcrumb button:hover {
+  color: var(--jskos-vue-arrow-hover-color);
+}
+.jskos-vue-qualifiedStatements-breadcrumb [aria-current="page"] {
+  font-weight: var(--jskos-vue-qualifiedStatements-fontWeight);
+}
 .jskos-vue-qualifiedStatements-breadcrumb li:not(:last-child)::after {
-  content: "/";
+  content: "›";
+  display: inline-block;
   margin-left: var(--jskos-vue-qualifiedStatements-smallGap);
   opacity: var(--jskos-vue-qualifiedStatements-mutedOpacity);
+  transform: scale(1.25);
 }
 .jskos-vue-qualifiedStatements-inspectorList {
   margin: 0;
@@ -260,8 +275,11 @@ provide(qualifiedStatementsUiKey, {
 .jskos-vue-qualifiedStatements-mappingHeading {
   border-top: var(--jskos-vue-qualifiedStatements-border);
   grid-template-columns: minmax(0, 1fr);
-  margin-top: var(--jskos-vue-qualifiedStatements-gap);
+  margin-top: var(--jskos-vue-qualifiedStatements-groupGap);
   padding-top: var(--jskos-vue-qualifiedStatements-gap);
+}
+.jskos-vue-qualifiedStatements-mappingHeading dt {
+  font-weight: 700;
 }
 .jskos-vue-qualifiedStatements-mappingHeading:first-child {
   border-top: 0;
@@ -274,6 +292,12 @@ provide(qualifiedStatementsUiKey, {
 .jskos-vue-qualifiedStatements-mappingMembers {
   margin: 0;
   padding-left: var(--jskos-vue-qualifiedStatements-groupGap);
+}
+.jskos-vue-qualifiedStatements-navigate .jskos-vue-arrow {
+  padding: 0;
+}
+.jskos-vue-qualifiedStatements-navigate .jskos-vue-arrow > div {
+  margin: var(--jskos-vue-qualifiedStatements-smallGap);
 }
 .jskos-vue-qualifiedStatements-cycle {
   color: var(--jskos-vue-color-lightGrey);
