@@ -2,6 +2,7 @@ import { afterEach, expect, test, vi } from "vitest"
 import { flushPromises, mount } from "@vue/test-utils"
 import { nextTick } from "vue"
 import { QualifiedStatements } from "../src/index.js"
+import { useUriResolution } from "../src/composables/useUriResolution.js"
 
 const uris = {
   birth: "https://example.org/Birth",
@@ -191,6 +192,18 @@ function inspectorRows(wrapper, label) {
 
 afterEach(() => {
   wrappers.splice(0).forEach(wrapper => wrapper.unmount())
+})
+
+test("keeps a cached label when the resource is later referenced by URI only", async () => {
+  const uri = "https://example.org/concept"
+  const resolve = vi.fn()
+  const resolution = useUriResolution({ resolve, language: "en" })
+
+  await resolution.ensure({ uri, prefLabel: { en: "Concept" } })
+  await resolution.ensure({ uri })
+
+  expect(resolution.label(uri)).toBe("Concept")
+  expect(resolve).not.toHaveBeenCalled()
 })
 
 test("renders a compact overview with multiple properties, statements, and ranks", async () => {
