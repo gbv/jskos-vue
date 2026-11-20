@@ -1,6 +1,7 @@
 import { afterEach, expect, test, vi } from "vitest"
 import { flushPromises, mount } from "@vue/test-utils"
 import { nextTick } from "vue"
+import { createI18n } from "petite-vue-i18n"
 import { QualifiedStatements } from "../src/index.js"
 import { useUriResolution } from "../src/composables/useUriResolution.js"
 
@@ -230,6 +231,75 @@ test("renders a compact overview with multiple properties, statements, and ranks
   expect(wrapper.text()).not.toContain(sourceCitation)
   expect(wrapper.find(".jskos-vue-qualifiedStatements-rank-preferred .jskos-vue-arrow-up").exists()).toBe(false)
   expect(wrapper.find(".jskos-vue-qualifiedStatements-rank-normal .jskos-vue-qualifiedStatements-rank").exists()).toBe(false)
+})
+
+test("ignores generic translations from the host application", async () => {
+  const i18n = createI18n({
+    legacy: false,
+    locale: "en",
+    messages: {
+      en: {
+        qualifiedStatements: "Host-specific title",
+        source: "Host source",
+      },
+    },
+  })
+  const wrapper = mountQualified({}, {
+    global: { plugins: [i18n] },
+  })
+  await flushPromises()
+
+  expect(wrapper.text()).toContain("Additional details")
+  expect(wrapper.text()).not.toContain("Host-specific title")
+
+  await statementRow(wrapper, "Definition").get("button").trigger("click")
+
+  expect(inspectorRow(wrapper, "Sources")).toBeDefined()
+  expect(inspectorRow(wrapper, "Host source")).toBeUndefined()
+})
+
+test("allows intentional namespaced translations from the host application", async () => {
+  const i18n = createI18n({
+    legacy: false,
+    locale: "en",
+    messages: {
+      en: {
+        "jskosVue.qualifiedStatements.source": "Host sources",
+        "jskosVue.qualifiedStatements.title": "Host details",
+      },
+    },
+  })
+  const wrapper = mountQualified({}, {
+    global: { plugins: [i18n] },
+  })
+  await flushPromises()
+
+  expect(wrapper.text()).toContain("Host details")
+
+  await statementRow(wrapper, "Definition").get("button").trigger("click")
+
+  expect(inspectorRow(wrapper, "Host sources")).toBeDefined()
+})
+
+test("updates fallback translations when the host locale changes", async () => {
+  const i18n = createI18n({
+    legacy: false,
+    locale: "en",
+    messages: {},
+  })
+  const wrapper = mountQualified({}, {
+    global: { plugins: [i18n] },
+  })
+  await flushPromises()
+
+  expect(wrapper.get(".jskos-vue-qualifiedStatements-title").text())
+    .toContain("Additional details")
+
+  i18n.global.locale.value = "de"
+  await nextTick()
+
+  expect(wrapper.get(".jskos-vue-qualifiedStatements-title").text())
+    .toContain("Zusätzliche Details")
 })
 
 test("opens one inline inspector at a time and collapses it", async () => {

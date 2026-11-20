@@ -1,6 +1,6 @@
 <script setup>
 import { inject } from "vue"
-import { useLocale } from "../utils.js"
+import { useQualifiedStatementsLocale } from "../locales/qualifiedStatements.js"
 import { uriResolutionKey } from "../composables/useUriResolution.js"
 
 defineProps({
@@ -8,10 +8,7 @@ defineProps({
 })
 
 const resolution = inject(uriResolutionKey)
-const { t } = useLocale({
-  en: { deprecated: "Deprecated", preferred: "Preferred" },
-  de: { deprecated: "Veraltet", preferred: "Bevorzugt" },
-})
+const { t } = useQualifiedStatementsLocale()
 </script>
 
 <template>

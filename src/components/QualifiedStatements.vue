@@ -4,7 +4,7 @@ import LoadingIndicator from "./LoadingIndicator.vue"
 import QualifiedRelations from "./QualifiedRelations.vue"
 import QualifiedLiterals from "./QualifiedLiterals.vue"
 import QualifiedDates from "./QualifiedDates.vue"
-import { useLocale } from "../utils.js"
+import { useQualifiedStatementsLocale } from "../locales/qualifiedStatements.js"
 import {
   qualifiedStatementsUiKey,
   uriResolutionKey,
@@ -19,10 +19,7 @@ const props = defineProps({
   labelForUri: { type: Function, default: null },
 })
 
-const { t, currentLanguage } = useLocale({
-  en: { qualifiedStatements: "Additional details" },
-  de: { qualifiedStatements: "Zusätzliche Details" },
-})
+const { t, currentLanguage } = useQualifiedStatementsLocale()
 
 const resolver = computed(() => {
   if (props.resolve) {
@@ -98,7 +95,7 @@ provide(qualifiedStatementsUiKey, {
     class="jskos-vue-qualifiedStatements"
     @keydown="onKeydown">
     <div class="jskos-vue-qualifiedStatements-title">
-      {{ t("qualifiedStatements") }}:
+      {{ t("title") }}:
       <LoadingIndicator
         v-if="resolution.anyLoading.value"
         size="sm" />

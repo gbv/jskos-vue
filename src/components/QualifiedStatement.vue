@@ -4,7 +4,7 @@ import Arrow from "./Arrow.vue"
 import AutoLink from "./AutoLink.vue"
 import QualifiedStatementInspector from "./QualifiedStatementInspector.vue"
 import QualifiedValueMeta from "./QualifiedValueMeta.vue"
-import { useLocale } from "../utils.js"
+import { useQualifiedStatementsLocale } from "../locales/qualifiedStatements.js"
 import {
   qualifiedStatementsUiKey,
   uriResolutionKey,
@@ -22,18 +22,7 @@ const props = defineProps({
 
 const resolution = inject(uriResolutionKey)
 const ui = inject(qualifiedStatementsUiKey)
-const { t } = useLocale({
-  en: {
-    showDetails: "Show details",
-    hideDetails: "Hide details",
-    unnamedValue: "Unnamed value",
-  },
-  de: {
-    showDetails: "Details anzeigen",
-    hideDetails: "Details ausblenden",
-    unnamedValue: "Unbenannter Wert",
-  },
-})
+const { t } = useQualifiedStatementsLocale()
 
 const resource = computed(() => props.statement.resource)
 const primaryUri = computed(() => {
