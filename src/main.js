@@ -1,5 +1,10 @@
 import { createApp } from "vue"
-import App from "./App.vue"
-
 import * as JskosVue from "."
-createApp(App).use(JskosVue).mount("#app")
+
+const appModule = import.meta.env.DEV
+  ? import("./App2.vue")
+  : import("./App.vue")
+
+appModule.then(({ default: App }) => {
+  createApp(App).use(JskosVue).mount("#app")
+})
