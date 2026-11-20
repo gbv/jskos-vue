@@ -4,7 +4,6 @@ import * as jskos from "jskos-tools"
 export const uriResolutionKey = Symbol("jskos-vue-uri-resolution")
 export const qualifiedStatementsUiKey = Symbol("jskos-vue-qualified-statements-ui")
 
-/** Return the URI from either a URI string or an embedded JSKOS resource. */
 function uriOf(value) {
   return typeof value === "string" ? value : value?.uri
 }
@@ -20,7 +19,6 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
   const loading = reactive({})
   const errors = reactive({})
 
-  /** Shorten an HTTP(S) URI for display while preserving its distinguishing end. */
   function shorten(uri) {
     try {
       const url = new URL(uri)
@@ -33,10 +31,8 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
     }
   }
 
-  /** Format an optional start/end range, using an ellipsis for an open boundary. */
   const fmtRange = (start, end) => (start || end) ? `${start || "…"}–${end || "…"}` : ""
 
-  /** Select the preferred JSKOS label for the current language. */
   function prefLabel(resource) {
     if (!resource) {
       return ""
@@ -47,13 +43,11 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
     }) || ""
   }
 
-  /** Ask the embedding application for a label supplied through labelForUri. */
   function customLabel(uri) {
     const getLabel = unref(labelForUri)
     return typeof getLabel === "function" ? getLabel(uri) : ""
   }
 
-  /** Cache embedded data and resolve a URI only when no usable label is available. */
   async function ensure(value) {
     const uri = uriOf(value)
     if (!uri) {
@@ -91,12 +85,10 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
     }
   }
 
-  /** Ensure that all values in a collection are available in the shared cache. */
   function prefetch(values) {
     return Promise.all((values || []).map(ensure))
   }
 
-  /** Return the best available label, ending with a shortened URI as fallback. */
   function label(value) {
     const uri = uriOf(value)
     const resource = typeof value === "object" ? value : cache[uri]
@@ -105,7 +97,6 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
     return customLabel(uri) || prefLabel(resource) || prefLabel(cache[uri]) || shorten(uri || "")
   }
 
-  /** Report whether at least one URI is currently being resolved. */
   const anyLoading = computed(() => Object.values(loading).some(Boolean))
 
   return { cache, loading, errors, anyLoading, ensure, prefetch, label, shorten, fmtRange }

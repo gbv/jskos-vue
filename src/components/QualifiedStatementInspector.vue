@@ -20,6 +20,10 @@ const inspector = ref(null)
 const path = ref([])
 const { t } = useQualifiedStatementsLocale()
 
+// The inspector converts the current JSKOS object into display entries instead
+// of exposing its raw structure. A path of resources and qualified statements
+// drives both the current view and breadcrumbs. Statements retain their own
+// identity because several statements can qualify the same resource differently.
 function resetPath() {
   path.value = [{
     label: props.title,
@@ -114,6 +118,8 @@ function scalarText(value) {
   return String(value)
 }
 
+// Normalize JSKOS values into display entries with optional links and navigation,
+// keeping the original value available for drill-down.
 function makeEntry({
   key,
   keyPrefix = "",
@@ -176,6 +182,7 @@ function makeTypeEntry({ key, keyPrefix, label, values }) {
   }
 }
 
+// JSKOS mappings group concepts as a set, alternatives, or an ordered list.
 const bundleTypes = ["memberSet", "memberChoice", "memberList"]
 
 function isConceptBundle(value) {
@@ -222,7 +229,6 @@ function entriesForBundle(bundle, side, mappingIndex) {
       })),
       key: `mapping-${mappingIndex}-${side}-${bundleType}`,
       label,
-      // memberList is ordered; the other JSKOS bundle types are unordered.
       memberList: bundleType === "memberList" ? "ol" : concepts.length > 1 ? "ul" : null,
     })
   }
@@ -235,6 +241,7 @@ function entriesForBundle(bundle, side, mappingIndex) {
   return entries
 }
 
+// Expand mapping sides so bundle semantics and mapping metadata remain visible.
 function entriesForMappings(mappings) {
   return mappings.flatMap((mapping, index) => {
     const entries = [{
@@ -289,7 +296,7 @@ function entriesForFields(value, {
       fieldLabel = `${labelPrefix}: ${propertyName}`
     }
 
-    // Qualified properties map a property URI to an array of statements.
+    // Qualified properties map each property URI to its statement array.
     if (key.startsWith("qualified") && isObject(fieldValue)) {
       for (const [propertyUri, statements] of Object.entries(fieldValue)) {
         for (const [index, statement] of (statements || []).entries()) {
@@ -367,6 +374,7 @@ const entries = computed(() => entriesForObject(current.value, {
   qualifiedStatement: currentNode.value?.qualifiedStatement,
 }))
 
+// Prefetch labels for the current view, including property URIs and mapping members.
 function collectResolvable(value) {
   const values = []
   if (!isObject(value)) {
@@ -409,7 +417,9 @@ function contextValue(value, qualifiedStatement) {
 }
 
 function isInPath(entry) {
-  // Qualifiers make this a distinct statement context, even for the same resource.
+  // Qualified statements with qualifiers use object identity: distinct statements
+  // may reference the same resource. Resource-only repetitions still use their
+  // object or URI identity to stop genuine navigation cycles.
   if (entry.qualifiedStatement
     && isObject(entry.value)
     && Object.keys(entry.value).some(key => key !== "resource")) {
@@ -425,6 +435,7 @@ function isInPath(entry) {
   })
 }
 
+// Keep keyboard focus in the inspector when its navigation context changes.
 function focusInspector() {
   nextTick(() => inspector.value?.focus())
 }

@@ -61,7 +61,8 @@ function closeInspector({ restoreFocus = true } = {}) {
   }
 }
 
-// A new item can reuse positional IDs after the old trigger has been detached.
+// A replacement item can reuse positional IDs, so discard the old inspector
+// without focusing its detached disclosure button.
 watch(() => props.item, () => closeInspector({ restoreFocus: false }))
 
 function toggleInspector(statementId, trigger) {
