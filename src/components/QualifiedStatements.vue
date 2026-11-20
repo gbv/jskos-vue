@@ -156,10 +156,10 @@ provide(qualifiedStatementsUiKey, {
 .jskos-vue-qualifiedStatements-row {
   align-items: flex-start;
   display: flex;
-  gap: var(--jskos-vue-qualifiedStatements-gap);
+  gap: var(--jskos-vue-qualifiedStatements-statementGap);
 }
 .jskos-vue-qualifiedStatements-primary {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
   overflow-wrap: anywhere;
 }
