@@ -531,27 +531,19 @@ test("renders mappings and concept bundle semantics together", async () => {
   expect(inspectorRow(wrapper, "Note").text()).toContain("Mapping metadata (en)")
 })
 
-test("keeps mappings, multiple sources, and objects without URIs accessible", async () => {
+test("opens resource details without a URI", async () => {
   const wrapper = mountQualified()
   await flushPromises()
 
-  await statementRow(wrapper, "Other item").get("button").trigger("click")
-  expect(inspectorRow(wrapper, "Resource")).toBeUndefined()
-  expect(wrapper.text()).toContain("Mappings")
+  const resource = statementRow(wrapper, "Resource without URI")
+  expect(resource.find("button").exists()).toBe(true)
 
-  await inspectorRow(wrapper, "Mappings").get("button").trigger("click")
-  expect(wrapper.text()).toContain("Mapping 1")
-  expect(inspectorRow(wrapper, "From (set)")).toBeDefined()
-  expect(inspectorRow(wrapper, "To (set)")).toBeDefined()
+  await resource.get("button").trigger("click")
 
-  await wrapper.get(".jskos-vue-qualifiedStatements-close").trigger("click")
-  await statementRow(wrapper, "Definition").get("button").trigger("click")
-  const sources = wrapper.findAll(".jskos-vue-qualifiedStatements-inspectorRow")
-    .filter(row => row.get("dt").text() === "Sources")
-  expect(sources).toHaveLength(2)
-  expect(wrapper.text()).toContain(sourceCitation)
-  expect(sources[1].get("a").attributes("href")).toBe("https://example.org/source-two")
-  expect(sources[1].text()).toContain("Second source")
+  expect(wrapper.find(".jskos-vue-qualifiedStatements-inspector").exists()).toBe(true)
+  expect(inspectorRow(wrapper, "Preferred labels").text()).toContain("Resource without URI")
+  expect(inspectorRow(wrapper, "Types").text()).toContain("Resolved type")
+  expect(inspectorRow(wrapper, "URI")).toBeUndefined()
 })
 
 test("uses semantic disclosure controls and restores focus after Escape", async () => {

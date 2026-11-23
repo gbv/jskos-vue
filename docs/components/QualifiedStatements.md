@@ -9,9 +9,10 @@ to the value. Types, sources, places, mappings, and nested qualified statements
 are available through an inline inspector.
 
 Only one inspector is open at a time. Nested objects are followed through a
-breadcrumb path instead of rendering a deeply indented tree. Repeated objects
-or URIs in the current path are not opened again, which prevents cycles without
-setting a visible depth limit.
+breadcrumb path instead of rendering a deeply indented tree. Resource-only
+references are treated as cycles when their object or URI is already in the
+current path. Distinct qualified statements remain navigable when they reference
+the same resource URI but carry separate qualifiers.
 
 ## Props
 
@@ -38,6 +39,9 @@ disclosure button.
 - `--jskos-vue-qualifiedStatements-fontWeight`
 - `--jskos-vue-qualifiedStatements-gap`
 - `--jskos-vue-qualifiedStatements-smallGap`
+- `--jskos-vue-qualifiedStatements-propertyWidth`
+- `--jskos-vue-qualifiedStatements-statementGap`
+- `--jskos-vue-qualifiedStatements-groupGap`
 - `--jskos-vue-qualifiedStatements-mutedOpacity`
 - `--jskos-vue-qualifiedStatements-border`
 - `--jskos-vue-qualifiedStatements-focusOutline`
