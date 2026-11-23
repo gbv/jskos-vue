@@ -74,7 +74,6 @@ const labelForUri = uri => labels[uri] || ""
 
 <div class="qualified-statements-example">
   <div class="qualified-statements-example-controls">
-    The examples are exact subsets of the cocoda-Test-Person JSKOS dataset.
     <label for="qualified-statements-example">Example</label>
     <select id="qualified-statements-example" v-model="selectedExample">
       <option value="simple">Simple — Gender</option>
@@ -88,8 +87,10 @@ const labelForUri = uri => labels[uri] || ""
     :label-for-uri="labelForUri" />
 </div>
 
+The examples are exact subsets of the cocoda-Test-Person JSKOS dataset.
 
-<br>Code</br>
+### Code
+
 ```vue
 <script setup>
 import { QualifiedStatements } from "jskos-vue"
