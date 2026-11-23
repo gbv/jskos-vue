@@ -66,6 +66,9 @@ const labels = {
   "https://w3id.org/dpv/pd#MaritalStatus": "Marital status",
   "http://www.cidoc-crm.org/cidoc-crm/P11i_participated_in": "Participated in",
   "http://www.cidoc-crm.org/cidoc-crm/P11_had_participant": "Had participant",
+  "http://www.w3.org/2004/02/skos/core#Concept": "Concept",
+  "http://www.cidoc-crm.org/cidoc-crm/E5_Event": "Event",
+  "http://uri.gbv.de/terminology/biographie_chronicle_event/3b093d72-fe56-471b-9e5e-227943e34876": "Birth",
 }
 
 const selectedExample = ref("simple")

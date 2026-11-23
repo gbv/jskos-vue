@@ -589,32 +589,34 @@ function goTo(index) {
               </li>
             </component>
             <template v-else-if="entry.items">
-              <span
-                v-for="(item, index) in entry.items"
-                :key="item.key">
-                <template v-if="index">, </template>
-                <AutoLink
-                  v-if="item.linkUri"
-                  :href="item.linkUri"
-                  :text="item.text" />
-                <template v-else>
-                  {{ item.text }}
+              <span>
+                <template
+                  v-for="(item, index) in entry.items"
+                  :key="item.key">
+                  <template v-if="index">, </template>
+                  <AutoLink
+                    v-if="item.linkUri"
+                    :href="item.linkUri"
+                    :text="item.text" />
+                  <template v-else>
+                    {{ item.text }}
+                  </template>
+                  <button
+                    v-if="item.navigable && !isInPath(item)"
+                    type="button"
+                    class="jskos-vue-qualifiedStatements-navigate"
+                    :aria-label="`${t('navigateTo')}: ${item.text}`"
+                    @click="navigate(item)">
+                    <Arrow
+                      aria-hidden="true"
+                      direction="right" />
+                  </button>
+                  <span
+                    v-else-if="item.navigable"
+                    class="jskos-vue-qualifiedStatements-cycle">
+                    {{ t("alreadyInPath") }}
+                  </span>
                 </template>
-                <button
-                  v-if="item.navigable && !isInPath(item)"
-                  type="button"
-                  class="jskos-vue-qualifiedStatements-navigate"
-                  :aria-label="`${t('navigateTo')}: ${item.text}`"
-                  @click="navigate(item)">
-                  <Arrow
-                    aria-hidden="true"
-                    direction="right" />
-                </button>
-                <span
-                  v-else-if="item.navigable"
-                  class="jskos-vue-qualifiedStatements-cycle">
-                  {{ t("alreadyInPath") }}
-                </span>
               </span>
             </template>
             <template v-else>
