@@ -7,6 +7,8 @@ The overview shows property labels and primary statement values. Language,
 date range, and significant rank (`Preferred` or `Deprecated`) are shown next
 to the value. Types, sources, places, mappings, and nested qualified statements
 are available through an inline inspector.
+Mapping bundle visualization supports `memberSet`, `memberChoice`, and
+`memberList`, but does not explicitly interpret `memberRoles`.
 
 Only one inspector is open at a time. Nested objects are followed through a
 breadcrumb path instead of rendering a deeply indented tree. Resource-only
