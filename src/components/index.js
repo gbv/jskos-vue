@@ -13,6 +13,7 @@ import Modal from "./Modal.vue"
 import ItemSelect from "./ItemSelect.vue"
 import ItemSelected from "./ItemSelected.vue" 
 import RemoveIcon from "./RemoveIcon.vue"
+import QualifiedStatements from "./QualifiedStatements.vue"
 
 export {
   ItemName,
@@ -30,4 +31,5 @@ export {
   ItemSelect,
   ItemSelected,
   RemoveIcon,
+  QualifiedStatements,
 }
