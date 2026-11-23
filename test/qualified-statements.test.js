@@ -595,6 +595,9 @@ test("uses semantic disclosure controls and restores focus after Escape", async 
   expect(toggle.attributes("aria-expanded")).toBe("true")
   expect(toggle.attributes("aria-controls")).toBe(inspector.attributes("id"))
   expect(wrapper.find("button a, a button").exists()).toBe(false)
+  const close = inspector.get(".jskos-vue-qualifiedStatements-close")
+  expect(close.text()).toBe("×")
+  expect(close.attributes("aria-label")).toBe("Close")
 
   await inspector.trigger("keydown", { key: "Escape" })
   await nextTick()

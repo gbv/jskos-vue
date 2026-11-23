@@ -2,6 +2,7 @@
 import { computed, inject, nextTick, ref, watch } from "vue"
 import Arrow from "./Arrow.vue"
 import AutoLink from "./AutoLink.vue"
+import RemoveIcon from "./RemoveIcon.vue"
 import { useQualifiedStatementsLocale } from "../locales/qualifiedStatements.js"
 import {
   qualifiedStatementsUiKey,
@@ -511,12 +512,10 @@ function goTo(index) {
           </li>
         </ol>
       </nav>
-      <button
-        type="button"
+      <RemoveIcon
         class="jskos-vue-qualifiedStatements-close"
-        @click="ui.closeInspector()">
-        {{ t("close") }}
-      </button>
+        :aria-label="t('close')"
+        @click="ui.closeInspector()" />
     </div>
 
     <template
