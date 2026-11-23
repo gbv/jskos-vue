@@ -275,31 +275,26 @@ provide(qualifiedStatementsUiKey, {
 .jskos-vue-qualifiedStatements-mappingHeading,
 .jskos-vue-qualifiedStatements-statementHeading {
   border-top: var(--jskos-vue-qualifiedStatements-border);
-  grid-template-columns: minmax(0, 1fr);
+  margin-bottom: 0;
+  padding-bottom: var(--jskos-vue-qualifiedStatements-smallGap);
 }
 .jskos-vue-qualifiedStatements-mappingHeading {
+  font-size: inherit;
+  font-weight: 700;
   margin-top: var(--jskos-vue-qualifiedStatements-groupGap);
   padding-top: var(--jskos-vue-qualifiedStatements-gap);
 }
-.jskos-vue-qualifiedStatements-mappingHeading dt {
-  font-weight: 700;
-}
 .jskos-vue-qualifiedStatements-statementHeading {
+  color: var(--jskos-vue-color-lightGrey);
+  font-size: var(--jskos-vue-fontSize-small);
+  font-weight: var(--jskos-vue-qualifiedStatements-fontWeight);
   margin-top: var(--jskos-vue-qualifiedStatements-statementGap);
   padding-top: var(--jskos-vue-qualifiedStatements-statementGap);
 }
-.jskos-vue-qualifiedStatements-statementHeading dt {
-  color: var(--jskos-vue-color-lightGrey);
-  font-size: var(--jskos-vue-fontSize-small);
-}
-.jskos-vue-qualifiedStatements-mappingHeading:first-child {
+.jskos-vue-qualifiedStatements-inspectorHeader + .jskos-vue-qualifiedStatements-mappingHeading {
   border-top: 0;
   margin-top: 0;
   padding-top: 0;
-}
-.jskos-vue-qualifiedStatements-mappingHeading dd,
-.jskos-vue-qualifiedStatements-statementHeading dd {
-  display: none;
 }
 .jskos-vue-qualifiedStatements-mappingMembers {
   margin: 0;

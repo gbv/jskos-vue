@@ -383,6 +383,21 @@ const entries = computed(() => entriesForObject(current.value, {
   qualifiedStatement: currentNode.value?.qualifiedStatement,
 }))
 
+const entryGroups = computed(() => {
+  const groups = []
+  for (const entry of entries.value) {
+    if (entry.mappingHeading || entry.statementHeading) {
+      groups.push({ heading: entry, entries: [] })
+      continue
+    }
+    if (!groups.length) {
+      groups.push({ heading: null, entries: [] })
+    }
+    groups.at(-1).entries.push(entry)
+  }
+  return groups
+})
+
 // Prefetch labels for the current view, including property URIs and mapping members.
 function collectResolvable(value) {
   const values = []
@@ -504,123 +519,131 @@ function goTo(index) {
       </button>
     </div>
 
-    <dl class="jskos-vue-qualifiedStatements-inspectorList">
-      <div
-        v-for="entry in entries"
-        :key="entry.key"
+    <template
+      v-for="group in entryGroups"
+      :key="group.heading?.key || 'properties'">
+      <h3
+        v-if="group.heading"
         :class="{
-          'jskos-vue-qualifiedStatements-inspectorRow': true,
-          'jskos-vue-qualifiedStatements-mappingHeading': entry.mappingHeading,
-          'jskos-vue-qualifiedStatements-statementHeading': entry.statementHeading,
+          'jskos-vue-qualifiedStatements-mappingHeading': group.heading.mappingHeading,
+          'jskos-vue-qualifiedStatements-statementHeading': group.heading.statementHeading,
         }">
-        <dt>
-          <AutoLink
-            v-if="entry.propertyUri"
-            :href="entry.propertyUri"
-            :text="entry.label" />
-          <template v-else>
-            {{ entry.label }}
-          </template>
-        </dt>
-        <dd class="jskos-vue-qualifiedStatements-inspectorValue">
-          <span
-            v-if="entry.languageMapValues"
-            class="jskos-vue-qualifiedStatements-languageMap">
-            <span
-              v-for="(item, index) in entry.languageMapValues"
-              :key="`${item.language}-${index}`"
-              class="jskos-vue-qualifiedStatements-languageMapValue">
-              <span :lang="item.language">{{ item.text }}</span>
-              <small class="jskos-vue-qualifiedStatements-languageMapLanguage">
-                ({{ item.language }})
-              </small>
-            </span>
-          </span>
-          <component
-            :is="entry.memberList"
-            v-else-if="entry.memberList"
-            class="jskos-vue-qualifiedStatements-mappingMembers">
-            <li
-              v-for="item in entry.items"
-              :key="item.key">
-              <AutoLink
-                v-if="item.linkUri"
-                :href="item.linkUri"
-                :text="item.text" />
-              <template v-else>
-                {{ item.text }}
-              </template>
-              <button
-                v-if="item.navigable && !isInPath(item)"
-                type="button"
-                class="jskos-vue-qualifiedStatements-navigate"
-                :aria-label="`${t('navigateTo')}: ${item.text}`"
-                @click="navigate(item)">
-                <Arrow
-                  aria-hidden="true"
-                  direction="right" />
-              </button>
-              <span
-                v-else-if="item.navigable"
-                class="jskos-vue-qualifiedStatements-cycle">
-                {{ t("alreadyInPath") }}
-              </span>
-            </li>
-          </component>
-          <template v-else-if="entry.items">
-            <span
-              v-for="(item, index) in entry.items"
-              :key="item.key">
-              <template v-if="index">, </template>
-              <AutoLink
-                v-if="item.linkUri"
-                :href="item.linkUri"
-                :text="item.text" />
-              <template v-else>
-                {{ item.text }}
-              </template>
-              <button
-                v-if="item.navigable && !isInPath(item)"
-                type="button"
-                class="jskos-vue-qualifiedStatements-navigate"
-                :aria-label="`${t('navigateTo')}: ${item.text}`"
-                @click="navigate(item)">
-                <Arrow
-                  aria-hidden="true"
-                  direction="right" />
-              </button>
-              <span
-                v-else-if="item.navigable"
-                class="jskos-vue-qualifiedStatements-cycle">
-                {{ t("alreadyInPath") }}
-              </span>
-            </span>
-          </template>
-          <template v-else>
+        {{ group.heading.label }}
+      </h3>
+      <dl class="jskos-vue-qualifiedStatements-inspectorList">
+        <div
+          v-for="entry in group.entries"
+          :key="entry.key"
+          class="jskos-vue-qualifiedStatements-inspectorRow">
+          <dt>
             <AutoLink
-              v-if="entry.linkUri"
-              :href="entry.linkUri"
-              :title="entry.fullUri || undefined"
-              :text="entry.text" />
-            <span v-else>{{ entry.text }}</span>
-          </template>
-          <button
-            v-if="entry.navigable && !isInPath(entry)"
-            type="button"
-            class="jskos-vue-qualifiedStatements-navigate"
-            :aria-label="`${t('navigateTo')}: ${entry.text}`"
-            @click="navigate(entry)">
-            <Arrow
-              aria-hidden="true"
-              direction="right" />
-          </button>
-          <span
-            v-else-if="entry.navigable"
-            class="jskos-vue-qualifiedStatements-cycle">
-            {{ t("alreadyInPath") }}
-          </span>
-        </dd>
-      </div>
-    </dl>
+              v-if="entry.propertyUri"
+              :href="entry.propertyUri"
+              :text="entry.label" />
+            <template v-else>
+              {{ entry.label }}
+            </template>
+          </dt>
+          <dd class="jskos-vue-qualifiedStatements-inspectorValue">
+            <span
+              v-if="entry.languageMapValues"
+              class="jskos-vue-qualifiedStatements-languageMap">
+              <span
+                v-for="(item, index) in entry.languageMapValues"
+                :key="`${item.language}-${index}`"
+                class="jskos-vue-qualifiedStatements-languageMapValue">
+                <span :lang="item.language">{{ item.text }}</span>
+                <small class="jskos-vue-qualifiedStatements-languageMapLanguage">
+                  ({{ item.language }})
+                </small>
+              </span>
+            </span>
+            <component
+              :is="entry.memberList"
+              v-else-if="entry.memberList"
+              class="jskos-vue-qualifiedStatements-mappingMembers">
+              <li
+                v-for="item in entry.items"
+                :key="item.key">
+                <AutoLink
+                  v-if="item.linkUri"
+                  :href="item.linkUri"
+                  :text="item.text" />
+                <template v-else>
+                  {{ item.text }}
+                </template>
+                <button
+                  v-if="item.navigable && !isInPath(item)"
+                  type="button"
+                  class="jskos-vue-qualifiedStatements-navigate"
+                  :aria-label="`${t('navigateTo')}: ${item.text}`"
+                  @click="navigate(item)">
+                  <Arrow
+                    aria-hidden="true"
+                    direction="right" />
+                </button>
+                <span
+                  v-else-if="item.navigable"
+                  class="jskos-vue-qualifiedStatements-cycle">
+                  {{ t("alreadyInPath") }}
+                </span>
+              </li>
+            </component>
+            <template v-else-if="entry.items">
+              <span
+                v-for="(item, index) in entry.items"
+                :key="item.key">
+                <template v-if="index">, </template>
+                <AutoLink
+                  v-if="item.linkUri"
+                  :href="item.linkUri"
+                  :text="item.text" />
+                <template v-else>
+                  {{ item.text }}
+                </template>
+                <button
+                  v-if="item.navigable && !isInPath(item)"
+                  type="button"
+                  class="jskos-vue-qualifiedStatements-navigate"
+                  :aria-label="`${t('navigateTo')}: ${item.text}`"
+                  @click="navigate(item)">
+                  <Arrow
+                    aria-hidden="true"
+                    direction="right" />
+                </button>
+                <span
+                  v-else-if="item.navigable"
+                  class="jskos-vue-qualifiedStatements-cycle">
+                  {{ t("alreadyInPath") }}
+                </span>
+              </span>
+            </template>
+            <template v-else>
+              <AutoLink
+                v-if="entry.linkUri"
+                :href="entry.linkUri"
+                :title="entry.fullUri || undefined"
+                :text="entry.text" />
+              <span v-else>{{ entry.text }}</span>
+            </template>
+            <button
+              v-if="entry.navigable && !isInPath(entry)"
+              type="button"
+              class="jskos-vue-qualifiedStatements-navigate"
+              :aria-label="`${t('navigateTo')}: ${entry.text}`"
+              @click="navigate(entry)">
+              <Arrow
+                aria-hidden="true"
+                direction="right" />
+            </button>
+            <span
+              v-else-if="entry.navigable"
+              class="jskos-vue-qualifiedStatements-cycle">
+              {{ t("alreadyInPath") }}
+            </span>
+          </dd>
+        </div>
+      </dl>
+    </template>
   </section>
 </template>

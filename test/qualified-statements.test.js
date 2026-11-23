@@ -455,9 +455,12 @@ test("keeps statement qualifiers separate from matching resource properties", as
   const types = inspectorRows(wrapper, "Types")
   const sources = inspectorRows(wrapper, "Sources")
 
-  expect(wrapper.get(".jskos-vue-qualifiedStatements-statementHeading").text()).toBe("Statement")
+  expect(wrapper.get("h3.jskos-vue-qualifiedStatements-statementHeading").text()).toBe("Statement")
+  expect(wrapper.find("dl > h3").exists()).toBe(false)
   expect(startDates).toHaveLength(2)
-  expect(startDates[0].text()).toContain("1984/1985")
+  expect(startDates[0].element.parentElement.tagName).toBe("DL")
+  expect(startDates[0].get("dt").text()).toBe("Start date")
+  expect(startDates[0].get("dd").text()).toContain("1984/1985")
   expect(startDates[1].text()).toContain("1900")
   expect(endDates).toHaveLength(2)
   expect(endDates[0].text()).toContain("1984/1985")
@@ -503,10 +506,12 @@ test("renders mappings and concept bundle semantics together", async () => {
 
   expect(wrapper.get(".jskos-vue-qualifiedStatements-breadcrumb")
     .findAll("li").map(item => item.text())).toEqual(["The Birth", "Place", "Mappings"])
-  expect(wrapper.findAll(".jskos-vue-qualifiedStatements-mappingHeading")
-    .map(heading => heading.get("dt").text())).toEqual(["Mapping 1", "Mapping 2"])
+  expect(wrapper.findAll("h3.jskos-vue-qualifiedStatements-mappingHeading")
+    .map(heading => heading.text())).toEqual(["Mapping 1", "Mapping 2"])
 
   expect(inspectorRows(wrapper, "Type")).toHaveLength(1)
+  expect(inspectorRow(wrapper, "Type").element.parentElement.tagName).toBe("DL")
+  expect(inspectorRow(wrapper, "Type").get("dd").exists()).toBe(true)
   expect(inspectorRow(wrapper, "Type").text()).toContain("Exact match")
   expect(inspectorRow(wrapper, "From (set)").text()).toContain("Saint John (Kanada)")
 
