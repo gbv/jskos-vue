@@ -1,0 +1,155 @@
+{
+  "simple": {
+    "uri": "https://officialuri.com/1234_bio_transfer_test_testpool_person",
+    "prefLabel": {
+      "zxx": "Testperson für RDF"
+    },
+    "qualifiedRelations": {
+      "https://schema.org/gender": [
+        {
+          "rank": "preferred",
+          "resource": {
+            "prefLabel": {
+              "de": "männlich",
+              "en": "male"
+            },
+            "uri": "http://uri.gbv.de/terminology/gender/a0e9160d-2db0-4030-80df-c96b6bfc49e5"
+          }
+        }
+      ]
+    }
+  },
+  "intermediate": {
+    "uri": "https://officialuri.com/1234_bio_transfer_test_testpool_person",
+    "prefLabel": {
+      "zxx": "Testperson für RDF"
+    },
+    "qualifiedRelations": {
+      "https://w3id.org/dpv/pd#MaritalStatus": [
+        {
+          "resource": {
+            "prefLabel": {
+              "de": "Ledig",
+              "en": "Unmarried"
+            },
+            "uri": "http://uri.gbv.de/terminology/marital_status/55aa53cb-999f-46c5-8620-ac8d38ee4d50"
+          },
+          "startDate": "1500",
+          "endDate": "1550",
+          "rank": "preferred"
+        },
+        {
+          "resource": {
+            "prefLabel": {
+              "de": "Geschieden",
+              "en": "Divorced"
+            },
+            "uri": "http://uri.gbv.de/terminology/marital_status/645a1993-7908-4960-9470-804232041357"
+          },
+          "startDate": "1550",
+          "endDate": "1560",
+          "rank": "normal"
+        },
+        {
+          "resource": {
+            "prefLabel": {
+              "de": "Verwitwet",
+              "en": "Widowed"
+            },
+            "uri": "http://uri.gbv.de/terminology/marital_status/dc3d06a0-1e30-4a44-afa6-bbeaef4054e3"
+          },
+          "rank": "normal"
+        }
+      ]
+    }
+  },
+  "advanced": {
+    "uri": "https://officialuri.com/1234_bio_transfer_test_testpool_person",
+    "prefLabel": {
+      "zxx": "Testperson für RDF"
+    },
+    "qualifiedRelations": {
+      "http://www.cidoc-crm.org/cidoc-crm/P11i_participated_in": [
+        {
+          "resource": {
+            "prefLabel": {
+              "de": "Die Geburt",
+              "en": "The Birth"
+            },
+            "type": [
+              "http://www.w3.org/2004/02/skos/core#Concept",
+              "http://www.cidoc-crm.org/cidoc-crm/E5_Event",
+              "http://uri.gbv.de/terminology/biographie_chronicle_event/3b093d72-fe56-471b-9e5e-227943e34876"
+            ],
+            "startDate": "1984/1985",
+            "endDate": "1984/1985",
+            "scopeNote": {
+              "und": [
+                "es war neunzehnhundertvierundachtzig!"
+              ]
+            },
+            "place": [
+              {
+                "prefLabel": {
+                  "und": "Knüllwald"
+                },
+                "altLabel": {
+                  "und": [
+                    "Saint John (Kanada)",
+                    "Knuellwald",
+                    "Oberbeisheim",
+                    "Niederbeisheim"
+                  ]
+                },
+                "uri": "http://uri.gbv.de/terminology/prizepapers_place/bf0a9e36-1158-45f9-81d7-533e7970e389",
+                "mappings": [
+                  {
+                    "type": [
+                      "http://www.w3.org/2004/02/skos/core#exactMatch"
+                    ],
+                    "from": {
+                      "memberSet": [
+                        {
+                          "uri": "http://uri.gbv.de/terminology/prizepapers_place/bf0a9e36-1158-45f9-81d7-533e7970e389"
+                        }
+                      ]
+                    },
+                    "to": {
+                      "memberChoice": [
+                        {
+                          "uri": "http://geonames.org/3207179"
+                        },
+                        {
+                          "uri": "https://d-nb.info/gnd/4369255-2"
+                        },
+                        {
+                          "uri": "http://uri.gbv.de/terminology/gn250/DEBKGGND00000H96"
+                        },
+                        {
+                          "uri": "http://vocab.getty.edu/tgn/7124998"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "qualifiedRelations": {
+              "http://www.cidoc-crm.org/cidoc-crm/P11_had_participant": [
+                {
+                  "resource": {
+                    "prefLabel": {
+                      "de": "__Alexis Girard, Alexis Girald",
+                      "en": "__Alexis Girard, Alexis Girald"
+                    },
+                    "uri": "http://uri.gbv.de/terminology/dante/0954da34-bc59-4f95-8d70-c156b7e2327b"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

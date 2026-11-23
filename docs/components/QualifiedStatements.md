@@ -57,52 +57,39 @@ disclosure button.
 ## Example
 
 <script setup>
+import { ref } from "vue"
 import { QualifiedStatements } from "../../src/components/index.js"
+import examples from "../examples/qualified-statements-examples.json"
 
 const labels = {
-  "https://example.org/participatedIn": "Participated in",
-  "https://schema.org/pagination": "Pagination",
+  "https://schema.org/gender": "Gender",
+  "https://w3id.org/dpv/pd#MaritalStatus": "Marital status",
+  "http://www.cidoc-crm.org/cidoc-crm/P11i_participated_in": "Participated in",
+  "http://www.cidoc-crm.org/cidoc-crm/P11_had_participant": "Had participant",
 }
 
-const item = {
-  uri: "https://example.org/person",
-  qualifiedRelations: {
-    "https://example.org/participatedIn": [{
-      rank: "preferred",
-      startDate: "2020",
-      resource: {
-        uri: "https://example.org/event",
-        prefLabel: { en: "Example event" },
-        qualifiedLiterals: {
-          "https://schema.org/pagination": [{
-            literal: { string: "Page 12" },
-          }],
-        },
-      },
-    }],
-  },
-  qualifiedLiterals: {
-    "https://example.org/note": [{
-      literal: { string: "Example note", language: "en" },
-      source: [{
-        prefLabel: { en: "Example source" },
-        qualifiedLiterals: {
-          "https://schema.org/pagination": [{
-            literal: { string: "Page 24" },
-          }],
-        },
-      }],
-    }],
-  },
-}
-
+const selectedExample = ref("simple")
 const labelForUri = uri => labels[uri] || ""
 </script>
 
-<QualifiedStatements
-  :item="item"
-  :label-for-uri="labelForUri" />
+<div class="qualified-statements-example">
+  <div class="qualified-statements-example-controls">
+    The examples are exact subsets of the cocoda-Test-Person JSKOS dataset.
+    <label for="qualified-statements-example">Example</label>
+    <select id="qualified-statements-example" v-model="selectedExample">
+      <option value="simple">Simple — Gender</option>
+      <option value="intermediate">Intermediate — Marital status</option>
+      <option value="advanced">Advanced — The Birth</option>
+    </select>
+  </div>
 
+  <QualifiedStatements
+    :item="examples[selectedExample]"
+    :label-for-uri="labelForUri" />
+</div>
+
+
+<br>Code</br>
 ```vue
 <script setup>
 import { QualifiedStatements } from "jskos-vue"

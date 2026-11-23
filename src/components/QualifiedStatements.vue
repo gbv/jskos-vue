@@ -118,7 +118,7 @@ provide(qualifiedStatementsUiKey, {
 .jskos-vue-qualifiedStatements-property {
   font-weight: var(--jskos-vue-qualifiedStatements-fontWeight);
 }
-.jskos-vue-qualifiedStatements-tree {
+.jskos-vue-qualifiedStatements .jskos-vue-qualifiedStatements-tree {
   list-style: none;
   margin: 0;
   padding-left: 0;
@@ -138,13 +138,18 @@ provide(qualifiedStatementsUiKey, {
   color: inherit;
   text-decoration: none;
 }
-.jskos-vue-qualifiedStatements-values {
+.jskos-vue-qualifiedStatements .jskos-vue-qualifiedStatements-values {
   display: flex;
   flex-direction: column;
   gap: var(--jskos-vue-qualifiedStatements-statementGap);
   list-style: none;
   margin: 0;
   padding-left: 0;
+}
+.jskos-vue-qualifiedStatements .jskos-vue-qualifiedStatements-tree > li + li,
+.jskos-vue-qualifiedStatements .jskos-vue-qualifiedStatements-values > li + li,
+.jskos-vue-qualifiedStatements .jskos-vue-qualifiedStatements-breadcrumb li + li {
+  margin-top: 0;
 }
 .jskos-vue-qualifiedStatements-range {
   opacity: var(--jskos-vue-qualifiedStatements-mutedOpacity);
@@ -188,6 +193,7 @@ provide(qualifiedStatementsUiKey, {
   color: inherit;
   cursor: pointer;
   font: inherit;
+  margin: 0;
   padding: 0;
 }
 .jskos-vue-qualifiedStatements-disclosure:focus-visible,
@@ -230,13 +236,14 @@ provide(qualifiedStatementsUiKey, {
 .jskos-vue-qualifiedStatements-inspectorValue {
   gap: var(--jskos-vue-qualifiedStatements-statementGap);
 }
-.jskos-vue-qualifiedStatements-breadcrumb ol {
+.jskos-vue-qualifiedStatements .jskos-vue-qualifiedStatements-breadcrumb ol {
+  column-gap: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--jskos-vue-qualifiedStatements-smallGap);
   list-style: none;
   margin: 0 0 var(--jskos-vue-qualifiedStatements-gap);
   padding: 0;
+  row-gap: var(--jskos-vue-qualifiedStatements-smallGap);
 }
 .jskos-vue-qualifiedStatements-breadcrumb button {
   text-decoration: underline;
@@ -251,7 +258,7 @@ provide(qualifiedStatementsUiKey, {
 .jskos-vue-qualifiedStatements-breadcrumb li:not(:last-child)::after {
   content: "›";
   display: inline-block;
-  margin-left: var(--jskos-vue-qualifiedStatements-smallGap);
+  margin: 0 var(--jskos-vue-qualifiedStatements-smallGap);
   opacity: var(--jskos-vue-qualifiedStatements-mutedOpacity);
   transform: scale(1.25);
 }
