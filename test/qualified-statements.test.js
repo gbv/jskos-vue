@@ -207,6 +207,37 @@ test("keeps a cached label when the resource is later referenced by URI only", a
   expect(resolve).not.toHaveBeenCalled()
 })
 
+test("uses an embedded label for a resource without a URI", () => {
+  const resource = { prefLabel: { en: "Embedded label" } }
+  const labelForUri = vi.fn(uri => uri.startsWith("https://") ? "Custom label" : "")
+  const resolution = useUriResolution({ labelForUri, language: "en" })
+
+  expect(resolution.label(resource)).toBe("Embedded label")
+  expect(labelForUri).not.toHaveBeenCalled()
+})
+
+test("keeps an embedded label when an earlier resolver request returns URI-only data", async () => {
+  const uri = "https://example.org/concept"
+  let resolveRequest
+  const request = new Promise(resolve => {
+    resolveRequest = resolve
+  })
+  const resolve = vi.fn(() => request)
+  const resolution = useUriResolution({ resolve, language: "en" })
+
+  const pending = resolution.ensure(uri)
+  expect(resolution.loading[uri]).toBe(true)
+
+  await resolution.ensure({ uri, prefLabel: { en: "Embedded label" } })
+  expect(resolution.label(uri)).toBe("Embedded label")
+
+  resolveRequest({ uri })
+  await pending
+
+  expect(resolution.loading[uri]).toBe(false)
+  expect(resolution.label(uri)).toBe("Embedded label")
+})
+
 test("renders a compact overview with multiple properties, statements, and ranks", async () => {
   const wrapper = mountQualified()
   await flushPromises()

@@ -43,6 +43,9 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
   }
 
   function customLabel(uri) {
+    if (!uri) {
+      return ""
+    }
     const getLabel = unref(labelForUri)
     return typeof getLabel === "function" ? getLabel(uri) : ""
   }
@@ -72,7 +75,8 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
     loading[uri] = true
     try {
       const resource = await resolver(uri)
-      if (resource) {
+      if (resource
+        && (!cache[uri] || Object.keys(resource).some(key => key !== "uri"))) {
         cache[uri] = resource
       }
       return resource
