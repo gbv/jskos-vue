@@ -140,7 +140,6 @@ function makeEntry({
     && !languageMap
     && !literal
     && Object.keys(value).some(field => !["uri", "url"].includes(field))
-  const fallback = label || propertyLabel(key)
   let text
   if (compactUri) {
     text = key === "uri"
@@ -151,7 +150,7 @@ function makeEntry({
   } else if (literal) {
     text = `${value.string}${value.language ? ` [${value.language}]` : ""}`
   } else if (isObject(value)) {
-    text = objectLabel(value, fallback, index)
+    text = objectLabel(value, label, index)
   } else if (isUri(value)) {
     text = resolution.label(value)
   } else {
@@ -160,12 +159,12 @@ function makeEntry({
   const linkUri = isObject(value) ? value.uri || value.url : isUri(value) ? value : null
   return {
     key: `${keyPrefix}${key}-${index}`,
-    label: fallback,
+    label,
     languageMapValues: localizedValues,
     fullUri: compactUri ? value : null,
     linkUri,
     navigable,
-    navigationLabel: shortNavigationLabel(navigationBase || fallback, text, {
+    navigationLabel: shortNavigationLabel(navigationBase || label, text, {
       includeValue: navigationIncludesValue,
       index,
       itemCount,

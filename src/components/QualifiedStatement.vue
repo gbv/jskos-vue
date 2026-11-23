@@ -3,7 +3,6 @@ import { computed, inject } from "vue"
 import Arrow from "./Arrow.vue"
 import AutoLink from "./AutoLink.vue"
 import QualifiedStatementInspector from "./QualifiedStatementInspector.vue"
-import QualifiedValueMeta from "./QualifiedValueMeta.vue"
 import { useQualifiedStatementsLocale } from "../locales/qualifiedStatements.js"
 import {
   qualifiedStatementsUiKey,
@@ -84,7 +83,16 @@ function toggle(event) {
           :lang="language || undefined">
           {{ primaryLabel }}<sup v-if="language">{{ language }}</sup>
         </span>
-        <QualifiedValueMeta :value="statement" />
+        <small
+          v-if="statement.startDate || statement.endDate"
+          class="jskos-vue-qualifiedStatements-range">
+          {{ resolution.fmtRange(statement.startDate, statement.endDate) }}
+        </small>
+        <small
+          v-if="statement.rank === 'preferred' || statement.rank === 'deprecated'"
+          class="jskos-vue-qualifiedStatements-rank">
+          {{ t(statement.rank) }}
+        </small>
       </div>
       <button
         v-if="hasDetails"

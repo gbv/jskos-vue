@@ -17,7 +17,6 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
   // resolver request finishes.
   const cache = reactive({})
   const loading = reactive({})
-  const errors = reactive({})
 
   function shorten(uri) {
     try {
@@ -77,9 +76,8 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
         cache[uri] = resource
       }
       return resource
-    } catch (error) {
+    } catch {
       // Resolution failures are non-fatal: label() can still use the URI fallback.
-      errors[uri] = error
     } finally {
       loading[uri] = false
     }
@@ -99,5 +97,5 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
 
   const anyLoading = computed(() => Object.values(loading).some(Boolean))
 
-  return { cache, loading, errors, anyLoading, ensure, prefetch, label, shorten, fmtRange }
+  return { cache, loading, anyLoading, ensure, prefetch, label, shorten, fmtRange }
 }

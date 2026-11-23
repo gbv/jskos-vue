@@ -291,7 +291,6 @@ provide(qualifiedStatementsUiKey, {
 .jskos-vue-qualifiedStatements-statementHeading dt {
   color: var(--jskos-vue-color-lightGrey);
   font-size: var(--jskos-vue-fontSize-small);
-  font-weight: var(--jskos-vue-qualifiedStatements-fontWeight);
 }
 .jskos-vue-qualifiedStatements-mappingHeading:first-child {
   border-top: 0;
