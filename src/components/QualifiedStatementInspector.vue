@@ -143,9 +143,7 @@ function makeEntry({
     && Object.keys(value).some(field => !["uri", "url"].includes(field))
   let text
   if (compactUri) {
-    text = key === "uri"
-      ? resolution.label(value)
-      : resolution.shorten(value)
+    text = resolution.shorten(value)
   } else if (languageMap) {
     text = localizedValues[0]?.text || ""
   } else if (literal) {
@@ -492,6 +490,7 @@ function goTo(index) {
     :aria-label="`${t('details')}: ${currentLabel}`">
     <div class="jskos-vue-qualifiedStatements-inspectorHeader">
       <nav
+        v-if="path.length > 1"
         class="jskos-vue-qualifiedStatements-breadcrumb"
         :aria-label="t('breadcrumb')">
         <ol>

@@ -233,6 +233,9 @@ provide(qualifiedStatementsUiKey, {
 .jskos-vue-qualifiedStatements-inspectorHeader {
   justify-content: space-between;
 }
+.jskos-vue-qualifiedStatements-close {
+  margin-left: auto;
+}
 .jskos-vue-qualifiedStatements-inspectorValue {
   gap: var(--jskos-vue-qualifiedStatements-statementGap);
 }

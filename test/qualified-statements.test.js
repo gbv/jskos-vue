@@ -397,7 +397,7 @@ test("uses concise breadcrumbs through a long source and nested pagination", asy
   expect(inspectorRow(wrapper, "Preferred labels").text()).toContain(sourceCitation)
 
   const uriLink = inspectorRow(wrapper, "URI").get("a")
-  expect(uriLink.text()).toBe(sourceCitation)
+  expect(uriLink.text()).toBe("uri.gbv.de/document/opac-de-627:ppn:1986707431")
   expect(uriLink.attributes("href")).toBe(sourceUri)
   expect(uriLink.attributes("title")).toBe(sourceUri)
   expect(wrapper.text()).toContain("Pagination")
@@ -451,7 +451,7 @@ test("opens qualified relation resources directly and groups their types", async
   const types = inspectorRow(wrapper, "Types")
   expect(types.findAll("a")).toHaveLength(3)
   expect(types.text()).toContain("Concept, Event, Birth")
-  expect(wrapper.get(".jskos-vue-qualifiedStatements-breadcrumb").findAll("li")).toHaveLength(1)
+  expect(wrapper.find(".jskos-vue-qualifiedStatements-breadcrumb").exists()).toBe(false)
 })
 
 test("renders language-map values separately with their language", async () => {
@@ -734,5 +734,5 @@ test("prevents navigation cycles without a visible depth limit", async () => {
   expect(wrapper.text()).toContain("Already in this path")
   expect(inspectorRow(wrapper, "Resource")).toBeUndefined()
   expect(inspectorRow(wrapper, "Related to").find("button").exists()).toBe(false)
-  expect(wrapper.get(".jskos-vue-qualifiedStatements-breadcrumb").findAll("li")).toHaveLength(1)
+  expect(wrapper.find(".jskos-vue-qualifiedStatements-breadcrumb").exists()).toBe(false)
 })
