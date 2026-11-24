@@ -1,25 +1,59 @@
 <template>
   <h1>jskos-vue</h1>
-  <p>
-    Change content language preferrence:
-    <span
-      v-for="(language, index) in state.languages"
-      :key="index">
-      <a
-        href=""
-        @click.prevent="state.languages.move(index, 0)">
+  <section class="localization-demo">
+    <h2>Localization</h2>
+    <div class="localization-demo-controls">
+      <label>
+        UI locale
+        <select v-model="uiLocale">
+          <option value="en">English</option>
+          <option value="de">German</option>
+        </select>
+      </label>
+      <label>
+        <input
+          v-model="state.useContentLanguages"
+          type="checkbox">
+        Use explicit content preferences
+      </label>
+    </div>
+    <div class="localization-demo-languages">
+      <span>Content language order:</span>
+      <button
+        v-for="(language, index) in state.languages"
+        :key="language"
+        :class="{ 'localization-demo-language-preferred': state.useContentLanguages && index === 0 }"
+        type="button"
+        :disabled="!state.useContentLanguages"
+        @click="state.languages.move(index, 0)">
         {{ language }}
-      </a> -
-    </span>
-  </p>
-  <p>
-    LicenseInfo
-    <license-info :item="{ license: [ { uri: 'http://creativecommons.org/licenses/by-nc-nd/3.0/' } ] }" />
-  </p>
-  <p>
-    Item (notation+label):
-    <item-name :item="fish" />
-  </p>
+      </button>
+      <small v-if="!state.useContentLanguages">
+        Vue I18n fallback active
+      </small>
+    </div>
+    <dl class="localization-demo-examples">
+      <dt>LicenseInfo (multilingual)</dt>
+      <dd>
+        <license-info :item="multilingualLicense" />
+        <small class="localization-demo-hint">
+          Its label follows the content preference; its tooltip uses the UI locale.
+        </small>
+      </dd>
+      <dt>LicenseInfo (badge)</dt>
+      <dd>
+        <license-info :item="{ license: [ { uri: 'http://creativecommons.org/licenses/by-nc-nd/3.0/' } ] }" />
+      </dd>
+      <dt>ItemName</dt>
+      <dd><item-name :item="fish" /></dd>
+      <dt>ItemName (explicit German)</dt>
+      <dd>
+        <item-name
+          :item="fish"
+          language="de" />
+      </dd>
+    </dl>
+  </section>
   <p>
     Item (no label):
     <item-name
@@ -39,12 +73,6 @@
       :item="fish"
       :clickable="true"
       @click="handleClick({ item: { uri: 'uri:clickableItem' }})" />
-  </p>
-  <p>
-    Item (fixed language):
-    <item-name
-      :item="fish"
-      language="de" />
   </p>
   <p>
     Item (without notation/label, fallback to URI):
@@ -390,8 +418,11 @@ import { reactive } from "vue"
 import * as jskos from "jskos-tools"
 import { Tab } from "jskos-vue-tabs"
 import { cdk } from "cocoda-sdk"
+import { useI18n } from "petite-vue-i18n"
 // Add ItemName plugin
 import ItemName from "./components/ItemName.vue"
+
+const { locale: uiLocale } = useI18n({ useScope: "global" })
 
 ItemName.addNotationPlugin((notation, { item }) => {
   // Add leading zeros for DDC items
@@ -445,6 +476,23 @@ const qualifiedStatementsUri = "https://officialuri.com/1234_bio_transfer_test_t
 const qualifiedStatementsSource = `https://uri.gbv.de/terminology/cocoda_test_person/?uri=${encodeURIComponent(qualifiedStatementsUri)}`
 
 const fish = { notation: ["F"], prefLabel: { en: "fish", de: "Fisch" } }
+const multilingualLicense = {
+  license: [{
+    uri: "https://example.org/license",
+    notation: ["EX"],
+    prefLabel: {
+      en: "Example license",
+      de: "Beispiellizenz",
+    },
+  }],
+  publisher: [{
+    url: "https://example.org/publisher",
+    prefLabel: {
+      en: "Example publisher",
+      de: "Beispielverlag",
+    },
+  }],
+}
 
 const examples = reactive({
   detailed: {
@@ -683,10 +731,14 @@ const examples = reactive({
 
 
 const state = reactive({
+  useContentLanguages: true,
   languages: ["en", "de", "fr"],
+  get activeLanguages() {
+    return this.useContentLanguages ? this.languages : []
+  },
 })
 jskos.languagePreference.store = state
-jskos.languagePreference.path = "languages"
+jskos.languagePreference.path = "activeLanguages"
 
 /*
 const selectedLangs = ref([])
@@ -758,5 +810,51 @@ html {
 }
 .opacity-hover:hover {
   opacity: 50%;
+}
+.localization-demo {
+  border: 1px solid #d8dee4;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem 1rem;
+}
+.localization-demo-controls,
+.localization-demo-languages {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.localization-demo-controls label {
+  align-items: center;
+  display: flex;
+  gap: 0.4rem;
+}
+.localization-demo-languages button {
+  margin: 0;
+}
+.localization-demo-language-preferred {
+  border-color: currentColor;
+  font-weight: 700;
+}
+.localization-demo-hint {
+  display: block;
+  opacity: 0.7;
+}
+.localization-demo-examples {
+  display: grid;
+  gap: 0.4rem 1rem;
+  grid-template-columns: max-content minmax(0, 1fr);
+  margin: 0;
+}
+.localization-demo-examples dt {
+  font-weight: 600;
+}
+.localization-demo-examples dd {
+  margin: 0;
+}
+@media (max-width: 500px) {
+  .localization-demo-examples {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 </style>
