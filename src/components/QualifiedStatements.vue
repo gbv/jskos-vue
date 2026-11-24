@@ -19,7 +19,7 @@ const props = defineProps({
   labelForUri: { type: Function, default: null },
 })
 
-const { t, currentLanguage } = useQualifiedStatementsLocale()
+const { t } = useQualifiedStatementsLocale()
 
 const resolver = computed(() => {
   if (props.resolve) {
@@ -36,7 +36,6 @@ if (!resolution) {
   resolution = useUriResolution({
     resolve: resolver,
     labelForUri: computed(() => props.labelForUri),
-    language: currentLanguage,
   })
   provide(uriResolutionKey, resolution)
 }
