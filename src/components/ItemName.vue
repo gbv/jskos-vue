@@ -57,10 +57,11 @@ export default {
 <script setup>
 import { computed } from "vue"
 import * as jskos from "jskos-tools"
-import { dragAndDrop } from "../utils"
+import { dragAndDrop, useContentLanguage } from "../utils"
 import "../shared.css"
 
 const { dragstart, dragend } = dragAndDrop
+const { prefLabel: contentPrefLabel } = useContentLanguage()
 
 const props = defineProps({
   // JSKOS item
@@ -107,9 +108,9 @@ const notation = computed(() =>
 )
 const label = computed(() =>
   props.showLabel
-    ? plugins.processLabel(jskos.prefLabel(props.item, {
+    ? plugins.processLabel(contentPrefLabel(props.item, {
       fallbackToUri: !notation.value,
-      language: props.language || jskos.languagePreference.selectLanguage(props.item.prefLabel),
+      language: props.language,
     }), props)
     : "",
 )
