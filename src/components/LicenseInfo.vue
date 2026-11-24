@@ -21,7 +21,7 @@
 import { computed } from "vue"
 import * as jskos from "jskos-tools"
 import AutoLink from "./AutoLink.vue"
-import { useLocale } from "../utils.js"
+import { useContentLanguage, useLocale } from "../utils.js"
 
 const props = defineProps({
   // JSKOS item to be displayed
@@ -32,10 +32,11 @@ const props = defineProps({
 })
 
 // Localization
-const { t, currentLanguage } = useLocale({
+const { t } = useLocale({
   en: { license: "License" },
   de: { license: "Lizenz" },
 })
+const { prefLabel: contentPrefLabel } = useContentLanguage()
 
 const licenseBadges = {
   "http://creativecommons.org/publicdomain/zero/1.0/": "https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/cc-zero.svg",
@@ -55,7 +56,7 @@ const licenseBadge = license => {
 }
 
 const licenseName = license => {
-  const prefLabel = jskos.prefLabel(license, { fallbackToUri: false, language: currentLanguage.value })
+  const prefLabel = contentPrefLabel(license, { fallbackToUri: false })
   let notation = jskos.notation(license)
   if (prefLabel && notation) {
     notation = ` (${notation})`
@@ -72,7 +73,7 @@ const attribution = computed(() => {
   const url = organisation?.url ?? props.item.url
   return {
     url,
-    label: jskos.prefLabel(organisation),
+    label: contentPrefLabel(organisation),
   }
 })
 

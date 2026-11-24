@@ -2,7 +2,7 @@ import { describe, test, expect, vi, beforeEach, afterEach } from "vitest"
 import { mount } from "@vue/test-utils"
 import { ref } from "vue"
 import * as jskos from "jskos-tools"
-import { addClickHandlers, dateToString, debounce, dragAndDrop, localOptionsToSuggest, useLocale } from "../src/utils.js"
+import { addClickHandlers, dateToString, debounce, dragAndDrop, localOptionsToSuggest, useContentLanguage, useLocale } from "../src/utils.js"
 
 describe("debounce", () => {
   beforeEach(() => {
@@ -290,6 +290,87 @@ describe("useLocale", () => {
     })
 
     expect(result.t("hello")).toBe("Hallo")
+    wrapper.unmount()
+  })
+})
+
+function mountUseContentLanguage(globalProperties = {}) {
+  const result = {}
+  const wrapper = mount({
+    template: "<div />",
+    setup() {
+      Object.assign(result, useContentLanguage())
+    },
+  }, {
+    global: {
+      plugins: [{
+        install(app) {
+          Object.assign(app.config.globalProperties, globalProperties)
+        },
+      }],
+    },
+  })
+  return { result, wrapper }
+}
+
+describe("useContentLanguage", () => {
+  const item = {
+    uri: "https://example.org/item",
+    prefLabel: { en: "English", de: "Deutsch", es: "Español" },
+  }
+  let languagePreference
+
+  beforeEach(() => {
+    languagePreference = {
+      defaults: jskos.languagePreference.defaults,
+      path: jskos.languagePreference.path,
+      store: jskos.languagePreference.store,
+    }
+    jskos.languagePreference.defaults = ["en"]
+    jskos.languagePreference.path = ""
+    jskos.languagePreference.store = null
+  })
+
+  afterEach(() => {
+    Object.assign(jskos.languagePreference, languagePreference)
+  })
+
+  test("uses explicit and preferred content languages before Vue I18n", () => {
+    jskos.languagePreference.defaults = ["de", "en"]
+    const { result, wrapper } = mountUseContentLanguage({ $i18n: { locale: "es" } })
+
+    expect(result.prefLabel(item, { language: "en" })).toBe("English")
+    expect(result.prefLabel(item)).toBe("Deutsch")
+    wrapper.unmount()
+  })
+
+  test("uses Vue I18n before implicit English", () => {
+    const { result, wrapper } = mountUseContentLanguage({ $i18n: { locale: "de" } })
+
+    expect(result.prefLabel(item)).toBe("Deutsch")
+    wrapper.unmount()
+  })
+
+  test("uses Vue I18n when configured content languages are unavailable", () => {
+    jskos.languagePreference.defaults = ["fr"]
+    const { result, wrapper } = mountUseContentLanguage({ $i18n: { locale: "de" } })
+
+    expect(result.prefLabel(item)).toBe("Deutsch")
+    wrapper.unmount()
+  })
+
+  test("keeps the JSKOS fallback when preferred and UI languages are unavailable", () => {
+    jskos.languagePreference.defaults = ["fr"]
+    const { result, wrapper } = mountUseContentLanguage({ $i18n: { locale: "it" } })
+
+    expect(result.prefLabel(item)).toBe("English")
+    wrapper.unmount()
+  })
+
+  test("keeps the existing English fallback without Vue I18n", () => {
+    const { result, wrapper } = mountUseContentLanguage()
+
+    expect(result.prefLabel(item)).toBe("English")
     wrapper.unmount()
   })
 })
