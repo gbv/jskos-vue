@@ -47,8 +47,10 @@ import FlexibleTable from "vue-flexible-table"
 import * as jskos from "jskos-tools"
 import ItemName from "./ItemName.vue"
 import { computed } from "vue"
+import { useContentLanguage } from "../utils.js"
 
 const emit = defineEmits(["hover", "click"])
+const { prefLabel: contentPrefLabel } = useContentLanguage()
 
 const props = defineProps({
   mappings: {
@@ -80,8 +82,8 @@ const supportedFields = {
   type: {
     label: "",
     compare: (a ,b) => {
-      let labelA = jskos.prefLabel(a?.type, { fallbackToUri: false })
-      let labelB = jskos.prefLabel(b?.type, { fallbackToUri: false })
+      let labelA = contentPrefLabel(a?.type, { fallbackToUri: false })
+      let labelB = contentPrefLabel(b?.type, { fallbackToUri: false })
       return labelA.localeCompare(labelB)
     },
   },
@@ -111,7 +113,7 @@ const items = computed(() => props.mappings.map(mapping => {
     item.toScheme = jskos.notation(mapping.toScheme)
     item.from = mapping.from.memberSet || mapping.from.memberChoice
     item.to = mapping.to.memberSet || mapping.to.memberChoice
-    item.creator = mapping.creator?.map(creator => jskos.prefLabel(creator)).join("\n")
+    item.creator = mapping.creator?.map(creator => contentPrefLabel(creator)).join("\n")
     item.type = jskos.mappingTypeByType(mapping.type)
     item.date = mapping.modified || mapping.created
     item.date = item.date && item.date.slice(0, 10)
