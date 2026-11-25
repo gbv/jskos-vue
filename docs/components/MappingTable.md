@@ -2,6 +2,9 @@
 
 A table of [JSKOS mappings](https://gbv.github.io/jskos/#mapping).
 
+Concept and creator labels, as well as type-label comparisons, use the shared
+[content language selection](../utilities/useContentLanguage).
+
 ## Props
 
 - `mappings` *array, required* — the list of mappings to be displayed.

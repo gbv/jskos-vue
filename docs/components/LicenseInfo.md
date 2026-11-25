@@ -2,6 +2,9 @@
 
 Component to display license information of a [JSKOS item](https://gbv.github.io/jskos/#item).
 
+The tooltip's “License” text follows the UI locale. License and publisher labels
+use the shared [content language selection](../utilities/useContentLanguage).
+
 ## Props
 
 - `item` *object, required* —  JSKOS item (concept or concept scheme)

@@ -14,8 +14,8 @@ Uses [dragAndDrop](../utilities/dragAndDrop) and is draggable by default.
 
 - `fallbackLabel` *string, default `"???"`*  — string that will be shown if both notation and label are empty
 
-- `language` *string, default `undefined`*  — preferred language for the label\
-  default uses [jskos-tools' languagePreference](https://gbv.github.io/jskos-tools/#languagepreference)
+- `language` *string, default `""`* — explicit preferred language for the label.
+  If it is unavailable or empty, the shared [content language selection](../utilities/useContentLanguage) is used.
 
 - `clickable` *boolean, default `false`* — adjusts mouse pointer and text decoration on hover if `true`
 
@@ -66,16 +66,29 @@ Another use case is showing item identifiers in [CURIE syntax](https://www.w3.or
 
 ::: component-view
 <script setup>
-import { reactive } from "vue"
+import { onBeforeUnmount, reactive } from "vue"
 import ItemName from "../../src/components/ItemName.vue"
 import * as jskos from "jskos-tools"
 
-// Setup jskos-tools' languagePreference
 const state = reactive({
   languages: ["en", "de", "fr"],
 })
-jskos.languagePreference.store = state
-jskos.languagePreference.path = "languages"
+
+let previousStore
+let previousPath
+if (!import.meta.env.SSR) {
+  previousStore = jskos.languagePreference.store
+  previousPath = jskos.languagePreference.path
+  jskos.languagePreference.store = state
+  jskos.languagePreference.path = "languages"
+}
+
+onBeforeUnmount(() => {
+  if (jskos.languagePreference.store === state) {
+    jskos.languagePreference.store = previousStore
+    jskos.languagePreference.path = previousPath
+  }
+})
 
 // Add move method to arrays
 Array.prototype.move = function(from, to) {

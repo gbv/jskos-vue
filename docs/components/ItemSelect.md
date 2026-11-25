@@ -62,12 +62,14 @@ The default slot is shown between input field and hierarchy.
 
 Before emitting `select`, items are normalized:
 
-- `__label` is kept or selected from `prefLabel` with `jskos-tools`.
+- An explicit `__label` is kept. Otherwise local JSKOS labels use the shared
+  [content language selection](../utilities/useContentLanguage).
 - `prefLabel.und` is added for display. Existing labels are kept.
 - `notation` is kept. If missing, `jskos-tools` tries to derive it from the item URI and scheme.
 
 `ItemSuggest` emits only `{ uri }`. `ItemSelect` caches the current suggestion result set so it can emit
 a full object when available. If the URI is not cached, `resolve(uri)` can provide the item.
+Labels already returned by a remote OpenSearch Suggest service are preserved as provided by that service.
 
 The hierarchy browser starts collapsed. Selecting via typeahead opens it and tries to show the
 selected concept. If the tree is closed and opened again, the selected concept is synced again.

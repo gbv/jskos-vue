@@ -4,6 +4,10 @@ Component to display details of a [JSKOS item](https://gbv.github.io/jskos/#item
 
 Uses [ItemName](./ItemName), [ItemList](./ItemList), [LicenseInfo](./LicenseInfo), [AutoLink](./AutoLink). Also uses [dragAndDrop](../utilities/dragAndDrop) and defines a dropzone for items. Dropped items will trigger the `select` event.
 
+UI headings follow the UI locale. JSKOS labels for names, types, and publishers
+use the shared [content language selection](../utilities/useContentLanguage).
+All language-map values remain visible, with the preferred language shown first.
+
 ## Props
 
 - `item` *object, required* — JSKOS item (concept or concept scheme)

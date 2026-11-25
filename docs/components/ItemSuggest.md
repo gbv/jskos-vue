@@ -12,6 +12,10 @@ Input field to search and select an item (usually concept or concept scheme) fro
 
 If both `search` and `options` are set, `search` is used.
 
+Local JSKOS `options` use the shared
+[content language selection](../utilities/useContentLanguage). Labels returned
+by a remote `search` function are already strings and are displayed unchanged.
+
 ## Methods
 
 - `focus()` — focuses the input field

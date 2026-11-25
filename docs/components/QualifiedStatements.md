@@ -28,6 +28,9 @@ the same resource URI but carry separate qualifiers.
 
 URI labels use `labelForUri` first, then labels embedded in the data or loaded
 through `resolve`/`registry`, and finally a shortened URI.
+Embedded and resolved JSKOS labels use the shared
+[content language selection](../utilities/useContentLanguage). Inspector
+language maps continue to show all available values and language codes.
 
 ## Accessibility
 
