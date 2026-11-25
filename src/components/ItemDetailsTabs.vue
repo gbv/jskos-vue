@@ -26,7 +26,7 @@
       </ul>
       <ul class="jskos-vue-itemDetails-list">
         <li v-if="fields_.type && types.length">
-          <b>{{ t("type") }}:</b> {{ types.map(t => jskos.prefLabel(t)).join(", ") }}
+          <b>{{ t("type") }}:</b> {{ types.map(type => prefLabel(type)).join(", ") }}
         </li>
         <li v-if="fields_.publisher && item.publisher?.length">
           <b>{{ t("publisher") }}: </b>
@@ -38,7 +38,7 @@
             </template>
             <auto-link
               :href="publisher.url || publisher.uri"
-              :text="jskos.prefLabel(publisher)" />
+              :text="prefLabel(publisher)" />
           </template>
         </li>
         <template v-for="prop in ['created', 'issued', 'modified'].filter(p => fields_[p])">
@@ -185,6 +185,7 @@ const { t } = utils.useLocale({
     publisher: "Herausgeber",
   },
 })
+const { prefLabel, selectLanguage } = utils.useContentLanguage()
 
 /**
  * TODO!
@@ -209,6 +210,8 @@ const props = defineProps({
 })
 
 const iterateLanguageMapContent = (item, prop) => {
+  const languageMap = (item && item[prop]) || {}
+  const preferredLanguage = selectLanguage(languageMap)
   /** Explanation:
           1. Get all language keys for altLabels (Object.keys)
           2. Create objects in the form { language, label } (map)
@@ -216,18 +219,18 @@ const iterateLanguageMapContent = (item, prop) => {
           4. Filter `-` language (filter)
           5. Sort current language higher (sort)
        */
-  return Object.keys((item && item[prop]) || {})
+  return Object.keys(languageMap)
     .map(language => {
-      const map = item[prop][language]
+      const map = languageMap[language]
       return (Array.isArray(map) ? map : [map]).map(label => ({ language, label }))
     })
     .reduce((prev, cur) => prev.concat(cur), [])
     .filter(item => item.language != "-")
     .sort((a, b) => {
-      if (a.language === jskos.languagePreference.selectLanguage(item[prop]) && b.language !== jskos.languagePreference.selectLanguage(item[prop])) {
+      if (a.language === preferredLanguage && b.language !== preferredLanguage) {
         return -1
       }
-      if (b.language === jskos.languagePreference.selectLanguage(item[prop]) && a.language !== jskos.languagePreference.selectLanguage(item[prop])) {
+      if (b.language === preferredLanguage && a.language !== preferredLanguage) {
         return 1
       }
       return 0

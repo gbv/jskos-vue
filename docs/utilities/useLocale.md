@@ -1,10 +1,12 @@
 # useLocale
 
-Get method `t` to localize strings and, a `currentLanguage` to get the current locale.
+Returns `t()` for UI messages and `currentLanguage` for the current UI locale.
+It does not select languages from JSKOS content. Use
+[useContentLanguage](./useContentLanguage) for labels and language maps.
 
-Returns global properties `$t` and `$i18n.locale` as defined by [Vue I18n] or
-any other library. If not both of these exist, the function uses
-`languagePreference` from [jskos-tools].
+When Vue I18n provides `$t` and `$i18n.locale`, `useLocale()` uses them. Without
+Vue I18n, it chooses among the supplied UI messages using `languagePreference`
+from [jskos-tools], then falls back to English.
 
 Passed messages are only used as fallback for global messages.
 

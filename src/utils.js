@@ -161,6 +161,53 @@ export function useLocale(messages={}) {
   }
 }
 
+/**
+ * Select JSKOS content languages independently from UI messages.
+ */
+export function useContentLanguage() {
+  const { $i18n } = getCurrentInstance()?.appContext.config.globalProperties || {}
+  const i18nLanguage = computed(() => $i18n?.locale || "")
+
+  function selectLanguage(languageMap, explicitLanguage = "") {
+    if (!languageMap) {
+      return null
+    }
+    if (explicitLanguage && languageMap[explicitLanguage]) {
+      return explicitLanguage
+    }
+
+    const preferredLanguages = jskos.languagePreference.getLanguages()
+    // jskos-tools cannot distinguish its implicit ["en"] default from an
+    // explicitly assigned one. Use store/path to make English explicit.
+    const implicitEnglish = jskos.languagePreference.store == null
+      && preferredLanguages.length === 1
+      && preferredLanguages[0] === "en"
+
+    if (!implicitEnglish) {
+      const preferredLanguage = preferredLanguages
+        .find(language => languageMap[language])
+      if (preferredLanguage) {
+        return preferredLanguage
+      }
+    }
+
+    if (i18nLanguage.value && languageMap[i18nLanguage.value]) {
+      return i18nLanguage.value
+    }
+
+    return jskos.languagePreference.selectLanguage(languageMap)
+  }
+
+  function prefLabel(item, options = {}) {
+    return jskos.prefLabel(item, {
+      ...options,
+      language: selectLanguage(item?.prefLabel, options.language),
+    })
+  }
+
+  return { selectLanguage, prefLabel }
+}
+
 function suggestOption(item) {
   if (!item?.uri) {
     return null

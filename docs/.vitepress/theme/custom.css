@@ -37,13 +37,65 @@ template {
   font-weight: 600;
 }
 
-.qualified-statements-example-controls select {
+.qualified-statements-example-controls select,
+.localization-example-controls select {
   background-color: var(--vp-c-bg);
   border: 1px solid var(--vp-c-divider);
   border-radius: 3px;
   color: var(--vp-c-text-1);
   font: inherit;
   padding: 0.25rem 0.5rem;
+}
+
+.localization-example-controls,
+.localization-example-output {
+  display: grid;
+  gap: 0.75rem 1rem;
+  grid-template-columns: max-content minmax(10rem, 14rem);
+}
+
+.localization-example-controls {
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.localization-example-controls label,
+.localization-example-output dt {
+  font-weight: 600;
+}
+
+.localization-example-output {
+  align-items: start;
+  margin: 0;
+}
+
+.localization-example-output dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.localization-example-hint {
+  color: var(--vp-c-text-2);
+  display: block;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .localization-example-controls,
+  .localization-example-output {
+    align-items: start;
+    gap: 0.25rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .localization-example-controls select {
+    margin-bottom: 0.5rem;
+    width: 100%;
+  }
+
+  .localization-example-output dt:not(:first-child) {
+    margin-top: 0.5rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

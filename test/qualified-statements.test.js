@@ -1,6 +1,7 @@
-import { afterEach, expect, test, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest"
 import { flushPromises, mount } from "@vue/test-utils"
-import { nextTick } from "vue"
+import { nextTick, reactive } from "vue"
+import * as jskos from "jskos-tools"
 import { createI18n } from "petite-vue-i18n"
 import { QualifiedStatements } from "../src/index.js"
 import { useUriResolution } from "../src/composables/useUriResolution.js"
@@ -331,6 +332,79 @@ test("updates fallback translations when the host locale changes", async () => {
 
   expect(wrapper.get(".jskos-vue-qualifiedStatements-title").text())
     .toContain("Zusätzliche Details")
+})
+
+describe("Qualified Statements content languages", () => {
+  const multilingualItem = {
+    qualifiedRelations: {
+      [uris.relatedTo]: [{
+        resource: {
+          uri: "https://example.org/multilingual",
+          prefLabel: {
+            en: "English resource",
+            de: "Deutsche Ressource",
+            es: "Recurso español",
+          },
+        },
+      }],
+    },
+  }
+  let languagePreference
+
+  const mountMultilingual = locale => mountQualified({ item: multilingualItem }, {
+    global: {
+      plugins: [createI18n({ legacy: false, locale, messages: {} })],
+    },
+  })
+
+  beforeEach(() => {
+    languagePreference = {
+      defaults: jskos.languagePreference.defaults,
+      path: jskos.languagePreference.path,
+      store: jskos.languagePreference.store,
+    }
+    jskos.languagePreference.defaults = ["en"]
+    jskos.languagePreference.path = ""
+    jskos.languagePreference.store = null
+  })
+
+  afterEach(() => {
+    Object.assign(jskos.languagePreference, languagePreference)
+  })
+
+  test("content preferences take precedence over the UI locale", async () => {
+    jskos.languagePreference.store = { languages: ["de"] }
+    jskos.languagePreference.path = "languages"
+    const wrapper = mountMultilingual("es")
+    await flushPromises()
+
+    expect(wrapper.text()).toContain("Deutsche Ressource")
+    expect(wrapper.text()).not.toContain("Recurso español")
+  })
+
+  test("uses the Vue I18n locale as content fallback", async () => {
+    const wrapper = mountMultilingual("de")
+    await flushPromises()
+
+    expect(wrapper.text()).toContain("Deutsche Ressource")
+    expect(wrapper.text()).not.toContain("English resource")
+  })
+
+  test("reacts to content language preference changes", async () => {
+    const state = reactive({ languages: ["en", "de"] })
+    jskos.languagePreference.store = state
+    jskos.languagePreference.path = "languages"
+    const wrapper = mountMultilingual("es")
+    await flushPromises()
+
+    expect(wrapper.text()).toContain("English resource")
+
+    state.languages.splice(0, 2, "de", "en")
+    await nextTick()
+
+    expect(wrapper.text()).toContain("Deutsche Ressource")
+    expect(wrapper.text()).not.toContain("English resource")
+  })
 })
 
 test("opens one inline inspector at a time and collapses it", async () => {

@@ -12,7 +12,7 @@ See below for [usage in browser](#browser).
 - One of the following:
   - [Node.js](https://nodejs.org/) version >=20
   - A modern browser
-- [Vue 3](https://v3.vuejs.org)
+- [Vue 3](https://vuejs.org)
 - [jskos-tools](https://github.com/gbv/jskos-tools)
   - Needed for ConceptTree, ItemDetails, ItemList, ItemName.
   - Used for [localization](#localization) of content
@@ -21,13 +21,13 @@ See below for [usage in browser](#browser).
 - [vue-scrollto](https://github.com/rigor789/vue-scrollto)
   - Needed for ItemSuggest, ConceptTree, ItemDetails, and ItemList.
 
-For a Node.js project, it is recommended to use [Vite](https://vitejs.dev). For access to JSKOS data via web APIs we recommend [cocoda-sdk].
+For a Node.js project, it is recommended to use [Vite](https://vite.dev). For access to JSKOS data via web APIs we recommend [cocoda-sdk].
 
-The library also supports [Vue I18n], see [I18n](#i18n) (still experimental).
+The library also supports [Vue I18n], see [Localization](#localization).
 
 [jskos-vue-tabs]: https://github.com/gbv/jskos-vue-tabs
 [cocoda-sdk]: https://github.com/gbv/cocoda-sdk#readme
-[jskos-providers]: https://github.com/gbv/jskos-providers#readme
+[jskos-tools]: https://github.com/gbv/jskos-tools
 
 ## Globally in a Vue project
 
@@ -100,10 +100,100 @@ See `examples` directory in the git repository of jskos-vue for an additional ex
 
 # Localization
 
-The library comes with translated messages in English and German. Additional messages can be provided with library [Vue I18n] or its subset petite-vue-i18n. See test file `tests/i18n.test.js` for usage. 
+The library comes with translated messages in English and German. Additional messages can be provided with [Vue I18n] or its subset [petite-vue-i18n](https://www.npmjs.com/package/petite-vue-i18n).
 
-If Vue I18n is not used, localization is controlled by [jskos-tools] language preferences (function `getLanguages` and `selectLanguage`) but there is no way to override or extend translation messages.
+Without Vue I18n, UI messages use the available component translations and
+jskos-tools language preferences. Applications cannot override or extend those
+UI messages globally.
 
-Localization of JSKOS itemt content (e.g. labels) is always controlled by jskos-tools language preferences.
+UI messages and JSKOS content languages are selected independently. Content labels prefer an explicit component language, configured jskos-tools language preferences, the Vue I18n locale, and finally an available JSKOS language.
+
+See [useLocale](./utilities/useLocale) for UI messages and
+[useContentLanguage](./utilities/useContentLanguage) for JSKOS content.
+
+The following demo uses separate controls for the UI locale and content language. Select “Follow UI locale” to disable explicit content preferences.
+
+::: component-view
+<script setup>
+import { onBeforeUnmount, onMounted, reactive, ref } from "vue"
+import { useI18n } from "petite-vue-i18n"
+import * as jskos from "jskos-tools"
+import { ItemName, LicenseInfo } from "../src/index.js"
+
+const { locale: uiLocale } = useI18n({ useScope: "global" })
+const ready = ref(false)
+const contentPreference = reactive({
+  language: "de",
+  get languages() {
+    return this.language ? [this.language] : []
+  },
+})
+const item = {
+  uri: "https://example.org/fish",
+  prefLabel: { en: "Fish", de: "Fisch" },
+  license: [{
+    uri: "https://example.org/license",
+    prefLabel: { en: "Example license", de: "Beispiellizenz" },
+  }],
+  publisher: [{
+    url: "https://example.org/publisher",
+    prefLabel: { en: "Example publisher", de: "Beispielverlag" },
+  }],
+}
+
+let previousStore
+let previousPath
+let previousUiLocale
+
+onMounted(() => {
+  previousStore = jskos.languagePreference.store
+  previousPath = jskos.languagePreference.path
+  previousUiLocale = uiLocale.value
+  jskos.languagePreference.store = contentPreference
+  jskos.languagePreference.path = "languages"
+  uiLocale.value = "en"
+  ready.value = true
+})
+
+onBeforeUnmount(() => {
+  if (jskos.languagePreference.store === contentPreference) {
+    jskos.languagePreference.store = previousStore
+    jskos.languagePreference.path = previousPath
+  }
+  uiLocale.value = previousUiLocale
+})
+</script>
+
+<ClientOnly>
+  <div
+    v-if="ready"
+    class="localization-example">
+    <div class="localization-example-controls">
+      <label for="localization-ui-locale">UI locale</label>
+      <select id="localization-ui-locale" v-model="uiLocale">
+        <option value="en">English</option>
+        <option value="de">German</option>
+      </select>
+      <label for="localization-content-language">Content language</label>
+      <select id="localization-content-language" v-model="contentPreference.language">
+        <option value="">Follow UI locale</option>
+        <option value="en">English</option>
+        <option value="de">German</option>
+      </select>
+    </div>
+    <dl class="localization-example-output">
+      <dt>ItemName</dt>
+      <dd><ItemName :item="item" /></dd>
+      <dt>LicenseInfo</dt>
+      <dd>
+        <LicenseInfo :item="item" />
+        <small class="localization-example-hint">
+          Its tooltip combines the UI locale with the selected content labels.
+        </small>
+      </dd>
+    </dl>
+  </div>
+</ClientOnly>
+:::
 
 [Vue I18n]: https://vue-i18n.intlify.dev/

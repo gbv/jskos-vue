@@ -1,5 +1,7 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from "vitest"
 import { mount, flushPromises } from "@vue/test-utils"
+import * as jskos from "jskos-tools"
+import { createI18n } from "petite-vue-i18n"
 import ItemSuggest from "../src/components/ItemSuggest.vue"
 
 vi.mock("vue-scrollto", () => ({
@@ -8,7 +10,7 @@ vi.mock("vue-scrollto", () => ({
   },
 }))
 
-const mountSuggest = (props = {}) =>
+const mountSuggest = (props = {}, i18n = null) =>
   mount(ItemSuggest, {
     props: {
       search: vi.fn(async (query) => [
@@ -20,6 +22,7 @@ const mountSuggest = (props = {}) =>
       ...props,
     },
     global: {
+      plugins: i18n ? [i18n] : [],
       stubs: {
         LoadingIndicator: {
           template: "<div class='loading-indicator-stub'></div>",
@@ -29,12 +32,23 @@ const mountSuggest = (props = {}) =>
   })
 
 describe("ItemSuggest", () => {
+  let languagePreference
+
   beforeEach(() => {
     vi.useFakeTimers()
+    languagePreference = {
+      defaults: jskos.languagePreference.defaults,
+      path: jskos.languagePreference.path,
+      store: jskos.languagePreference.store,
+    }
+    jskos.languagePreference.defaults = ["en"]
+    jskos.languagePreference.path = ""
+    jskos.languagePreference.store = null
   })
 
   afterEach(() => {
     vi.useRealTimers()
+    Object.assign(jskos.languagePreference, languagePreference)
   })
 
   test("renders input with placeholder", () => {
@@ -92,6 +106,42 @@ describe("ItemSuggest", () => {
     expect(w.emitted("select")[0][0]).toEqual({
       uri: "urn:lang:de",
     })
+  })
+
+  test("uses content preferences for local option labels", async () => {
+    jskos.languagePreference.store = { languages: ["en"] }
+    jskos.languagePreference.path = "languages"
+    const i18n = createI18n({ legacy: false, locale: "de", messages: {} })
+    const w = mountSuggest({
+      search: null,
+      options: [{
+        uri: "urn:multilingual",
+        prefLabel: { en: "English", de: "Deutsch" },
+      }],
+    }, i18n)
+
+    await w.find("input").setValue("eng")
+    vi.advanceTimersByTime(250)
+    await flushPromises()
+
+    expect(w.find(".jskos-vue-itemSuggest-results-item").text()).toContain("English")
+  })
+
+  test("uses Vue I18n as fallback for local option labels", async () => {
+    const i18n = createI18n({ legacy: false, locale: "de", messages: {} })
+    const w = mountSuggest({
+      search: null,
+      options: [{
+        uri: "urn:multilingual",
+        prefLabel: { en: "English", de: "Deutsch" },
+      }],
+    }, i18n)
+
+    await w.find("input").setValue("deu")
+    vi.advanceTimersByTime(250)
+    await flushPromises()
+
+    expect(w.find(".jskos-vue-itemSuggest-results-item").text()).toContain("Deutsch")
   })
 
   test("prefers search over local options", async () => {

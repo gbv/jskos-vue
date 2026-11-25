@@ -1,5 +1,7 @@
-import { test, expect, vi } from "vitest"
+import { afterEach, beforeEach, test, expect, vi } from "vitest"
 import { mount, flushPromises } from "@vue/test-utils"
+import { nextTick, reactive } from "vue"
+import ItemName from "../src/components/ItemName.vue"
 import ItemSelect from "../src/components/ItemSelect.vue"
 import * as jskos from "jskos-tools"
 
@@ -7,6 +9,23 @@ const languageOptions = [
   { uri: "urn:lang:en", prefLabel: { en: "English" } },
   { uri: "urn:lang:de", prefLabel: { en: "German" } },
 ]
+
+let languagePreference
+
+beforeEach(() => {
+  languagePreference = {
+    defaults: jskos.languagePreference.defaults,
+    path: jskos.languagePreference.path,
+    store: jskos.languagePreference.store,
+  }
+  jskos.languagePreference.defaults = ["en"]
+  jskos.languagePreference.path = ""
+  jskos.languagePreference.store = null
+})
+
+afterEach(() => {
+  Object.assign(jskos.languagePreference, languagePreference)
+})
 
 // Stub ItemSuggest (typeahead)
 const ItemSuggestStub = {
@@ -113,39 +132,73 @@ test("uses jskos-tools to derive notation from scheme URI pattern", async () => 
 })
 
 test("uses jskos language preferences when normalizing labels", async () => {
-  const defaults = jskos.languagePreference.defaults
+  jskos.languagePreference.defaults = ["de", "en"]
 
-  try {
-    jskos.languagePreference.defaults = ["de", "en"]
-
-    const w = mount(ItemSelect, {
-      props: {
-        options: [
-          {
-            uri: "urn:pref-label",
-            prefLabel: {
-              en: "English",
-              de: "Deutsch",
-            },
+  const w = mount(ItemSelect, {
+    props: {
+      options: [
+        {
+          uri: "urn:pref-label",
+          prefLabel: {
+            en: "English",
+            de: "Deutsch",
           },
-        ],
-      },
-      global: {
-        stubs: {
-          ItemSuggest: PreferredLabelSuggestStub,
         },
+      ],
+    },
+    global: {
+      stubs: {
+        ItemSuggest: PreferredLabelSuggestStub,
       },
-    })
+    },
+  })
 
-    await w.find(".pick-preferred-label").trigger("click")
-    await flushPromises()
+  await w.find(".pick-preferred-label").trigger("click")
+  await flushPromises()
 
-    const sel = w.emitted("select")[0][0]
-    expect(sel.__label).toBe("Deutsch")
-    expect(sel.prefLabel.und).toBe("Deutsch")
-  } finally {
-    jskos.languagePreference.defaults = defaults
-  }
+  const sel = w.emitted("select")[0][0]
+  expect(sel.__label).toBe("Deutsch")
+  expect(sel.prefLabel.und).toBe("Deutsch")
+})
+
+test("keeps multilingual labels reactive after local selection", async () => {
+  const state = reactive({ languages: ["en", "de"] })
+  jskos.languagePreference.store = state
+  jskos.languagePreference.path = "languages"
+  const w = mount(ItemSelect, {
+    props: {
+      options: [{
+        uri: "urn:pref-label",
+        prefLabel: { en: "English", de: "Deutsch" },
+      }],
+    },
+    global: {
+      stubs: {
+        ItemSuggest: PreferredLabelSuggestStub,
+      },
+    },
+  })
+
+  await w.find(".pick-preferred-label").trigger("click")
+  await flushPromises()
+
+  const selected = w.emitted("select")[0][0]
+  const label = mount(ItemName, { props: { item: selected } })
+
+  expect(selected.__label).toBe("English")
+  expect(selected.prefLabel).toEqual({
+    en: "English",
+    de: "Deutsch",
+    und: "English",
+  })
+  expect(label.text()).toContain("English")
+
+  state.languages.splice(0, 2, "de", "en")
+  await nextTick()
+
+  expect(selected.__label).toBe("English")
+  expect(label.text()).toContain("Deutsch")
+  expect(label.text()).not.toContain("English")
 })
 
 test("renders ConceptTree collapsed by default", () => {

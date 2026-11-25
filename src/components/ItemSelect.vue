@@ -40,7 +40,7 @@ import * as jskos from "jskos-tools"
 import Arrow from "./Arrow.vue"
 import ItemSuggest from "./ItemSuggest.vue"
 import ConceptTree from "./ConceptTree.vue"
-import { localOptionsToSuggest as optionsToSuggest } from "../utils.js"
+import { localOptionsToSuggest as optionsToSuggest, useContentLanguage } from "../utils.js"
 
 defineOptions({ name: "ItemSelect" })
 
@@ -72,6 +72,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["select"])
+const { prefLabel: contentPrefLabel } = useContentLanguage()
 
 const conceptTree = ref(null)
 const itemSuggest = ref(null)
@@ -93,7 +94,7 @@ function normalize(item) {
     return null
   }
 
-  const rawLabel = item.__label || jskos.prefLabel(item)
+  const rawLabel = item.__label || contentPrefLabel(item)
 
   const notation =
     (Array.isArray(item.notation) && item.notation[0]) ||

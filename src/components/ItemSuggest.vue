@@ -62,7 +62,7 @@
 import { nextTick, ref, watch, computed } from "vue"
 import LoadingIndicator from "./LoadingIndicator.vue"
 import VueScrollTo from "vue-scrollto"
-import { addClickHandlers, debounce, localOptionsToSuggest, useLocale } from "../utils"
+import { addClickHandlers, debounce, localOptionsToSuggest, useContentLanguage, useLocale } from "../utils"
 
 import "../shared.css"
 
@@ -75,6 +75,7 @@ const { t } = useLocale({
     placeholder: "Tippen zum Suchen...",
   },
 })
+const { prefLabel: contentPrefLabel } = useContentLanguage()
 
 // HTML escape method
 // TODO: Move to utils?
@@ -117,6 +118,16 @@ const itemSuggest = ref(null)
 const searchInput = ref(null)
 const resultList = ref(null)
 
+function normalizeLocalOption(item) {
+  if (!item?.uri) {
+    return null
+  }
+  return {
+    uri: item.uri,
+    __label: item.__label || contentPrefLabel(item) || item.uri,
+  }
+}
+
 // Prefer an explicit search function; fall back to local options for small lists.
 const searchProvider = computed(() => {
   if (props.search) {
@@ -125,6 +136,7 @@ const searchProvider = computed(() => {
   if (props.options?.length) {
     return q => localOptionsToSuggest(props.options, q, {
       minChars: props.minChars,
+      normalize: normalizeLocalOption,
     })
   }
   return null

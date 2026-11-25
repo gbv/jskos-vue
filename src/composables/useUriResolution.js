@@ -1,5 +1,5 @@
 import { computed, reactive, unref } from "vue"
-import * as jskos from "jskos-tools"
+import { useContentLanguage } from "../utils.js"
 
 export const uriResolutionKey = Symbol("jskos-vue-uri-resolution")
 export const qualifiedStatementsUiKey = Symbol("jskos-vue-qualified-statements-ui")
@@ -17,6 +17,7 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
   // resolver request finishes.
   const cache = reactive({})
   const loading = reactive({})
+  const { prefLabel: contentPrefLabel } = useContentLanguage()
 
   function shorten(uri) {
     try {
@@ -36,7 +37,7 @@ export function useUriResolution({ resolve, labelForUri, language } = {}) {
     if (!resource) {
       return ""
     }
-    return jskos.prefLabel(resource, {
+    return contentPrefLabel(resource, {
       fallbackToUri: false,
       language: unref(language),
     }) || ""
