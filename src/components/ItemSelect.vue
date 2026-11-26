@@ -6,6 +6,7 @@
       ref="itemSuggest"
       :search="searchForSuggest"
       :placeholder="placeholder"
+      :types="types"
       @select="onSuggestSelect" />
     
     <slot />
@@ -55,6 +56,9 @@ const props = defineProps({
   // Minimum query length before searching
   minChars: { type: Number, default: 1 },
 
+  // Optional JSKOS type resources available as filters
+  types: { type: Array, default: null },
+
   // Optional ConceptTree picker
   treeConcepts: { type: Array, default: null },
   treeLoadNarrower: { type: Function, default: null },
@@ -81,6 +85,7 @@ const treeCollapsed = ref(true)
 
 // Cache last suggestion items by URI so we can emit full objects, not only { uri }
 const cacheByUri = ref(Object.create(null))
+let cacheRequest = 0
 
 // --- helpers (same normalization as before) ---
 function itemWithScheme(item) {
@@ -120,10 +125,12 @@ function normalize(item) {
 
 // Use the shared local-options search, but keep ItemSelect's normalization.
 // The matched objects are cached so selecting a URI can emit the full item.
-function localOptionsToSuggest(q) {
+function localOptionsToSuggest(q, types) {
+  cacheRequest += 1
   return optionsToSuggest(props.options, q, {
     minChars: props.minChars,
     normalize,
+    types,
     onMatches(matches) {
       const nextCache = Object.create(null)
       for (const it of matches) {
@@ -134,25 +141,30 @@ function localOptionsToSuggest(q) {
   })
 }
 
-function providerSearch(q) {
+function providerSearch(q, types = null) {
   if (props.search) {
-    return props.search(q)
+    return types === null ? props.search(q) : props.search(q, types)
   }
   if (props.registry && props.scheme?.uri) {
-    return props.registry.suggest({ search: q, params: { voc: props.scheme.uri } })
+    const config = { search: q, params: { voc: props.scheme.uri } }
+    if (types !== null) {
+      config.types = types
+    }
+    return props.registry.suggest(config)
   }
   return Promise.resolve([q, [], [], []])
 }
 
 
 // Wrap remote search so we can also populate cacheByUri (labels+uris -> normalized objects)
-function remoteSearchWrapped(q) {
+function remoteSearchWrapped(q, types = null) {
+  const request = ++cacheRequest
   const query = (q || "").trim()
   if (!query || query.length < props.minChars) {
     return Promise.resolve([query, [], [], []])
   }
 
-  return Promise.resolve(providerSearch(query)).then((os) => {
+  return Promise.resolve(providerSearch(query, types)).then((os) => {
     const labels = os?.[1] || []
     const uris = os?.[3] || []
 
@@ -165,7 +177,9 @@ function remoteSearchWrapped(q) {
         nextCache[uri] = it
       }
     }
-    cacheByUri.value = nextCache
+    if (request === cacheRequest) {
+      cacheByUri.value = nextCache
+    }
 
     return os
   })

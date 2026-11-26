@@ -3,18 +3,40 @@
     ref="itemSuggest"
     class="jskos-vue-itemSuggest"
     @mousemove="mousemove">
-    <!-- Input field -->
-    <input
-      ref="searchInput"
-      v-model="query"
-      type="search"
-      :placeholder="placeholder === null ? t('placeholder') : placeholder"
-      @click="openResults"
-      @keydown.down.prevent="onArrowDown"
-      @keydown.up.prevent="onArrowUp"
-      @keyup.enter="onEnter"
-      @keyup.esc="$refs && $refs.searchInput && $refs.searchInput.blur(); closeResults()"
-      @focus="openResults">
+    <div class="jskos-vue-itemSuggest-inputRow">
+      <!-- Input field -->
+      <input
+        ref="searchInput"
+        v-model="query"
+        type="search"
+        :placeholder="placeholder === null ? t('placeholder') : placeholder"
+        @click="openResults"
+        @keydown.down.prevent="onArrowDown"
+        @keydown.up.prevent="onArrowUp"
+        @keyup.enter="onEnter"
+        @keyup.esc="$refs && $refs.searchInput && $refs.searchInput.blur(); closeResults()"
+        @focus="openResults">
+      <details
+        v-if="availableTypes.length"
+        class="jskos-vue-itemSuggest-typeFilter">
+        <summary
+          :aria-label="t('filterByType')"
+          :title="t('filterByType')">
+          {{ t("types") }}
+        </summary>
+        <div class="jskos-vue-itemSuggest-typeOptions">
+          <label
+            v-for="type in availableTypes"
+            :key="type.uri">
+            <input
+              v-model="selectedTypes"
+              type="checkbox"
+              :value="type.uri">
+            {{ contentPrefLabel(type, { fallbackToUri: true }) }}
+          </label>
+        </div>
+      </details>
+    </div>
     <!-- Results -->
     <div
       v-show="isOpen"
@@ -55,7 +77,6 @@
 <script setup>
 /**
  * TODOs:
- * - add types popover (or at least provide a way to add it after the fact)
  * - add drag and drop for concepts
  */
 
@@ -68,11 +89,15 @@ import "../shared.css"
 
 // Localization
 const { t } = useLocale({
-  en: {
-    placeholder: "Type to search...",
-  },
   de: {
     placeholder: "Tippen zum Suchen...",
+    filterByType: "Nach Typ filtern",
+    types: "Typen",
+  },
+  en: {
+    placeholder: "Type to search...",
+    filterByType: "Filter by type",
+    types: "Types",
   },
 })
 const { prefLabel: contentPrefLabel } = useContentLanguage()
@@ -100,6 +125,8 @@ const props = defineProps({
   },
   // Local options (for small sets like languages)
   options: { type: Array, default: null },
+  // Optional JSKOS type resources available as filters
+  types: { type: Array, default: null },
   // Minimum query length before searching local options
   minChars: { type: Number, default: 1 },
 })
@@ -111,6 +138,19 @@ const isOpen = ref(false)
 const query = ref("")
 const searchSelected = ref(-1)
 const results = ref([])
+const selectedTypes = ref([])
+
+const availableTypes = computed(() =>
+  (props.types || []).filter(type => type?.uri),
+)
+
+watch(
+  () => availableTypes.value.map(type => type.uri),
+  (typeUris) => {
+    selectedTypes.value = typeUris
+  },
+  { immediate: true },
+)
 
 const preventHovering = ref(false)
 // Template refs (will be set at mount)
@@ -134,16 +174,23 @@ const searchProvider = computed(() => {
     return props.search
   }
   if (props.options?.length) {
-    return q => localOptionsToSuggest(props.options, q, {
+    return (q, types) => localOptionsToSuggest(props.options, q, {
       minChars: props.minChars,
       normalize: normalizeLocalOption,
+      types,
     })
   }
   return null
 })
 
-const runSearch = debounce(async (searchQuery) => {
+let searchRequest = 0
+
+const runSearch = debounce(async (searchQuery, typeUris, request) => {
   searchQuery = searchQuery.trim()
+  if (!searchQuery || typeUris?.length === 0) {
+    return
+  }
+
   results.value = []
 
   isLoading.value = true
@@ -153,7 +200,9 @@ const runSearch = debounce(async (searchQuery) => {
     return
   }
 
-  const promise = searchProvider.value(searchQuery)
+  const promise = typeUris === null
+    ? searchProvider.value(searchQuery)
+    : searchProvider.value(searchQuery, typeUris)
   
 
   // Convert OpenSearch Suggest [query, labels, descriptions, uris]
@@ -172,26 +221,41 @@ const runSearch = debounce(async (searchQuery) => {
     suggestResults = []
   }
 
-  // Ignore stale results if the user changed the input while awaiting search.
-  if (searchQuery === query.value.trim()) {
+  if (request === searchRequest) {
     results.value = suggestResults
     isLoading.value = false
   }
 }, 200)
 
-watch(query, (newQuery) => {
+function startSearch() {
+  const request = ++searchRequest
+  const searchQuery = query.value.trim()
+  const typeUris = availableTypes.value.length ? [...selectedTypes.value] : null
+
   searchSelected.value = -1
-  if (newQuery === "") {
+  // Calling the debounced function also replaces a search that has not started yet.
+  runSearch(searchQuery, typeUris, request)
+
+  if (!searchQuery) {
+    results.value = []
     isLoading.value = false
     isOpen.value = false
-  } else {
-    results.value = ["Waiting for you to stop typing..."]
-    isLoading.value = true
-    isOpen.value = true
-    // Actually perform the search
-    runSearch(newQuery)
+    return
   }
-})
+
+  isOpen.value = true
+  if (typeUris?.length === 0) {
+    results.value = []
+    isLoading.value = false
+    return
+  }
+
+  results.value = ["Waiting for you to stop typing..."]
+  isLoading.value = true
+}
+
+watch(query, startSearch)
+watch(selectedTypes, startSearch)
 
 const openResults = () => {
   isOpen.value = query.value !== ""
@@ -256,10 +320,8 @@ addClickHandlers(() => [
       itemSuggest.value,
     ],
     handler: () => {
-      // if (!this.filterPopoverShow) {
       isOpen.value = false
       searchSelected.value = -1
-      // }
     },
   },
 ])
@@ -325,9 +387,38 @@ defineExpose({
   position: relative;
   height: 34px;
 }
-.jskos-vue-itemSuggest > input {
-  width: 100%;
+.jskos-vue-itemSuggest-inputRow {
+  display: flex;
+  gap: 0.25rem;
+}
+.jskos-vue-itemSuggest-inputRow > input {
+  flex: 1;
+  min-width: 0;
   padding: 4px 8px;
+}
+
+.jskos-vue-itemSuggest-typeFilter {
+  position: relative;
+}
+
+.jskos-vue-itemSuggest-typeFilter > summary {
+  cursor: pointer;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.jskos-vue-itemSuggest-typeOptions {
+  background-color: var(--jskos-vue-itemSuggest-results-bgColor);
+  border: 1px solid var(--jskos-vue-border-color);
+  box-shadow: 0 2px 4px 0 var(--jskos-vue-itemSuggest-results-shadowColor);
+  display: grid;
+  gap: 0.25rem;
+  min-width: max-content;
+  padding: 0.5rem;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 3px);
+  z-index: calc(var(--jskos-vue-itemSuggest-results-zIndex) + 1);
 }
 
 .jskos-vue-itemSuggest-results {
