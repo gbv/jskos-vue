@@ -13,9 +13,6 @@ const debouncedFunction = utils.debounce(func, wait, immediate)
 
 ## Parameters
 
-- `func` - a function to be called
-  - required
-- `wait` - a time in milliseconds for the debounce
-  - required
-- `immediate` - will trigger the function on the leading edge, instead of the trailing
-  - optional, default: `false`
+- `func` *required* — a function to be called
+- `wait` *required* — a time in milliseconds for the debounce
+- `immediate` *optional, default `false` — will trigger the function on the leading edge, instead of the trailing

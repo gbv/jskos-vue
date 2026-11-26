@@ -7,10 +7,6 @@
 </template>
 
 <script setup>
-/**
- * Represents an element that automatically converts a valid URL into a link.
- */
-
 defineProps({
   // The string that is potentially a URL.
   href: {

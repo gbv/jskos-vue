@@ -1,9 +1,11 @@
 # useContentLanguage
 
-Selects languages for JSKOS content independently from translated UI messages.
-It must be called from a Vue component's `setup()` context.
+Selects languages for JSKOS content, independently from localization of UI
+messages.
 
 ## API
+
+The method must be called from a Vue component's `setup()` context.
 
 ```js
 import { utils } from "jskos-vue"
@@ -26,6 +28,8 @@ selectLanguage(item.prefLabel)
 2. Languages configured through `jskos.languagePreference`.
 3. The Vue I18n locale, when available.
 4. The existing jskos-tools fallback to an available language.
+
+Note this order differs from method [useLocale](./useLocale) for localization of UI.
 
 jskos-tools uses `["en"]` as its implicit default. When no preference store is
 configured, `useContentLanguage()` treats this as implicit so that Vue I18n can

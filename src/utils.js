@@ -133,15 +133,6 @@ export const messages = {
   },
 }
 
-/**
- * Get method `t` to localize strings and the current locale `currentlLanguage`.
- * 
- * Returns global properties `$t` and a method to get `$i18n.locale`, if these exist,
- * as injected by {@link https://vue-i18n.intlify.dev/|Vue I18n}. Otherwise uses
- * function`languagePreference` from jskos-tools with messages from this module.
- * 
- * Passed messages are used as fallback for global messages.
- */
 export function useLocale(messages={}) {
   const { $t, $i18n } = getCurrentInstance()?.appContext.config.globalProperties || {}
 

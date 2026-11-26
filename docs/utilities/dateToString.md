@@ -16,7 +16,5 @@ const localizedDateString = utils.dateToString(dateString)
 
 ## Parameters
 
-- `dateString` - some kind of date or datetime string
-  - required
-- `language` - selected language 
-  - optional
+- `dateString` *required* — some kind of date or datetime string
+- `language` *optional* — selected language 

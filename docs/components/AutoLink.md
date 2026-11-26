@@ -1,6 +1,6 @@
 # AutoLink
 
-Replacement for the `<a>` element that automatically links the URL if it's valid, and only shows text if it's invalid.
+Replacement for the `<a>` element that automatically links the URL if it starts with http:// or https://, and shows text only otherwise.
 
 ## Props
 
