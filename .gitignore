@@ -6,3 +6,5 @@ coverage/
 examples/app/
 
 notes/
+
+docs/.vitepress/.temp/
