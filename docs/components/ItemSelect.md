@@ -14,6 +14,10 @@ If you want to show/edit a list, combine it with [ItemSelected](./ItemSelected) 
 
 - `search` *function* — remote search function in **OpenSearch Suggest** format (see [ItemSuggest](./ItemSuggest)).
   Default is based on `options` (if set) or on `registry.suggest` (if both `registry` and `scheme` are set).
+  When `types` is configured, the function receives `(query, selectedTypeUris)`.
+
+- `types` *array, default `null`* — optional JSKOS type resources forwarded to
+  `ItemSuggest`. All types are selected initially and whenever this array changes.
 
 - `resolve` *function* — optional async resolver to turn a selected **URI** into a full JSKOS item object  when it is not available in the internal suggestion cache. Default is based on `options` (if set) or on `registry.getConcepts` (if available).
 
@@ -71,6 +75,8 @@ Before emitting `select`, items are normalized:
 a full object when available. If the URI is not cached, `resolve(uri)` can provide the item.
 Labels already returned by a remote OpenSearch Suggest service are preserved as provided by that service.
 
+Type filtering follows the behavior described in [ItemSuggest](./ItemSuggest).
+
 The hierarchy browser starts collapsed. Selecting via typeahead opens it and tries to show the
 selected concept. If the tree is closed and opened again, the selected concept is synced again.
 
@@ -93,9 +99,43 @@ See [ItemSuggest](./ItemSuggest) for styling of dropdown and [ConceptTree](./Con
 <script setup>
 import ItemSelect from "../../src/components/ItemSelect.vue"
 import ItemSelected from "../../src/components/ItemSelected.vue"
+import ItemName from "../../src/components/ItemName.vue"
 import { ref, reactive, onMounted } from "vue"
 import * as jskos from "jskos-tools"
 import { cdk } from "cocoda-sdk"
+// Local options with types
+const types = [
+  {
+    uri: "https://schema.org/Person",
+    prefLabel: { en: "Person", de: "Person" },
+  },
+  {
+    uri: "https://schema.org/Place",
+    prefLabel: { en: "Place", de: "Ort" },
+  },
+  {
+    uri: "https://schema.org/Organization",
+    prefLabel: { en: "Organization", de: "Organisation" },
+  },
+]
+const typedOptions = [
+  {
+    uri: "https://example.org/alexis",
+    type: ["https://schema.org/Person"],
+    prefLabel: { en: "Alexis Girard (Berlin)", de: "Alexis Girard (Berlin)" },
+  },
+  {
+    uri: "https://example.org/berlin",
+    type: ["https://schema.org/Place"],
+    prefLabel: { en: "Berlin", de: "Berlin" },
+  },
+  {
+    uri: "https://example.org/archive",
+    type: ["https://schema.org/Organization"],
+    prefLabel: { en: "Berlin municipal archive", de: "Stadtarchiv Berlin" },
+  },
+]
+const typedSelected = ref(null)
 // Local options (languages)
 const languageOptions = [
   { uri: "urn:lang:en", prefLabel: { en: "English" } },
@@ -113,6 +153,20 @@ const selected = ref([])
 const registry = cdk.initializeRegistry({ provider: "ConceptApi", api: "https://coli-conc.gbv.de/api/" })
 const scheme = { uri: "http://bartoc.org/en/node/241" }
 </script>
+
+<h3>Local options with type filter</h3>
+<item-select
+  :options="typedOptions"
+  :types="types"
+  placeholder="Select a Berlin item…"
+  @select="typedSelected = $event" />
+<p>
+  Selected item:
+  <item-name
+    v-if="typedSelected"
+    :item="typedSelected" />
+  <span v-else>none</span>
+</p>
 
 <h3>Languages (local options)</h3>
 <item-select

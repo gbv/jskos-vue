@@ -4,9 +4,12 @@ Input field to search and select an item (usually concept or concept scheme) fro
 
 ## Props
 
-- `search(query)` *async function* — custom search function that provides results in [OpenSearch Suggest Format](https://github.com/dewitt/opensearch/blob/master/mediawiki/Specifications/OpenSearch/Extensions/Suggestions/1.1/Draft%201.wiki):
+- `search(query, selectedTypeUris)` *async function* — custom search function that provides results in [OpenSearch Suggest Format](https://github.com/dewitt/opensearch/blob/master/mediawiki/Specifications/OpenSearch/Extensions/Suggestions/1.1/Draft%201.wiki):
   - `query` is the search string
+  - `selectedTypeUris` is provided only when `types` is configured. Without
+    type filtering, the function is called with `query` only.
 - `options` *array, default `null`* — local JSKOS items to search if `search` is not set.
+- `types` *array, default `null`* — optional JSKOS type resources shown as filters.
 - `minChars` *number, default `1`* — minimum query length for local `options`.
 - `placeholder` *string, default `"Type to search..."`* — placeholder string. `null` uses the default placeholder, an empty string clears it.
 
@@ -15,6 +18,8 @@ If both `search` and `options` are set, `search` is used.
 Local JSKOS `options` use the shared
 [content language selection](../utilities/useContentLanguage). Labels returned
 by a remote `search` function are already strings and are displayed unchanged.
+
+All available types are selected initially and reset when `types` changes. Local options match any selected type (OR). Remote filtering is delegated to the search provider. Deselecting all types returns no results.
 
 ## Methods
 
@@ -33,6 +38,8 @@ by a remote `search` function are already strings and are displayed unchanged.
 - `.jskos-vue-itemSuggest-results-item` — 
 - `.jskos-vue-itemSuggest-results-list` — 
 - `.jskos-vue-itemSuggest-selected` — 
+- `.jskos-vue-itemSuggest-typeFilter` — type filter disclosure
+- `.jskos-vue-itemSuggest-typeOptions` — type checkbox group
 
 ## Examples
 
@@ -102,6 +109,39 @@ const searchPokemon = async (query) => {
   result[3] = results.map(r => `pokemon:${r.id}`)
   return result
 }
+
+const selectedUri = ref("")
+const types = [
+  {
+    uri: "https://schema.org/Person",
+    prefLabel: { en: "Person", de: "Person" },
+  },
+  {
+    uri: "https://schema.org/Place",
+    prefLabel: { en: "Place", de: "Ort" },
+  },
+  {
+    uri: "https://schema.org/Organization",
+    prefLabel: { en: "Organization", de: "Organisation" },
+  },
+]
+const options = [
+  {
+    uri: "https://example.org/alexis",
+    type: ["https://schema.org/Person"],
+    prefLabel: { en: "Alexis Girard (Berlin)", de: "Alexis Girard (Berlin)" },
+  },
+  {
+    uri: "https://example.org/berlin",
+    type: ["https://schema.org/Place"],
+    prefLabel: { en: "Berlin", de: "Berlin" },
+  },
+  {
+    uri: "https://example.org/archive",
+    type: ["https://schema.org/Organization"],
+    prefLabel: { en: "Berlin municipal archive", de: "Stadtarchiv Berlin" },
+  },
+]
 </script>
 
 
@@ -115,6 +155,21 @@ const searchPokemon = async (query) => {
 ```vue
 <item-suggest :options="languageOptions" />
 ```
+
+### Filter local options by type
+
+All three options contain "Berlin", so the checkboxes directly demonstrate
+the type filter.
+
+::: component-view
+<item-suggest
+  :options="options"
+  :types="types"
+  placeholder="Search for Berlin…"
+  @select="selectedUri = $event.uri" />
+
+Selected URI: {{ selectedUri || "none" }}
+:::
 
 
 ### Search for concepts inside a concept scheme
