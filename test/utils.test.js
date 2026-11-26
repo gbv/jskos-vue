@@ -443,6 +443,37 @@ describe("localOptionsToSuggest", () => {
       { uri: "urn:item:1", __label: "First Item" },
     ])
   })
+
+  test("filters matching types before normalization", () => {
+    const typedOptions = [
+      { uri: "urn:person", type: ["urn:type:person"], label: "Person item" },
+      { uri: "urn:place", type: ["urn:type:place"], label: "Place item" },
+      { uri: "urn:organization", type: ["urn:type:organization"], label: "Organization item" },
+      { uri: "urn:untyped", label: "Untyped item" },
+    ]
+    const normalize = vi.fn(item => ({
+      uri: item.uri,
+      __label: item.label,
+    }))
+
+    expect(localOptionsToSuggest(typedOptions, "item", {
+      normalize,
+      types: ["urn:type:person", "urn:type:place"],
+    })).toEqual([
+      "item",
+      ["Person item", "Place item"],
+      ["", ""],
+      ["urn:person", "urn:place"],
+    ])
+    expect(normalize).toHaveBeenCalledTimes(2)
+
+    normalize.mockClear()
+    expect(localOptionsToSuggest(typedOptions, "item", {
+      normalize,
+      types: [],
+    })).toEqual(["item", [], [], []])
+    expect(normalize).not.toHaveBeenCalled()
+  })
 })
 
 describe("dateToString", () => {

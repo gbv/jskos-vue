@@ -221,13 +221,15 @@ function suggestOption(item) {
 /**
  * Convert local JSKOS options to OpenSearch Suggest format.
  *
- * `normalize` can adapt app-specific option shapes before filtering.
+ * `types` filters the original JSKOS items before normalization.
+ * `normalize` can adapt app-specific option shapes before matching label and URI.
  * `onMatches` exposes the normalized matches, for example to fill a URI cache.
  */
 export function localOptionsToSuggest(options, q, {
   minChars = 1,
   normalize = suggestOption,
   onMatches = null,
+  types = null,
 } = {}) {
   const query = (q || "").trim()
   if (!query || query.length < minChars) {
@@ -238,6 +240,7 @@ export function localOptionsToSuggest(options, q, {
   const qLower = query.toLowerCase()
 
   const matches = (options || [])
+    .filter(item => types === null || item?.type?.some(type => types.includes(type)))
     .map(normalize)
     .filter(Boolean)
     .filter((it) => {

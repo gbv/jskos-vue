@@ -203,6 +203,19 @@
       @select="handleClick" />
   </p>
   <h2>
+    ItemSuggest - local options with type filter
+  </h2>
+  <div class="item-suggest-type-demo">
+    <item-suggest
+      :options="localTypeOptions"
+      :types="localTypes"
+      placeholder="Search local people, places, and organizations…"
+      @select="examples.itemSuggest.localSelected = $event.uri" />
+    <small>
+      Selected: {{ examples.itemSuggest.localSelected || "none" }}
+    </small>
+  </div>
+  <h2>
     ItemSuggest - DDC from API, with ItemDetails for selected
   </h2>
   <p>
@@ -494,6 +507,39 @@ const multilingualLicense = {
   }],
 }
 
+const localTypes = [
+  {
+    uri: "https://schema.org/Person",
+    prefLabel: { en: "Person", de: "Person" },
+  },
+  {
+    uri: "https://schema.org/Place",
+    prefLabel: { en: "Place", de: "Ort" },
+  },
+  {
+    uri: "https://schema.org/Organization",
+    prefLabel: { en: "Organization", de: "Organisation" },
+  },
+]
+
+const localTypeOptions = [
+  {
+    uri: "https://example.org/alexis",
+    type: ["https://schema.org/Person"],
+    prefLabel: { en: "Alexis Girard (Berlin)", de: "Alexis Girard (Berlin)" },
+  },
+  {
+    uri: "https://example.org/berlin",
+    type: ["https://schema.org/Place"],
+    prefLabel: { en: "Berlin", de: "Berlin" },
+  },
+  {
+    uri: "https://example.org/archive",
+    type: ["https://schema.org/Organization"],
+    prefLabel: { en: "Berlin municipal archive", de: "Stadtarchiv Berlin" },
+  },
+]
+
 const examples = reactive({
   detailed: {
     itemListOptions: {
@@ -685,6 +731,7 @@ const examples = reactive({
   longConceptList: [],
   itemSuggest: {
     selected: null,
+    localSelected: null,
     async setSelected(concept, _registry) {
       // 1. Set selected to concept
       this.selected = concept
@@ -810,6 +857,14 @@ html {
 }
 .opacity-hover:hover {
   opacity: 50%;
+}
+.item-suggest-type-demo {
+  margin-bottom: 1.5rem;
+  max-width: 32rem;
+}
+.item-suggest-type-demo small {
+  display: block;
+  margin-top: 0.25rem;
 }
 .localization-demo {
   border: 1px solid #d8dee4;
