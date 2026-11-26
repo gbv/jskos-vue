@@ -1,3 +1,13 @@
+## 0.7.0
+
+- Add QualifiedStatements component with support for qualified relations, literals, dates, and nested statement inspection. (#23)
+- Improve content language selection across components, with Vue I18n locale fallback. (#30)
+- Add optional type filtering to ItemSuggest and ItemSelect. (#17)
+- Extend MappingTable with configurable columns, confidence values, and optional table header. (#48)
+- Extend automated tests.
+- Update documentation and interactive examples.
+- Update dependencies.
+
 ## 0.6.0
 
 - Add MappingTable component
