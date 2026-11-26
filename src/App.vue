@@ -216,6 +216,23 @@
     </small>
   </div>
   <h2>
+    ItemSelect - local options with type filter
+  </h2>
+  <div class="item-suggest-type-demo">
+    <item-select
+      :options="localTypeOptions"
+      :types="localTypes"
+      placeholder="Select a local person, place, or organization…"
+      @select="examples.itemSelect.localSelected = $event" />
+    <small>
+      Selected:
+      <item-name
+        v-if="examples.itemSelect.localSelected"
+        :item="examples.itemSelect.localSelected" />
+      <span v-else>none</span>
+    </small>
+  </div>
+  <h2>
     ItemSuggest - DDC from API, with ItemDetails for selected
   </h2>
   <p>
@@ -749,6 +766,7 @@ const examples = reactive({
   },
   itemSelect: {
     selected: [],
+    localSelected: null,
   },
   qualifiedStatements: {
     item: null,

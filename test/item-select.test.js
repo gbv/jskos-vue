@@ -10,6 +10,16 @@ const languageOptions = [
   { uri: "urn:lang:de", prefLabel: { en: "German" } },
 ]
 
+const typePerson = { uri: "https://schema.org/Person", prefLabel: { en: "Person" } }
+const typePlace = { uri: "https://schema.org/Place", prefLabel: { en: "Place" } }
+
+const TypeFilterSuggestStub = {
+  name: "ItemSuggest",
+  props: ["search", "types"],
+  emits: ["select"],
+  template: "<div class=\"itemsuggest-stub\"></div>",
+}
+
 let languagePreference
 
 beforeEach(() => {
@@ -199,6 +209,110 @@ test("keeps multilingual labels reactive after local selection", async () => {
   expect(selected.__label).toBe("English")
   expect(label.text()).toContain("Deutsch")
   expect(label.text()).not.toContain("English")
+})
+
+test("forwards types and filters local options", async () => {
+  const person = {
+    uri: "urn:person",
+    type: [typePerson.uri],
+    prefLabel: { en: "Berlin person" },
+  }
+  const place = {
+    uri: "urn:place",
+    type: [typePlace.uri],
+    prefLabel: { en: "Berlin place" },
+  }
+  const types = [typePerson, typePlace]
+  const w = mount(ItemSelect, {
+    props: { options: [person, place], types },
+    global: { stubs: { ItemSuggest: TypeFilterSuggestStub } },
+  })
+  const suggest = w.findComponent(TypeFilterSuggestStub)
+
+  expect(suggest.props("types")).toEqual(types)
+  expect(await suggest.props("search")("Berlin", [typePlace.uri])).toEqual([
+    "Berlin",
+    ["Berlin place"],
+    [""],
+    [place.uri],
+  ])
+
+  suggest.vm.$emit("select", { uri: place.uri })
+  await flushPromises()
+
+  expect(w.emitted("select")[0][0]).toMatchObject(place)
+})
+
+test("forwards selected types to custom search", async () => {
+  const search = vi.fn(async query => [query, [], [], []])
+  const w = mount(ItemSelect, {
+    props: { search, types: [typePerson] },
+    global: { stubs: { ItemSuggest: TypeFilterSuggestStub } },
+  })
+
+  await w.findComponent(TypeFilterSuggestStub).props("search")("Berlin", [typePerson.uri])
+
+  expect(search).toHaveBeenCalledWith("Berlin", [typePerson.uri])
+})
+
+test("keeps the one-argument custom search without type filtering", async () => {
+  const search = vi.fn(async query => [query, [], [], []])
+  const w = mount(ItemSelect, {
+    props: { search },
+    global: { stubs: { ItemSuggest: TypeFilterSuggestStub } },
+  })
+
+  await w.findComponent(TypeFilterSuggestStub).props("search")("Berlin")
+
+  expect(search).toHaveBeenCalledWith("Berlin")
+})
+
+test("forwards selected types to registry suggestions", async () => {
+  const registry = {
+    suggest: vi.fn(async query => [query.search, [], [], []]),
+  }
+  const scheme = { uri: "urn:scheme" }
+  const w = mount(ItemSelect, {
+    props: { registry, scheme, types: [typePlace] },
+    global: { stubs: { ItemSuggest: TypeFilterSuggestStub } },
+  })
+
+  await w.findComponent(TypeFilterSuggestStub).props("search")("Berlin", [typePlace.uri])
+
+  expect(registry.suggest).toHaveBeenCalledWith({
+    search: "Berlin",
+    params: { voc: scheme.uri },
+    types: [typePlace.uri],
+  })
+})
+
+test("does not let stale search responses overwrite the URI cache", async () => {
+  const uri = "urn:result"
+  let resolveFirst
+  let resolveSecond
+  const search = vi.fn((query, types) => new Promise((resolve) => {
+    if (types.includes(typePerson.uri)) {
+      resolveFirst = resolve
+    } else {
+      resolveSecond = resolve
+    }
+  }))
+  const w = mount(ItemSelect, {
+    props: { search, types: [typePerson, typePlace] },
+    global: { stubs: { ItemSuggest: TypeFilterSuggestStub } },
+  })
+  const suggest = w.findComponent(TypeFilterSuggestStub)
+  const first = suggest.props("search")("Berlin", [typePerson.uri])
+  const second = suggest.props("search")("Berlin", [typePlace.uri])
+
+  resolveSecond(["Berlin", ["Current label"], [""], [uri]])
+  await second
+  resolveFirst(["Berlin", ["Stale label"], [""], [uri]])
+  await first
+  suggest.vm.$emit("select", { uri })
+  await flushPromises()
+
+  expect(w.emitted("select")[0][0].__label).toBe("Current label")
 })
 
 test("renders ConceptTree collapsed by default", () => {
