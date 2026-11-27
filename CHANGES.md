@@ -1,3 +1,7 @@
+## 0.7.1
+
+- Fix highlighting of search queries containing regular expression characters in ItemSuggest. (#55)
+
 ## 0.7.0
 
 - Add QualifiedStatements component with support for qualified relations, literals, dates, and nested statement inspection. (#23)
