@@ -281,7 +281,8 @@ const highlightQueryInResult = (result) => {
   }
   // Find all occurrences of the search query and highlight them
   const searchQuery = query.value
-  const regex = new RegExp(searchQuery, "ig")
+  const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  const regex = new RegExp(escapedQuery, "ig")
   let match = regex.exec(result), currentIndex = 0, newResult = ""
   while (match) {
     let index = match.index

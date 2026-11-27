@@ -95,6 +95,41 @@ describe("ItemSuggest", () => {
     expect(results[1].text()).toContain("German")
   })
 
+  test("highlights case-insensitively without rendering result HTML", async () => {
+    const label = "<em>Holz HOLZ</em>"
+    const search = vi.fn(async query => [query, [label], [""], ["urn:wood"]])
+    const w = mountSuggest({ search })
+
+    await w.find("input[type='search']").setValue("holz")
+    vi.advanceTimersByTime(250)
+    await flushPromises()
+
+    const result = w.find(".jskos-vue-itemSuggest-results-item")
+    expect(result.text()).toBe(label)
+    expect(result.find("em").exists()).toBe(false)
+    expect(result.findAll(".jskos-vue-text-bold").map(match => match.text())).toEqual([
+      "Holz",
+      "HOLZ",
+    ])
+  })
+
+  test.each(["*Holz", "[", ".", "a*", "+?^${}()|\\"])(
+    "treats %s as literal text when highlighting",
+    async (searchQuery) => {
+      const search = vi.fn(async query => [query, [`before ${query} after`], [""], ["urn:result"]])
+      const w = mountSuggest({ search })
+
+      await w.find("input[type='search']").setValue(searchQuery)
+      vi.advanceTimersByTime(250)
+      await flushPromises()
+
+      expect(search).toHaveBeenCalledWith(searchQuery)
+      expect(w.findAll(".jskos-vue-text-bold").map(match => match.text())).toEqual([
+        searchQuery,
+      ])
+    },
+  )
+
   test("searches local options and emits selected URI", async () => {
     const w = mountSuggest({
       search: null,
